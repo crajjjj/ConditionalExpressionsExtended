@@ -10,7 +10,7 @@ Faction Property SexLabAnimatingFaction Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
-	log("[CE] triggered")
+	log("trauma triggered")
 
 	If Condiexp_CurrentlyTrauma.GetValue() > 0
 		RegisterForSingleUpdate(0.01)
@@ -37,7 +37,7 @@ event OnUpdate()
         return
     endif
 
-	logAndNotification("[CE] playing anim: " + painOrder)
+	logAndNotification("trauma playing effect: " + painOrder)
 	_painVariants(painOrder, PlayerRef, trauma*10)
 	Utility.Wait(5)
 	Int Seconds = Utility.RandomInt(2, 5)

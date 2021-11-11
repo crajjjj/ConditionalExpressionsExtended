@@ -3,12 +3,12 @@ Scriptname CondiExp_util Hidden
 Import Debug
 
 String Function slwGetModName() Global
-	return "SLWidgets"
+	return "Conditional Expressions Extended"
 EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 20000
+    Return 10200
     ; 1.0.0   -> 10000
     ; 1.1.0   -> 10100
     ; 1.1.1  -> 10101
@@ -17,7 +17,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "2.0.0"
+    Return "1.2.0"
 EndFunction
 
 String Function StringIfElse(Bool isTrue, String returnTrue, String returnFalse = "") Global

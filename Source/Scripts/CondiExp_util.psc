@@ -475,14 +475,14 @@ Function Happy(int n, Actor PlayerRef) Global
 	PlayerRef.ClearExpressionOverride()
 endfunction
 
-Function Inhale(Actor PlayerRef) Global
-	int i = 33
+Function Inhale(int n, int j, Actor PlayerRef) Global
+	int i = n
    
-   while i <  73
+   while i <  j
    MfgConsoleFunc.SetPhoneme(PlayerRef, 0,i)
    i = i + 3
-   If (i >73)
-   i = 73
+   If (i >j)
+   i = j
    Endif
    Utility.Wait(0.04)
    endwhile

@@ -48,7 +48,7 @@ int Breathe = CondiExp_BreathingfeMale.play(PlayerRef)
 endif 
 ;;;;;;;;;
 
-Inhale(PlayerRef)
+Inhale(33,73, PlayerRef)
 Exhale(73,33, PlayerRef)
 
 If PlayerRef.GetActorValuePercentage("Stamina") < 0.5 && PlayerRef.GetActorValuePercentage("Health") > 0.5

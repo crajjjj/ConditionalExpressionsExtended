@@ -57,7 +57,7 @@ Function Breathe()
 	endif 
 	;;;;;;;;;
 	
-	Inhale(PlayerRef)
+	Inhale(33,73, PlayerRef)
 	Exhale(73,33, PlayerRef)
 
 	Int randomLook = Utility.RandomInt(1, 10)
@@ -68,10 +68,7 @@ Function Breathe()
 	ElseIf randomLook == 8
 		LookDown(50, PlayerRef)
 	endif 
-	Utility.Wait(1)
-	Exhale(33,0,PlayerRef)
-	
-	Utility.Wait(1)
+	Utility.Wait(2)
 	
 EndFunction
 

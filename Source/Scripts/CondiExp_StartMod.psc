@@ -30,7 +30,7 @@ Event OnInit()
 EndEvent
 
 Event onPlayerLoadGame()
-	logAndNotification("Game reload event")
+	log("Game reload event")
 	init()
 endEvent
 
@@ -53,12 +53,12 @@ Event OnUpdate()
 EndEvent
 
 Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
-	logAndNotification("suspended by: " + sender.GetName() )
+	log("suspended by: " + sender.GetName())
 	StopMod()
  EndEvent
  
  Event OnDhlpResume(string eventName, string strArg, float numArg, Form sender)
-	logAndNotification("resumed by: " + sender.GetName())
+	log("resumed by: " + sender.GetName())
 	StartMod()
  EndEvent
 

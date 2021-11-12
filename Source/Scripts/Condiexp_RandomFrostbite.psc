@@ -50,7 +50,7 @@ EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 
-If Condiexp_CurrentlyBusy.GetValue() == 0
+If Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyTrauma.GetValue() == 0
 	PlayerRef.ClearExpressionOverride()
 	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
 endif

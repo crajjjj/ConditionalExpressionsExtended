@@ -1,5 +1,6 @@
 Scriptname CondiExp_Sneaking_Script extends ActiveMagicEffect  
 Actor Property PlayerRef Auto
+import  CondiExp_log
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 KhajiitLikestoSneak()

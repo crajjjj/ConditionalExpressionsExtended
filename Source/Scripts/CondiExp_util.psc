@@ -28,71 +28,8 @@ String Function StringIfElse(Bool isTrue, String returnTrue, String returnFalse 
     EndIf
 EndFunction
 
-
-
-
-Bool Function isFHUReady() Global
-	Return isDependencyReady("sr_FillHerUp.esp")
-EndFunction
-
-Bool Function isMMEReady() Global
-	Return isDependencyReady("MilkModNEW.esp") 
-EndFunction
-
-Bool Function isSLAReady() Global
-	Return  isDependencyReady("SexLabAroused.esm")
-EndFunction
-
-Bool Function isSLPReady() Global
-	Return  isDependencyReady("SexLab-Parasites.esp") 
-EndFunction
-
 Bool Function isAprReady() Global
 	Return isDependencyReady("Apropos2.esp") 
-EndFunction
-
-Bool Function isECReady() Global
-	Return isDependencyReady("EstrusChaurus.esp")
-EndFunction
-
-Bool Function isESReady() Global
-	Return isDependencyReady("EstrusSpider.esp") 
-EndFunction
-
-Bool Function isEDReady() Global
-	Return isDependencyReady("EstrusDwemer.esp")
-EndFunction
-
-Bool Function isBFReady() Global
-	Return isDependencyReady("BeeingFemale.esm") 
-EndFunction
-
-Bool Function isHPReady() Global
-	Return isDependencyReady("HentaiPregnancy.esm")
-EndFunction
-
-Bool Function isFM3Ready() Global
-	Return isDependencyReady("Fertility Mode.esm")
-EndFunction
-
-Bool Function isFM3TweaksReady() Global
-	Return isDependencyReady("Fertility Mode 3 Fixes and Updates.esp")
-EndFunction
-
-Bool Function isEFReady() Global
-	Return isDependencyReady("EggFactory.esp")
-EndFunction
-
-Bool Function isPAFReady() Global
-	Return  isDependencyReady("PeeAndFart.esp")
-EndFunction
-
-Bool Function isMiniNeedsReady() Global
-	Return  isDependencyReady("MiniNeeds.esp")
-EndFunction
-
-Bool Function isSLDefeatReady() Global
-	Return  isDependencyReady("SexLabDefeat.esp")
 EndFunction
 
 Bool Function isDependencyReady(String modname) Global
@@ -104,10 +41,10 @@ Function RandomEmotion(Actor PlayerRef) Global
 	Int Order = Utility.RandomInt(1, 80)
 If Order == 1 || Order == 33
 	LookLeft(70,PlayerRef)
-	LookRight(PlayerRef)
+	LookRight(70, PlayerRef)
 	Elseif Order == 2 || Order == 34 || Order == 61
 	LookLeft(50,PlayerRef)
-	LookRight(PlayerRef)
+	LookRight(50,PlayerRef)
 	Elseif Order == 3 || Order == 35 || Order == 62
 	Angry(PlayerRef)
 	Elseif Order == 4 || Order == 36 || Order == 63
@@ -125,7 +62,7 @@ If Order == 1 || Order == 33
 	Elseif Order == 10 || Order == 41 || Order == 69
 	LookLeft(70,PlayerRef)
 	Elseif Order == 11 || Order == 42 || Order == 70
-	LookRight(PlayerRef)
+	LookRight(70,PlayerRef)
 	Elseif Order == 12 || Order == 43 || Order == 71
 	Squint(PlayerRef)
 	Elseif Order == 13 || Order == 44 || Order == 72
@@ -137,7 +74,7 @@ If Order == 1 || Order == 33
 	Elseif Order == 16
 	Yawn(PlayerRef)
 	Elseif Order == 17 
-	LookDown(PlayerRef)
+	LookDown(40,PlayerRef)
 	Elseif Order == 18 || Order == 48 || Order == 75
 	BrowsUp(PlayerRef)
 	Elseif Order == 19 || Order == 49
@@ -197,15 +134,15 @@ Function LookLeft(int n, Actor PlayerRef) Global
 endfunction
 	
 	
-Function LookRight(Actor PlayerRef) Global
+Function LookRight(int n, Actor PlayerRef) Global
 	
 	int i = 0
 	
-	while i < 70
+	while i < n
 	MfgConsoleFunc.SetModifier(PlayerRef, 10,i)
 	i = i + 5
-	if (i >70)
-	i = 70
+	if (i > n)
+	i = n
 	Endif
 	Utility.Wait(0.05)
 	endwhile
@@ -398,15 +335,15 @@ Function Yawn(Actor PlayerRef) Global
 	endwhile
 endfunction
 	
-Function LookDown( Actor PlayerRef) Global
+Function LookDown(int n, Actor PlayerRef) Global
 	
 	int i = 0
 	
-	while i < 40
+	while i < n
 	MfgConsoleFunc.SetModifier(PlayerRef, 8,i)
 	i = i + 5
-	if (i >40)
-	i = 40
+	if (i >n)
+	i = n
 	Endif
 	Utility.Wait(0.05)
 	endwhile
@@ -537,8 +474,34 @@ Function Happy(int n, Actor PlayerRef) Global
 	endwhile
 	PlayerRef.ClearExpressionOverride()
 endfunction
-	
-	
+
+Function Inhale(Actor PlayerRef) Global
+	int i = 33
+   
+   while i <  73
+   MfgConsoleFunc.SetPhoneme(PlayerRef, 0,i)
+   i = i + 3
+   If (i >73)
+   i = 73
+   Endif
+   Utility.Wait(0.04)
+   endwhile
+EndFunction
+ 
+Function Exhale(int n, int j, Actor PlayerRef) Global
+
+	int i = n
+   
+   while i > j
+  	 MfgConsoleFunc.SetPhoneme(PlayerRef, 0, i)
+  	 i = i - 3
+   	If (i < j)
+   		i = j
+   	Endif
+  	 Utility.Wait(0.02)
+   endwhile
+EndFunction
+
 Function Puzzled(int n, Actor PlayerRef) Global
 	
 	int i = 0

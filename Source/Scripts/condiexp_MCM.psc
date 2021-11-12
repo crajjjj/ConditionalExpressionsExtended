@@ -367,6 +367,8 @@ elseif (option == Headache_B)
 SetInfoText("Your character will have a 'headache' look when almost out of mana.\nSame look will be applied when you have a disease.")
 elseif (option == Sounds_B)
 SetInfoText("When out of stamina, you can hear your character (quietly) breathing\n heavily until they recover half of their stamina.")
+elseif (option == Trauma_B)
+SetInfoText("Your character will react to abuse (painful subtle expressions).\n There's also a quiet breahing sound once in a while")
 endif
 endevent
 

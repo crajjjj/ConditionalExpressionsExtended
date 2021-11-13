@@ -6,6 +6,7 @@ Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_CurrentlyTrauma Auto
 GlobalVariable Property Condiexp_Sounds Auto
+sound property CondiExp_BreathingFemale auto
 sound property CondiExp_SobbingFemale1 auto
 sound property CondiExp_SobbingFemale2 auto
 sound property CondiExp_SobbingFemale3 auto
@@ -39,21 +40,21 @@ Function ShowExpression()
 	Int randomseed = Utility.RandomInt(1, 20)
 	_painVariants(trauma, PlayerRef, randomseed + trauma*10)
 	Utility.Wait(2)
-	BreatheAndSob()
+	BreatheAndSob(trauma)
 EndFunction
 
-Function BreatheAndSob()
+Function BreatheAndSob(int trauma)
 	If PlayerRef.IsDead()
 		return
 	endif
 
 	Inhale(33,73, PlayerRef)
 	;;;;;;;;;;; SOUNDS ;;;;;;;;;;;;
-	Int sobchance25percent= Utility.RandomInt(1, 4)
+	Int sobchance25percent= Utility.RandomInt(1, 5)
 	 
 	If Condiexp_Sounds.GetValue() > 0 && sobchance25percent == 3
-		 playRandomSob()  
-	endif 
+		playBreathOrRandomSob(trauma)  
+	endif
 	;;;;;;;;;
 	Int randomLook = Utility.RandomInt(1, 10)
 	If randomLook == 2
@@ -82,8 +83,13 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	log("Trauma OnEffectFinish")
 EndEvent
 
-Function playRandomSob()
+Function playBreathOrRandomSob(int trauma)
 	
+	if trauma<=3
+		CondiExp_BreathingFemale.play(PlayerRef) 
+		return
+	endIf
+
 	Int randomSob = Utility.RandomInt(1, 5)
 	log("Playing sob: " + randomSob)
 	if randomSob == 1

@@ -245,10 +245,7 @@ Int Function GetWearState(Actor PlayerRef)
 	
 	ReferenceAlias AproposTwoAlias = GetAproposAlias(PlayerRef, ActorsQuest)
 	if GetAproposAlias(PlayerRef, ActorsQuest) != None
-		Int adamage = (AproposTwoAlias as Apropos2ActorAlias).AnalWearTearState
-		Int vdamage = (AproposTwoAlias as Apropos2ActorAlias).VaginalWearTearState
-		Int odamage = (AproposTwoAlias as Apropos2ActorAlias).OralWearTearState
-		int damage = adamage + vdamage + odamage
+		Int damage = (AproposTwoAlias as Apropos2ActorAlias).AverageAbuseState
 		log("WT Damage" + damage)
 		If damage <= 10
 			return damage

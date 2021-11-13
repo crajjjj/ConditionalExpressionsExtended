@@ -41,7 +41,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
         Endif
         Utility.Wait(0.1)
     endwhile
-    
+	Utility.Wait(1)
 	PlayerRef.ClearExpressionOverride()
 	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
 	Condiexp_CurrentlyBusy.SetValue(0)

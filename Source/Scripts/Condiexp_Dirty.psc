@@ -7,7 +7,9 @@ import CondiExp_util
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
-	log("Dirty OnEffectStart")
+	;log("Dirty OnEffectStart")
+	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+	Utility.Wait(1)
 	ShowExpression() 
 EndEvent
 
@@ -15,7 +17,7 @@ Function ShowExpression()
     Int dirty = Condiexp_CurrentlyDirty.GetValue() as Int
 
 	Utility.Wait(1)
-	log("Dirt playing effect")
+	;log("Dirt playing effect")
 	
     int i = 0
 
@@ -27,12 +29,19 @@ Function ShowExpression()
         Endif
         Utility.Wait(0.1)
     endwhile
-EndFunction
 
-
-Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    Int dirty = Condiexp_CurrentlyDirty.GetValue() as Int
-    int i = 95
+	Int randomLook = Utility.RandomInt(1, 10)
+	If randomLook == 2
+		LookLeft(50, PlayerRef)
+	ElseIf randomLook == 4
+		LookRight(50, PlayerRef)
+	ElseIf randomLook == 8
+		LookDown(50, PlayerRef)
+	endif 
+	Utility.Wait(1)
+	
+	;and back
+	i = 95
     while i > 0
           _sadVariants(dirty, PlayerRef, i)
         i = i - 5
@@ -41,11 +50,18 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
         Endif
         Utility.Wait(0.1)
     endwhile
-	Utility.Wait(1)
-	PlayerRef.ClearExpressionOverride()
-	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+EndFunction
+
+
+Event OnEffectFinish(Actor akTarget, Actor akCaster)
+	Utility.Wait(10) ;wait for effect cycle to end !!!
+	
+	if (Condiexp_CurrentlyDirty.GetValue() == 0)
+		PlayerRef.ClearExpressionOverride()
+	endif
+
 	Condiexp_CurrentlyBusy.SetValue(0)
-	log("Dirty OnEffectFinish")
+	;log("Dirty OnEffectFinish")
 EndEvent
 
 ; Sets an expression to override any other expression other systems may give this actor.

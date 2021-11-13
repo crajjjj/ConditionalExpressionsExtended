@@ -32,6 +32,7 @@ function GetMethod()
 	endif
 endfunction
 
+;more immediate check
 bool function CheckForCold()
 	If Method == 1 
 		return (Temp && Temp.GetValue() > 2)

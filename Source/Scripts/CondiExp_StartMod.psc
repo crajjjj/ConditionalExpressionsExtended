@@ -17,12 +17,15 @@ GlobalVariable Property Condiexp_CurrentlyTrauma Auto
 GlobalVariable Property Condiexp_GlobalDirty Auto
 GlobalVariable Property Condiexp_CurrentlyDirty Auto
 GlobalVariable Property Condiexp_ColdMethod Auto
+GlobalVariable Property Condiexp_CurrentlyCold Auto
+GlobalVariable Property Condiexp_ColdGlobal Auto
 GlobalVariable Property Condiexp_Sounds Auto
 
 Race Property KhajiitRace Auto
 Race Property KhajiitRaceVampire Auto
 Race Property OrcRace Auto
 Race Property OrcRaceVampire Auto
+Keyword property Vampire Auto
 
 String Property LoadedBathMod Auto Hidden
 ;Bathing mod
@@ -89,7 +92,7 @@ function init()
 		DirtinessStage3Effect = GetKICDirtinessStage3Effect()
 		DirtinessStage4Effect = GetKICDirtinessStage4Effect()
 	endif
-	
+	log("Bathing mod: " + LoadedBathMod)
 	;for compatibility with other mods
 	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
 	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
@@ -97,6 +100,7 @@ function init()
 endfunction
 
 Event OnUpdate()
+	updateColdStatus()
 	updateTraumaStatus()
 	updateDirtyStatus()
 
@@ -104,6 +108,35 @@ Event OnUpdate()
 		RegisterForSingleUpdate(5)
   	endif
 EndEvent
+
+function updateColdStatus()
+	if Condiexp_ColdGlobal.GetValue() == 0
+		return
+	endif
+If Condiexp_ColdMethod.GetValue() == 1
+		GlobalVariable Temp = Game.GetFormFromFile(0x00068119, "Frostfall.esp") as GlobalVariable
+		If Temp.GetValue() > 2 
+			Condiexp_CurrentlyCold.SetValue(1)
+			else
+			Condiexp_CurrentlyCold.SetValue(0)
+		endif
+elseIf Condiexp_ColdMethod.GetValue() == 2
+		Spell Cold1 = Game.GetFormFromFile(0x00029028, "Frostbite.esp") as Spell
+		Spell Cold2 = Game.GetFormFromFile(0x00029029, "Frostbite.esp") as Spell
+		Spell Cold3 = Game.GetFormFromFile(0x0002902C, "Frostbite.esp") as Spell
+		If PlayerRef.HasSpell(Cold1) || PlayerRef.HasSpell(Cold2) || PlayerRef.HasSpell(Cold3)  
+			Condiexp_CurrentlyCold.SetValue(1)
+			else
+			Condiexp_CurrentlyCold.SetValue(0)
+		endif
+elseIf Condiexp_ColdMethod.GetValue() == 3
+		If Weather.GetCurrentWeather().GetClassification() == 3 && !PlayerRef.HasKeyword(Vampire) && !PlayerRef.IsinInterior()
+			Condiexp_CurrentlyCold.SetValue(1)
+		else
+			Condiexp_CurrentlyCold.SetValue(0)
+		endif
+	endif
+endfunction
 
 function updateDirtyStatus()
 	If (Condiexp_GlobalDirty.GetValue() == 0)
@@ -246,7 +279,7 @@ Int Function GetWearState(Actor PlayerRef)
 	ReferenceAlias AproposTwoAlias = GetAproposAlias(PlayerRef, ActorsQuest)
 	if GetAproposAlias(PlayerRef, ActorsQuest) != None
 		Int damage = (AproposTwoAlias as Apropos2ActorAlias).AverageAbuseState
-		log("WT Damage" + damage)
+		;log("WT Damage" + damage)
 		If damage <= 10
 			return damage
 		Else

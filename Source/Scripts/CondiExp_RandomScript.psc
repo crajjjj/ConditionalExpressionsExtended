@@ -12,44 +12,25 @@ GlobalVariable Property Condiexp_CurrentlyTrauma Auto
 GlobalVariable Property Condiexp_CurrentlyDirty Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-
-If Condiexp_ColdGlobal.GetValue() == 1
-	GlobalVariable Temp = Game.GetFormFromFile(0x00068119, "Frostfall.esp") as GlobalVariable
-	If Temp.GetValue() > 2 
-		Condiexp_CurrentlyCold.SetValue(1)
-		else
-		Condiexp_CurrentlyCold.SetValue(0)
-	endif
-
-	If Condiexp_CurrentlyCold.GetValue() == 0 && Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyTrauma.GetValue() == 0 && Condiexp_CurrentlyDirty.GetValue() == 0
-		Utility.Wait(0.5)
-		ShowExpression()
-	endif
-endif
+	Utility.Wait(0.5)
+	ShowExpression()
 EndEvent
 
 Function ShowExpression() 
 	RandomEmotion(PlayerRef)
 	Utility.Wait(1)
-	If !PlayerRef.IsRunning() || !PlayerRef.GetAnimationVariableInt("i1stPerson")
-		Int Seconds = Utility.RandomInt(2, 5)
-		RegisterForSingleUpdate(Seconds)
-	endif
+	Int Seconds = Utility.RandomInt(2, 5)
+	RegisterForSingleUpdate(Seconds)
 EndFunction
 
 Event OnUpdate()
-If !PlayerRef.GetAnimationVariableInt("i1stPerson")
 	If Condiexp_CurrentlyBusy.GetValue() == 0
 		RandomEmotion(PlayerRef)
 	EndIf
-endif
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-
-If Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyTrauma.GetValue() == 0 && Condiexp_CurrentlyDirty.GetValue() == 0
+	Utility.Wait(2)
 	PlayerRef.ClearExpressionOverride()
 	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
-endif
-
 EndEvent

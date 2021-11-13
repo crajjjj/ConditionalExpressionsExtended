@@ -122,11 +122,7 @@ else
 Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle)
 endif
 Random_B = AddToggleOption("Random Idle Expressions", RandomToggle)
-If Condiexp_GlobalRandom.GetValue() == 1
 Cold_B = AddToggleOption("Cold Expression", ColdToggle)
-else
-Cold_B = AddToggleOption("Cold Expression", ColdToggle, OPTION_FLAG_DISABLED)
-endif
 Stamina_B = AddToggleOption("Out of Stamina Expression", StaminaToggle)
 coldmethod_M = AddMenuOption("Cold Detection", ColdMethodList[ColdMethodIndex]) 
 Pain_B = AddToggleOption("In Pain Expression", PainToggle)
@@ -207,13 +203,10 @@ if (option == Combat_B) && CombatToggle == True
 		RandomToggle = False
 		SetToggleOptionValue(Random_B, RandomToggle)
 		Condiexp_GlobalRandom.SetValue(0)
-		ForcePageReset()
 	elseif (option == Random_B) && RandomToggle == False
 		RandomToggle = True
 		SetToggleOptionValue(Random_B, RandomToggle)
 		Condiexp_GlobalRandom.SetValue(1)
-		ForcePageReset()
-
 	elseif (option == Cold_B) && ColdToggle == True
 		ColdToggle = False
 		SetToggleOptionValue(Cold_B, ColdToggle)
@@ -353,7 +346,7 @@ SetInfoText("This enables a more focused combat expression. Disabling this will 
 elseif (option == Random_B)
 SetInfoText("When your character is idle, they will often have random subtle expressions.\nThis must be enabled for cold animations to work.")
 elseif (option == Cold_B)
-SetInfoText("Your character will react to being cold depending on your 'cold-manager' mod.\nFor this to work, you must enable the Random Idles as well.") 
+SetInfoText("Your character will react to being cold depending on your 'cold-manager' mod.\n") 
 elseif (option == Stamina_B)
 SetInfoText("When out of Stamina, your character will be out of breath.") 
 elseif (option == Pain_B)
@@ -379,7 +372,7 @@ SetInfoText("Clicking here will stop and restart the mod's functionalities.\nThi
 elseif (option == Headache_B)
 SetInfoText("Your character will have a 'headache' look when almost out of mana.\nSame look will be applied when you have a disease.")
 elseif (option == Sounds_B)
-SetInfoText("When out of stamina, you can hear your character (quietly) breathing\n heavily until they recover half of their stamina.")
+SetInfoText("When out of stamina, you can hear your character (quietly) breathing\n heavily until they recover half of their stamina. Enables trauma sounds as well")
 elseif (option == Trauma_B)
 SetInfoText("Your character will react to abuse (painful subtle expressions).\n There's also a pain sound once in a while. Integrated with Apropos2 and Zap slave faction based mods")
 elseif (option == Dirty_B)

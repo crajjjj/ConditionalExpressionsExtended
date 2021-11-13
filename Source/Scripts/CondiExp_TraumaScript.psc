@@ -18,7 +18,7 @@ Faction Property SexLabAnimatingFaction Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
-	log("Trauma OnEffectStart")
+	;log("Trauma OnEffectStart")
 	RegisterForSingleUpdate(0.01)
 EndEvent
 
@@ -80,7 +80,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	endif
 
 	Condiexp_CurrentlyBusy.SetValue(0)
-	log("Trauma OnEffectFinish")
+;	log("Trauma OnEffectFinish")
 EndEvent
 
 Function playBreathOrRandomSob(int trauma)

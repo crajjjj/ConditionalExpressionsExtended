@@ -24,6 +24,7 @@ Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+Utility.Wait(3)
 PlayerRef.ClearExpressionOverride()
 EndEvent
 

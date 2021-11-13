@@ -17,6 +17,7 @@ GlobalVariable Property Condiexp_ColdMethod Auto
 GlobalVariable Property Condiexp_GlobalMana Auto
 GlobalVariable Property Condiexp_Sounds Auto
 GlobalVariable Property Condiexp_GlobalTrauma Auto
+GlobalVariable Property Condiexp_GlobalDirty Auto
 
 Race Property OrcRace Auto
 Race Property OrcRaceVampire Auto
@@ -54,6 +55,7 @@ int update
 int uninstall
 int Sounds_B
 int Trauma_B
+int Dirty_B
 
 bool CombatToggle = true
 bool DrunkToggle = true
@@ -68,6 +70,7 @@ bool WaterToggle = true
 bool HeadacheToggle = True
 bool SoundsToggle = True
 bool TraumaToggle = true
+bool DirtyToggle = true
 
 int EatingFastSlow_M
 string EatingFastSlow
@@ -135,6 +138,7 @@ Water_B = AddToggleOption("Water/Torch Expression", WaterToggle)
 Headache_B = AddToggleOption("Headache/Diseased", HeadacheToggle)
 Sounds_B = AddToggleOption("Breathing Sounds", SoundsToggle)
 Trauma_B = AddToggleOption("Trauma Expression", TraumaToggle)
+Dirty_B = AddToggleOption("Dirty Expression", DirtyToggle)
 AddEmptyOption()
 AddEmptyOption()
 AddHeaderOption("Maintenance")
@@ -300,6 +304,15 @@ if (option == Combat_B) && CombatToggle == True
 		SetToggleOptionValue(Trauma_B, TraumaToggle)
 		Condiexp_GlobalTrauma.SetValue(1)
 
+	elseif (option == Dirty_B) && DirtyToggle == True
+		DirtyToggle = False
+		SetToggleOptionValue(Dirty_B, DirtyToggle)
+		Condiexp_GlobalDirty.SetValue(0)
+	elseif (option == Dirty_B) && DirtyToggle == False
+		DirtyToggle = True
+		SetToggleOptionValue(Dirty_B, DirtyToggle)
+		Condiexp_GlobalDirty.SetValue(1)
+
 	elseif (option == Sounds_B) && SoundsToggle == True
 		SoundsToggle = False
 		SetToggleOptionValue(Sounds_B, SoundsToggle)
@@ -368,7 +381,9 @@ SetInfoText("Your character will have a 'headache' look when almost out of mana.
 elseif (option == Sounds_B)
 SetInfoText("When out of stamina, you can hear your character (quietly) breathing\n heavily until they recover half of their stamina.")
 elseif (option == Trauma_B)
-SetInfoText("Your character will react to abuse (painful subtle expressions).\n There's also a quiet breahing sound once in a while")
+SetInfoText("Your character will react to abuse (painful subtle expressions).\n There's also a pain sound once in a while. Integrated with Apropos2 and Zap slave faction based mods")
+elseif (option == Dirty_B)
+SetInfoText("Your character will react to dirt (disgusted subtle expressions).\n Integrated with Dirt&Blood,Keep it clean,Bathing in Skyrim")
 endif
 endevent
 

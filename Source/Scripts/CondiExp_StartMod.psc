@@ -1,5 +1,6 @@
 Scriptname CondiExp_StartMod extends ReferenceAlias  
 import CondiExp_log
+import CondiExp_util
 
 Spell Property CondiExp_Fatigue1 Auto
 Actor Property PlayerRef Auto
@@ -13,6 +14,8 @@ GlobalVariable Property CondiExp_PlayerJustAte Auto
 GlobalVariable Property Condiexp_GlobalCold Auto
 GlobalVariable Property Condiexp_GlobalTrauma Auto
 GlobalVariable Property Condiexp_CurrentlyTrauma Auto
+GlobalVariable Property Condiexp_GlobalDirty Auto
+GlobalVariable Property Condiexp_CurrentlyDirty Auto
 GlobalVariable Property Condiexp_ColdMethod Auto
 GlobalVariable Property Condiexp_Sounds Auto
 
@@ -21,8 +24,23 @@ Race Property KhajiitRaceVampire Auto
 Race Property OrcRace Auto
 Race Property OrcRaceVampire Auto
 
+String Property LoadedBathMod Auto Hidden
+;Bathing mod
+MagicEffect DirtinessStage2Effect 
+MagicEffect DirtinessStage3Effect
+MagicEffect DirtinessStage4Effect
+MagicEffect DirtinessStage5Effect
+MagicEffect BloodinessStage2Effect
+MagicEffect BloodinessStage3Effect
+MagicEffect BloodinessStage4Effect
+MagicEffect BloodinessStage5Effect
+
 ;Apropos2
 Quest ActorsQuest
+;Zaz slave faction
+Faction zbfFactionSlave
+
+
 
 Event OnInit()
 	StartMod()
@@ -37,20 +55,98 @@ endEvent
 function init()
 	if !ActorsQuest
 		ActorsQuest = Game.GetFormFromFile(0x02902C, "Apropos2.esp") as Quest	
+		if ActorsQuest
+			log("Found Apropos: " + ActorsQuest.GetName() )
+		endif
 	endif
+	if !zbfFactionSlave
+		zbfFactionSlave = Game.GetFormFromFile(0x0096AE, "ZaZAnimationPack.esm") as Faction	
+		if zbfFactionSlave
+			log("Found ZaZAnimationPack: " + zbfFactionSlave.GetName() )
+		endif
+	endif
+
+	; checking what bath mod is loaded
+	LoadedBathMod = "None Found"
+	if GetDABDirtinessStage2Effect() != none ; if Dirt and Blood is loaded
+		LoadedBathMod = "Dirt And Blood"
+		DirtinessStage2Effect = GetDABDirtinessStage2Effect()
+		DirtinessStage3Effect = GetDABDirtinessStage3Effect()
+		DirtinessStage4Effect = GetDABDirtinessStage4Effect()
+		DirtinessStage5Effect = GetDABDirtinessStage5Effect()
+		BloodinessStage2Effect = GetDABBloodinessStage2Effect()
+		BloodinessStage3Effect = GetDABBloodinessStage3Effect()
+		BloodinessStage4Effect = GetDABBloodinessStage4Effect()
+		BloodinessStage5Effect = GetDABBloodinessStage5Effect()
+	elseif GetBISDirtinessStage2Effect() != none ; if Bathing In Skyrim is loaded
+		LoadedBathMod = "Bathing In Skyrim"
+		DirtinessStage2Effect = GetBISDirtinessStage2Effect()
+		DirtinessStage3Effect = GetBISDirtinessStage3Effect()
+		DirtinessStage4Effect = GetBISDirtinessStage4Effect()
+	elseif (GetKICDirtinessStage2Effect() != none) ; if Keep it clean is loaded
+		LoadedBathMod = "Keep It Clean"
+		DirtinessStage2Effect = GetKICDirtinessStage2Effect()
+		DirtinessStage3Effect = GetKICDirtinessStage3Effect()
+		DirtinessStage4Effect = GetKICDirtinessStage4Effect()
+	endif
+	
+	;for compatibility with other mods
 	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
 	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
 	RegisterForSingleUpdate(5)
 endfunction
 
 Event OnUpdate()
-	if Condiexp_GlobalTrauma.GetValue() == 1
-		Condiexp_CurrentlyTrauma.SetValue(GetWearState(PlayerRef))
-	endif
+	updateTraumaStatus()
+	updateDirtyStatus()
+
   	if (PlayerRef.HasSpell(CondiExp_Fatigue1))
 		RegisterForSingleUpdate(5)
   	endif
 EndEvent
+
+function updateDirtyStatus()
+	If (Condiexp_GlobalDirty.GetValue() == 0)
+		return
+	EndIf
+	if PlayerRef.HasMagicEffect(DirtinessStage2Effect) || (BloodinessStage2Effect && PlayerRef.HasMagicEffect(BloodinessStage2Effect))
+		Condiexp_CurrentlyDirty.SetValue(1.0)
+	elseif (PlayerRef.HasMagicEffect(DirtinessStage3Effect) || (BloodinessStage3Effect && PlayerRef.HasMagicEffect(BloodinessStage3Effect)))
+		Condiexp_CurrentlyDirty.SetValue(2.0)
+	elseif (PlayerRef.HasMagicEffect(DirtinessStage4Effect) || (BloodinessStage4Effect && PlayerRef.HasMagicEffect(BloodinessStage4Effect)) || (DirtinessStage5Effect && PlayerRef.HasMagicEffect(DirtinessStage5Effect)) || (BloodinessStage5Effect && PlayerRef.HasMagicEffect(BloodinessStage5Effect)))
+		Condiexp_CurrentlyDirty.SetValue(3.0)
+	else
+		Condiexp_CurrentlyDirty.SetValue(0.0)
+	endIf
+endfunction
+
+function updateTraumaStatus()
+	if Condiexp_GlobalTrauma.GetValue() == 0
+		return
+	endif
+	int trauma = 0
+	;check apropos
+	if ActorsQuest
+		trauma = GetWearState(PlayerRef)
+		if trauma > 0
+			Condiexp_CurrentlyTrauma.SetValue(trauma)
+			return
+		endif	
+	endif
+		
+	;check zap slave
+	if zbfFactionSlave
+		if (PlayerRef.IsInFaction(zbfFactionSlave))
+			trauma = 10
+			Condiexp_CurrentlyTrauma.SetValue(trauma)
+			return
+		endif
+	endif
+
+	;nothing found: 0
+	Condiexp_CurrentlyTrauma.SetValue(trauma)
+	
+endfunction
 
 Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 	log("suspended by: " + sender.GetName())

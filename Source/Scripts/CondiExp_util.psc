@@ -529,3 +529,62 @@ Function Puzzled(int n, Actor PlayerRef) Global
 	endwhile
 	PlayerRef.ClearExpressionOverride()
 endfunction
+
+; Keep It Clean
+MagicEffect function GetKICDirtinessStage2Effect() global
+    return Game.GetFormFromFile(0xFBDBA, "Keep It Clean.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetKICDirtinessStage3Effect() global
+    return Game.GetFormFromFile(0xFBDB6, "Keep It Clean.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetKICDirtinessStage4Effect() global
+    return Game.GetFormFromFile(0x1564EE, "Keep It Clean.esp") as MagicEffect
+endFunction
+
+; Bathing In Skyrim
+MagicEffect function GetBISDirtinessStage2Effect() global
+    return Game.GetFormFromFile(0xE55C, "Bathing in Skyrim - Main.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetBISDirtinessStage3Effect() global
+    return Game.GetFormFromFile(0xE55D, "Bathing in Skyrim - Main.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetBISDirtinessStage4Effect() global
+    return Game.GetFormFromFile(0xE55E, "Bathing in Skyrim - Main.esp") as MagicEffect
+endFunction
+
+; Dirt and Blood
+MagicEffect function GetDABDirtinessStage2Effect() global
+    return Game.GetFormFromFile(0x80D, "Dirt and Blood - Dynamic Visuals.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetDABDirtinessStage3Effect() global
+    return Game.GetFormFromFile(0x80E, "Dirt and Blood - Dynamic Visuals.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetDABDirtinessStage4Effect() global
+    return Game.GetFormFromFile(0x80F, "Dirt and Blood - Dynamic Visuals.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetDABDirtinessStage5Effect() global
+    return Game.GetFormFromFile(0x83B, "Dirt and Blood - Dynamic Visuals.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetDABBloodinessStage2Effect() global
+    return Game.GetFormFromFile(0x810, "Dirt and Blood - Dynamic Visuals.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetDABBloodinessStage3Effect() global
+    return Game.GetFormFromFile(0x811, "Dirt and Blood - Dynamic Visuals.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetDABBloodinessStage4Effect() global
+    return Game.GetFormFromFile(0x812, "Dirt and Blood - Dynamic Visuals.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetDABBloodinessStage5Effect() global
+    return Game.GetFormFromFile(0x83A, "Dirt and Blood - Dynamic Visuals.esp") as MagicEffect
+endFunction

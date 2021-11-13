@@ -1,4 +1,4 @@
-Scriptname Condiexp_Dirty extends activemagiceffect  
+Scriptname Condiexp_Dirty extends ActiveMagicEffect  
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_CurrentlyDirty Auto
 Actor Property PlayerRef Auto
@@ -78,7 +78,7 @@ Function _sadVariants(Int index, Actor act, Int Power)
 		mfgconsolefunc.SetModifier(act, 13, 50)
         mfgconsolefunc.SetPhoneme(act, 1, 10)
 		mfgconsolefunc.SetPhoneme(act, 2, 100)
-	else index == 3
+	else
 		act.SetExpressionOverride(3, Power)
         mfgconsolefunc.SetModifier(act, 2, 50)
 		mfgconsolefunc.SetModifier(act, 3, 50)

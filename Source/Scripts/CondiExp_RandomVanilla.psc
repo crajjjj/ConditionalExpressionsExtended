@@ -11,6 +11,7 @@ GlobalVariable Property CondiExp_PlayerIsDrunk Auto
 GlobalVariable Property Condiexp_GlobalRandomFrequency Auto
 Keyword property Vampire Auto
 GlobalVariable Property Condiexp_CurrentlyTrauma Auto
+GlobalVariable Property Condiexp_CurrentlyDirty Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	
@@ -22,7 +23,7 @@ If Condiexp_ColdGlobal.GetValue() == 1
 	endif
 endif
 
-If Condiexp_CurrentlyCold.GetValue() == 0 && Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyTrauma.GetValue() == 0
+If Condiexp_CurrentlyCold.GetValue() == 0 && Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyTrauma.GetValue() == 0 && Condiexp_CurrentlyDirty.GetValue() == 0
 	Utility.Wait(0.5)
 	ShowExpression()
 endif
@@ -49,7 +50,7 @@ endif
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-If Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyTrauma.GetValue() == 0
+If Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyTrauma.GetValue() == 0 && Condiexp_CurrentlyDirty.GetValue() == 0
 	log("Random finishing effect")
 	PlayerRef.ClearExpressionOverride()
 	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)

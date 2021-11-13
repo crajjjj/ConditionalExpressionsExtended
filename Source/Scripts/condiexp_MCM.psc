@@ -111,6 +111,7 @@ Event OnPageReset(string page)
 If (page == "Settings")
 
 SetCursorFillMode(LEFT_TO_RIGHT)
+AddHeaderOption("Conditional Expressions Extended. Version: " + GetVersionString())
 AddHeaderOption("List of Expressions")
 AddEmptyOption()
 AddEmptyOption()

@@ -28,6 +28,7 @@ Race Property OrcRaceVampire Auto
 Keyword property Vampire Auto
 
 String Property LoadedBathMod Auto Hidden
+Bool Property isSuspendedByDhlpEvent Auto Hidden
 ;Bathing mod
 MagicEffect DirtinessStage2Effect 
 MagicEffect DirtinessStage3Effect
@@ -42,7 +43,8 @@ MagicEffect BloodinessStage5Effect
 Quest ActorsQuest
 ;Zaz slave faction
 Faction zbfFactionSlave
-
+;Devious Devices
+MagicEffect zadGagEffect
 
 
 Event OnInit()
@@ -68,6 +70,13 @@ function init()
 			log("Found ZaZAnimationPack: " + zbfFactionSlave.GetName() )
 		endif
 	endif
+	if !zadGagEffect
+		zadGagEffect = Game.GetFormFromFile(0x02B077, "Devious Devices - Integration.esm") as MagicEffect
+		if zadGagEffect
+			log("Found Devious Devices - Integration: " + zadGagEffect.GetName() )
+		endif
+	endif
+
 
 	; checking what bath mod is loaded
 	LoadedBathMod = "None Found"
@@ -104,23 +113,43 @@ Event OnUpdate()
 	updateTraumaStatus()
 	updateDirtyStatus()
 
-  	if (PlayerRef.HasSpell(CondiExp_Fatigue1))
-		RegisterForSingleUpdate(5)
-  	endif
+	;check if there's a conflicting mod based on custom conditions
+	if checkIfModShouldBeSuspended()	
+		if isModEnabled()
+			StopMod()
+		endif	
+	else
+		if !isSuspendedByDhlpEvent && !isModEnabled()
+			StartMod()
+		endif
+ 	endif
+	RegisterForSingleUpdate(5)
 EndEvent
+
+Bool function checkIfModShouldBeSuspended()
+	if zadGagEffect && PlayerRef.HasMagicEffect(zadGagEffect)
+		return true
+	endif
+
+	return false
+endfunction
+
+Bool function isModEnabled()
+	return PlayerRef.HasSpell(CondiExp_Fatigue1)
+endfunction
 
 function updateColdStatus()
 	if Condiexp_ColdGlobal.GetValue() == 0
 		return
 	endif
-If Condiexp_ColdMethod.GetValue() == 1
+	If Condiexp_ColdMethod.GetValue() == 1
 		GlobalVariable Temp = Game.GetFormFromFile(0x00068119, "Frostfall.esp") as GlobalVariable
 		If Temp.GetValue() > 2 
 			Condiexp_CurrentlyCold.SetValue(1)
 			else
 			Condiexp_CurrentlyCold.SetValue(0)
 		endif
-elseIf Condiexp_ColdMethod.GetValue() == 2
+	elseIf Condiexp_ColdMethod.GetValue() == 2
 		Spell Cold1 = Game.GetFormFromFile(0x00029028, "Frostbite.esp") as Spell
 		Spell Cold2 = Game.GetFormFromFile(0x00029029, "Frostbite.esp") as Spell
 		Spell Cold3 = Game.GetFormFromFile(0x0002902C, "Frostbite.esp") as Spell
@@ -129,7 +158,7 @@ elseIf Condiexp_ColdMethod.GetValue() == 2
 			else
 			Condiexp_CurrentlyCold.SetValue(0)
 		endif
-elseIf Condiexp_ColdMethod.GetValue() == 3
+	elseIf Condiexp_ColdMethod.GetValue() == 3
 		If Weather.GetCurrentWeather().GetClassification() == 3 && !PlayerRef.HasKeyword(Vampire) && !PlayerRef.IsinInterior()
 			Condiexp_CurrentlyCold.SetValue(1)
 		else
@@ -183,12 +212,18 @@ endfunction
 
 Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 	log("suspended by: " + sender.GetName())
-	StopMod()
+	isSuspendedByDhlpEvent = true
+	If (isModEnabled())
+		StopMod()
+	EndIf
  EndEvent
  
  Event OnDhlpResume(string eventName, string strArg, float numArg, Form sender)
 	log("resumed by: " + sender.GetName())
-	StartMod()
+	isSuspendedByDhlpEvent = false
+	If (!isModEnabled())
+		StartMod()
+	EndIf
  EndEvent
 
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
@@ -236,7 +271,6 @@ Function StartMod()
 			Condiexp_ColdMethod.SetValue(3)
 		endif
 	endif
-RegisterForSingleUpdate(5)
 Endfunction
 
 

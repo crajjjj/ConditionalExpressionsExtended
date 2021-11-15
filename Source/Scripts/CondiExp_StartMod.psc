@@ -116,10 +116,12 @@ Event OnUpdate()
 	;check if there's a conflicting mod based on custom conditions
 	if checkIfModShouldBeSuspended()	
 		if isModEnabled()
+			log("suspended according to conditions check")
 			StopMod()
 		endif	
 	else
 		if !isSuspendedByDhlpEvent && !isModEnabled()
+			log("resumed according to conditions check")
 			StartMod()
 		endif
  	endif
@@ -128,6 +130,7 @@ EndEvent
 
 Bool function checkIfModShouldBeSuspended()
 	if zadGagEffect && PlayerRef.HasMagicEffect(zadGagEffect)
+		log("dd gag effect was detected. Will suspend")
 		return true
 	endif
 

@@ -1,6 +1,6 @@
 # ConditionalExpressionsExtended
 
-This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.2.0) by jayserpa
+This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.2.0)
  
 ## What was changed?
 - SL compatibility is built-in via sl factions (osmelmc patch).
@@ -20,7 +20,7 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
 ## Installation
 
 - Override original mod (Conditional Expressions - Subtle Face Animations mod (v 1.2.0)) with this one
-
+- Mod currently requires new save
 
 
 # Frequently Asked Questions

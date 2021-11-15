@@ -1,5 +1,6 @@
 Scriptname condiexp_MCM extends SKI_ConfigBase
 import CondiExp_util
+import CondiExp_log
 
 GlobalVariable Property Condiexp_GlobalCombat Auto
 GlobalVariable Property Condiexp_GlobalDrunk Auto
@@ -29,15 +30,6 @@ Spell Property CondiExp_Effects Auto
 Actor Property PlayerRef Auto
 Quest Property CondiExpQuest Auto
 
-int function GetVersion()
-    return CondiExp_util.GetVersion()
-endFunction
-
-event OnVersionUpdate(int a_version)
-    if (a_version > 1)
-      DetectRace()
-	  endIf
-endEvent
 
 int Combat_B
 int Drunk_B
@@ -82,13 +74,25 @@ string ColdMethod
 int ColdMethodIndex = 3
 string[] ColdMethodList
 
+int function GetVersion()
+    return CondiExp_util.GetVersion()
+endFunction
+
 Event OnConfigInit()
-	Pages = new string[1]
-	Pages[0] = "Settings"
+	ModName = GetModName()
+	logAndNotification("MCM menu initialized")	
 EndEvent
 
-event OnInit()
-	parent.OnInit()
+event OnVersionUpdate(int a_version)
+    if (a_version > 1)
+      DetectRace()
+	  endIf
+endEvent
+
+Event OnConfigOpen()
+	Pages = New String[1]
+	Pages[0] = "Settings"
+
 	EatingFastSlowList = new string[3]
 	EatingFastSlowList[0] = "Quick Eating"
 	EatingFastSlowList[1] = "Slow Eating"
@@ -99,7 +103,9 @@ event OnInit()
 	ColdMethodList[1] = "Frostfall"
 	ColdMethodList[2] = "Frostbite"
 	ColdMethodList[3] = "Automatic"
-endEvent
+EndEvent
+
+
 
 Event OnPageReset(string page)
 	If (page == "")

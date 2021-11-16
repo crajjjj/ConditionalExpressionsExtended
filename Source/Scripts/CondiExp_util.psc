@@ -8,7 +8,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 10001
+    Return 10100
     ; 1.0.0   -> 10000
     ; 1.1.0   -> 10100
     ; 1.1.1  -> 10101
@@ -17,7 +17,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.0.1"
+    Return "1.1.0"
 EndFunction
 
 String Function StringIfElse(Bool isTrue, String returnTrue, String returnFalse = "") Global
@@ -588,3 +588,8 @@ endFunction
 MagicEffect function GetDABBloodinessStage5Effect() global
     return Game.GetFormFromFile(0x83A, "Dirt and Blood - Dynamic Visuals.esp") as MagicEffect
 endFunction
+
+Function resetMFG(Actor ac) global
+	ac.ClearExpressionOverride()
+	MfgConsoleFunc.ResetPhonemeModifier(ac)
+endfunction

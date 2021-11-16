@@ -1,54 +1,25 @@
 Scriptname CondiExp_Cold_Script extends ActiveMagicEffect 
-
+import CondiExp_log
+import CondiExp_util
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyCold Auto 
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_ColdMethod Auto
-int Method = 0;
-GlobalVariable Temp ;Method 1 = Game.GetFormFromFile(0x00068119, "Frostfall.esp") as GlobalVariable
-Spell Cold1   		;Method 2 = Game.GetFormFromFile(0x00029028, "Frostbite.esp") as Spell
-Spell Cold2   		;Method 2 = Game.GetFormFromFile(0x00029029, "Frostbite.esp") as Spell
-Spell Cold3   		;Method 2 = Game.GetFormFromFile(0x0002902C, "Frostbite.esp") as Spell
+GlobalVariable Property Condiexp_ModSuspended Auto
+
 int coldExpression = 0 
  
 
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
-	GetMethod()
+	trace("CondiExp_Cold_Script OnEffectStart")
 	RegisterForSingleUpdate(0.01)
 EndEvent
 
-
-; cache these values, getting them is taxing so we dont want to poll for them each update
-function GetMethod()
-	Method = Condiexp_ColdMethod.GetValue() as int
-	If Method == 1
-		Temp = Game.GetFormFromFile(0x00068119, "Frostfall.esp") as GlobalVariable
-	elseIf Method == 2 
-		Cold1 = Game.GetFormFromFile(0x00029028, "Frostbite.esp") as Spell
-		Cold2 = Game.GetFormFromFile(0x00029029, "Frostbite.esp") as Spell
-		Cold3 = Game.GetFormFromFile(0x0002902C, "Frostbite.esp") as Spell
-	endif
-endfunction
-
-;more immediate check
-bool function CheckForCold()
-	If Method == 1 
-		return (Temp && Temp.GetValue() > 2)
-	elseif Method == 2
-		return  ((Cold1 && PlayerRef.HasSpell(Cold1)) || (Cold2 && PlayerRef.HasSpell(Cold2)) || (Cold3 && PlayerRef.HasSpell(Cold3)))  
-	elseif Method == 3 
-		return (Weather.GetCurrentWeather().GetClassification() == 3 && PlayerRef.IsInInterior() == false)
-	endif
-endfunction 
-
-
 event OnUpdate()
-	if (CheckForCold())
-		Condiexp_CurrentlyCold.SetValue(1)
+	if (Condiexp_CurrentlyCold.GetValue() == 1 && Condiexp_ModSuspended.GetValue() == 0)
 		PlayerRef.SetExpressionOverride(1,50)
-		
 		
 		 ; cold intro
 		if (coldExpression <= 65) 
@@ -98,7 +69,6 @@ event OnUpdate()
 		else ; if the outro is done we clean up and stop calling update
 			MfgConsoleFunc.SetPhoneMe(PlayerRef, 0,0)
 			PlayerRef.ClearExpressionOverride()
-			Condiexp_CurrentlyCold.SetValue(0)
 			Condiexp_CurrentlyBusy.SetValue(0)
 		endif
 	endif
@@ -106,7 +76,7 @@ endevent
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)			
-
+	trace("CondiExp_Cold_Script OnEffectFinish")
 ;OnEffectFinish is called, this script instance will only remain existing so long this function hasn't ended
 ;an OnUpdate might be still going so we first wait for it
 
@@ -124,6 +94,5 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 
 	MfgConsoleFunc.SetPhoneMe(PlayerRef, 0,0)
 	PlayerRef.ClearExpressionOverride()
-	Condiexp_CurrentlyCold.SetValue(0)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent

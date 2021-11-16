@@ -12,13 +12,14 @@ sound property CondiExp_SobbingFemale2 auto
 sound property CondiExp_SobbingFemale3 auto
 sound property CondiExp_SobbingFemale4 auto
 sound property CondiExp_SobbingFemale5 auto
+;todelete
 Faction Property SexLabAnimatingFaction Auto
 
 
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
-	;log("Trauma OnEffectStart")
+	trace("CondiExp_TraumaScript OnEffectStart")
 	RegisterForSingleUpdate(0.01)
 EndEvent
 
@@ -27,20 +28,20 @@ event OnUpdate()
 EndEvent
 
 Function ShowExpression() 
-	if (PlayerRef.IsInFaction(SexLabAnimatingFaction))
-		return
-	endif
-
     Int trauma = Condiexp_CurrentlyTrauma.GetValue() as Int
 
-	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
-	Utility.Wait(1)
+	if trauma > 0
+		MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+		Utility.Wait(1)
 
-	log("Trauma playing effect")
-	Int randomseed = Utility.RandomInt(1, 20)
-	_painVariants(trauma, PlayerRef, randomseed + trauma*10)
-	Utility.Wait(2)
-	BreatheAndSob(trauma)
+		trace("CondiExp_TraumaScript playing effect")
+		Int randomseed = Utility.RandomInt(1, 20)
+		_painVariants(trauma, PlayerRef, randomseed + trauma*10)
+		Utility.Wait(2)
+		BreatheAndSob(trauma)
+		RegisterForSingleUpdate(3)
+	endif
+
 EndFunction
 
 Function BreatheAndSob(int trauma)
@@ -73,7 +74,8 @@ Function BreatheAndSob(int trauma)
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	Utility.Wait(10); keep script running
+	Utility.Wait(3); keep script running
+	trace("CondiExp_TraumaScript OnEffectFinish")
 	if (Condiexp_CurrentlyTrauma.GetValue() == 0)
 		PlayerRef.ClearExpressionOverride()
 		MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
@@ -91,7 +93,7 @@ Function playBreathOrRandomSob(int trauma)
 	endIf
 
 	Int randomSob = Utility.RandomInt(1, 5)
-	log("Playing sob: " + randomSob)
+	trace("Playing sob: " + randomSob)
 	if randomSob == 1
 		CondiExp_SobbingFemale1.play(PlayerRef)
 	elseIf randomSob == 2

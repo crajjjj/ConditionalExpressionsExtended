@@ -8,22 +8,22 @@ High()
 EndEvent
 
 Function High()
-int randomhappy
-int randomsmile 
+    int randomhappy
+    int randomsmile 
 
-randomhappy = Utility.RandomInt(30,70)
-randomsmile = Utility.RandomInt(10,50)
-Condiexp_CurrentlyBusy.SetValue(1)
-MfgConsoleFunc.SetModifier(PlayerRef,11,55)
-MfgConsoleFunc.SetPhoneme(PlayerRef,4,randomsmile)
-PlayerRef.SetExpressionOverride(2,randomhappy)
+    randomhappy = Utility.RandomInt(30,70)
+    randomsmile = Utility.RandomInt(10,50)
+    Condiexp_CurrentlyBusy.SetValue(1)
+    MfgConsoleFunc.SetModifier(PlayerRef,11,55)
+    MfgConsoleFunc.SetPhoneme(PlayerRef,4,randomsmile)
+    PlayerRef.SetExpressionOverride(2,randomhappy)
 
-RegisterForSingleUpdateGameTime(0.5)
+    RegisterForSingleUpdateGameTime(0.5)
 EndFunction
 
 Event OnUpdateGameTime()
-CondiExp_PlayerIsHigh.SetValue(0)
-Condiexp_CurrentlyBusy.SetValue(0)
+    CondiExp_PlayerIsHigh.SetValue(0)
+    Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)

@@ -79,7 +79,6 @@ int function GetVersion()
 endFunction
 
 Event OnConfigInit()
-	ModName = GetModName()
 	logAndNotification("MCM menu initialized")	
 EndEvent
 
@@ -324,9 +323,9 @@ if (option == Combat_B) && CombatToggle == True
 	
 	elseif option == restore
 	ShowMessage("Default expression restored - If in the middle of a face animation, expression will be restored once animation is finished.")
-	PlayerRef.ClearExpressionOverride()
-	Condiexp_CurrentlyBusy.SetValue(0)
-	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+	Go.resetConditions()
+	resetMFG(PlayerRef)
+
 
 	elseif option == uninstall
 	ShowMessage("Mod is now prepared to be uninstalled. Please, exit menu, save and uninstall. Keep in mind: It's never 100% safe to uninstall mods mid-game, always make back-ups of your saves before installing mods!")
@@ -336,9 +335,7 @@ if (option == Combat_B) && CombatToggle == True
 	elseif option == update
 	ShowMessage("Please, exit menu. All functionalities will be restarted.")
 	Utility.Wait(0.5)
-	PlayerRef.ClearExpressionOverride()
-	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
-	PlayerRef.RemoveSpell(CondiExp_Effects)
+	Go.StopMod()
 	Go.StartMod()
 	Debug.Notification("Conditional Expressions has been restarted correctly!")
 	endif

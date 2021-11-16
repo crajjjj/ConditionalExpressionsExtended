@@ -7,7 +7,7 @@ import CondiExp_util
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
-	;log("Dirty OnEffectStart")
+	trace("Condiexp_Dirty OnEffectStart")
 	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
 	Utility.Wait(1)
 	ShowExpression() 
@@ -17,8 +17,7 @@ Function ShowExpression()
     Int dirty = Condiexp_CurrentlyDirty.GetValue() as Int
 
 	Utility.Wait(1)
-	;log("Dirt playing effect")
-	
+	trace("Condiexp_Dirty OnEffectStart")
     int i = 0
 
     while i < 95
@@ -54,14 +53,13 @@ EndFunction
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	Utility.Wait(10) ;wait for effect cycle to end !!!
-	
+	Utility.Wait(3) ;wait for effect cycle to end !!!
+	trace("Condiexp_Dirty OnEffectFinish")
 	if (Condiexp_CurrentlyDirty.GetValue() == 0)
-		PlayerRef.ClearExpressionOverride()
+		resetMFG(PlayerRef)
 	endif
 
 	Condiexp_CurrentlyBusy.SetValue(0)
-	;log("Dirty OnEffectFinish")
 EndEvent
 
 ; Sets an expression to override any other expression other systems may give this actor.

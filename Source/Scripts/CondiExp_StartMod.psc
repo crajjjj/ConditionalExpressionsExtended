@@ -19,6 +19,7 @@ GlobalVariable Property Condiexp_CurrentlyDirty Auto
 GlobalVariable Property Condiexp_ColdMethod Auto
 GlobalVariable Property Condiexp_CurrentlyCold Auto
 GlobalVariable Property Condiexp_ColdGlobal Auto
+GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_Sounds Auto
 
 Race Property KhajiitRace Auto
@@ -26,6 +27,10 @@ Race Property KhajiitRaceVampire Auto
 Race Property OrcRace Auto
 Race Property OrcRaceVampire Auto
 Keyword property Vampire Auto
+Faction Property SexLabAnimatingFaction Auto
+
+
+
 
 String Property LoadedBathMod Auto Hidden
 Bool Property isSuspendedByDhlpEvent Auto Hidden
@@ -53,7 +58,7 @@ Event OnInit()
 EndEvent
 
 Event onPlayerLoadGame()
-	log("Game reload event")
+	log("CondiExp_StartMod: Game reload event")
 	init()
 endEvent
 
@@ -61,22 +66,21 @@ function init()
 	if !ActorsQuest
 		ActorsQuest = Game.GetFormFromFile(0x02902C, "Apropos2.esp") as Quest	
 		if ActorsQuest
-			log("Found Apropos: " + ActorsQuest.GetName() )
+			log("CondiExp_StartMod: Found Apropos: " + ActorsQuest.GetName() )
 		endif
 	endif
 	if !zbfFactionSlave
 		zbfFactionSlave = Game.GetFormFromFile(0x0096AE, "ZaZAnimationPack.esm") as Faction	
 		if zbfFactionSlave
-			log("Found ZaZAnimationPack: " + zbfFactionSlave.GetName() )
+			log("CondiExp_StartMod: Found ZaZAnimationPack: " + zbfFactionSlave.GetName() )
 		endif
 	endif
 	if !zadGagEffect
 		zadGagEffect = Game.GetFormFromFile(0x02B077, "Devious Devices - Integration.esm") as MagicEffect
 		if zadGagEffect
-			log("Found Devious Devices - Integration: " + zadGagEffect.GetName() )
+			log("CondiExp_StartMod: Found Devious Devices - Integration: " + zadGagEffect.GetName() )
 		endif
 	endif
-
 
 	; checking what bath mod is loaded
 	LoadedBathMod = "None Found"
@@ -101,7 +105,7 @@ function init()
 		DirtinessStage3Effect = GetKICDirtinessStage3Effect()
 		DirtinessStage4Effect = GetKICDirtinessStage4Effect()
 	endif
-	log("Bathing mod: " + LoadedBathMod)
+	log("CondiExp_StartMod: Bathing mod: " + LoadedBathMod)
 	;for compatibility with other mods
 	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
 	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
@@ -116,33 +120,43 @@ Event OnUpdate()
 	;check if there's a conflicting mod based on custom conditions
 	if checkIfModShouldBeSuspended()	
 		if isModEnabled()
-			log("suspended according to conditions check")
-			StopMod()
+			log("CondiExp_StartMod: suspended according to conditions check")
+			Condiexp_ModSuspended.SetValue(1)
 		endif	
 	else
-		if !isSuspendedByDhlpEvent && !isModEnabled()
-			log("resumed according to conditions check")
-			StartMod()
+		if !isModEnabled()
+			log("CondiExp_StartMod: resumed according to conditions check")
+			Condiexp_ModSuspended.SetValue(0)
 		endif
  	endif
-	RegisterForSingleUpdate(5)
+
+	if PlayerRef.HasSpell(CondiExp_Fatigue1)
+		RegisterForSingleUpdate(5)
+	endif
+	
 EndEvent
 
 Bool function checkIfModShouldBeSuspended()
-	if zadGagEffect && PlayerRef.HasMagicEffect(zadGagEffect)
-		log("dd gag effect was detected. Will suspend")
+	if isSuspendedByDhlpEvent
 		return true
+	endif
+
+	if zadGagEffect && PlayerRef.HasMagicEffect(zadGagEffect)
+		log("CondiExp_StartMod: dd gag effect was detected. Will suspend")
+		return true
+	endif
+	
+	if (PlayerRef.IsInFaction(SexLabAnimatingFaction))
+		;check is implemented in ck
+		log("CondiExp_StartMod: player is in sl faction. Will suspend")
 	endif
 
 	return false
 endfunction
 
-Bool function isModEnabled()
-	return PlayerRef.HasSpell(CondiExp_Fatigue1)
-endfunction
-
 function updateColdStatus()
 	if Condiexp_ColdGlobal.GetValue() == 0
+		Condiexp_CurrentlyCold.SetValue(0)
 		return
 	endif
 	If Condiexp_ColdMethod.GetValue() == 1
@@ -168,14 +182,16 @@ function updateColdStatus()
 			Condiexp_CurrentlyCold.SetValue(0)
 		endif
 	endif
+	trace("CondiExp_StartMod: updateColdStatus() " + Condiexp_CurrentlyDirty.getValue())
 endfunction
 
 function updateDirtyStatus()
 	If (Condiexp_GlobalDirty.GetValue() == 0)
+		Condiexp_CurrentlyDirty.SetValue(0.0)
 		return
 	EndIf
 	if PlayerRef.HasMagicEffect(DirtinessStage2Effect) || (BloodinessStage2Effect && PlayerRef.HasMagicEffect(BloodinessStage2Effect))
-		Condiexp_CurrentlyDirty.SetValue(1.0)
+		Condiexp_CurrentlyDirty.SetValue(0.0) ;not enough dirt to be sad
 	elseif (PlayerRef.HasMagicEffect(DirtinessStage3Effect) || (BloodinessStage3Effect && PlayerRef.HasMagicEffect(BloodinessStage3Effect)))
 		Condiexp_CurrentlyDirty.SetValue(2.0)
 	elseif (PlayerRef.HasMagicEffect(DirtinessStage4Effect) || (BloodinessStage4Effect && PlayerRef.HasMagicEffect(BloodinessStage4Effect)) || (DirtinessStage5Effect && PlayerRef.HasMagicEffect(DirtinessStage5Effect)) || (BloodinessStage5Effect && PlayerRef.HasMagicEffect(BloodinessStage5Effect)))
@@ -183,10 +199,12 @@ function updateDirtyStatus()
 	else
 		Condiexp_CurrentlyDirty.SetValue(0.0)
 	endIf
+	trace("CondiExp_StartMod: updateDirtyStatus() " + Condiexp_CurrentlyDirty.getValue())
 endfunction
 
 function updateTraumaStatus()
 	if Condiexp_GlobalTrauma.GetValue() == 0
+		Condiexp_CurrentlyTrauma.SetValue(0)
 		return
 	endif
 	int trauma = 0
@@ -195,6 +213,7 @@ function updateTraumaStatus()
 		trauma = GetWearState(PlayerRef)
 		if trauma > 0
 			Condiexp_CurrentlyTrauma.SetValue(trauma)
+			trace("CondiExp_StartMod: updateTraumaStatus - GetWearState(): " + Condiexp_CurrentlyTrauma.getValue())
 			return
 		endif	
 	endif
@@ -204,28 +223,30 @@ function updateTraumaStatus()
 		if (PlayerRef.IsInFaction(zbfFactionSlave))
 			trauma = 10
 			Condiexp_CurrentlyTrauma.SetValue(trauma)
+			trace("CondiExp_StartMod: updateTraumaStatus - zbfFactionSlave:  " + Condiexp_CurrentlyTrauma.getValue())
 			return
 		endif
 	endif
 
 	;nothing found: 0
 	Condiexp_CurrentlyTrauma.SetValue(trauma)
+	trace("CondiExp_StartMod: updateTraumaStatus():  " + Condiexp_CurrentlyTrauma.getValue())
 	
 endfunction
 
 Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
-	log("suspended by: " + sender.GetName())
+	log("CondiExp_StartMod: suspended by: " + sender.GetName())
 	isSuspendedByDhlpEvent = true
 	If (isModEnabled())
-		StopMod()
+		Condiexp_ModSuspended.SetValue(1)
 	EndIf
  EndEvent
  
  Event OnDhlpResume(string eventName, string strArg, float numArg, Form sender)
-	log("resumed by: " + sender.GetName())
+	log("CondiExp_StartMod: resumed by: " + sender.GetName())
 	isSuspendedByDhlpEvent = false
 	If (!isModEnabled())
-		StartMod()
+		Condiexp_ModSuspended.SetValue(0)
 	EndIf
  EndEvent
 
@@ -245,15 +266,18 @@ EndEvent
 
 Function StopMod()
 	log("Stopped")
+	Condiexp_ModSuspended.SetValue(1)
+	utility.wait(3)
+	resetConditions()
 	PlayerRef.RemoveSpell(CondiExp_Fatigue1)
-	PlayerRef.ClearExpressionOverride()
-	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+	resetMFG(PlayerRef)
+	
 endfunction
 
 Function StartMod()
 	log("Started")
 	CondiExp_CurrentlyBusy.SetValue(0)
-	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+	resetMFG(PlayerRef)
 
 	Utility.Wait(0.5)
 	PlayerRef.AddSpell(CondiExp_Fatigue1, false)
@@ -274,6 +298,8 @@ Function StartMod()
 			Condiexp_ColdMethod.SetValue(3)
 		endif
 	endif
+	Condiexp_ModSuspended.SetValue(0)
+	RegisterForSingleUpdate(5)
 Endfunction
 
 
@@ -342,3 +368,14 @@ ReferenceAlias Function GetAproposAlias(Actor akTarget, Quest apropos2Quest )
 	EndWhile
 	Return AproposTwoAlias
 EndFunction
+
+Function resetConditions()
+	Condiexp_CurrentlyCold.SetValue(0)
+	Condiexp_CurrentlyDirty.SetValue(0)
+	Condiexp_CurrentlyTrauma.SetValue(0)
+	Condiexp_CurrentlyBusy.SetValue(0)
+endfunction
+
+Bool function isModEnabled()
+	return Condiexp_ModSuspended.getValue() == 0
+endfunction

@@ -6,11 +6,10 @@ GlobalVariable Property Condiexp_CurrentlyCold Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_ColdMethod Auto
 GlobalVariable Property Condiexp_ModSuspended Auto
+GlobalVariable Property Condiexp_GlobalCold Auto
 
 int coldExpression = 0 
  
-
-
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
 	trace("CondiExp_Cold_Script OnEffectStart")
@@ -18,7 +17,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 event OnUpdate()
-	if (Condiexp_CurrentlyCold.GetValue() == 1 && Condiexp_ModSuspended.GetValue() == 0)
+	if (Condiexp_CurrentlyCold.GetValue() == 1 && Condiexp_ModSuspended.GetValue() == 0 && Condiexp_GlobalCold.GetValue() == 1)
 		PlayerRef.SetExpressionOverride(1,50)
 		
 		 ; cold intro
@@ -53,7 +52,7 @@ event OnUpdate()
 			MfgConsoleFunc.SetPhoneMe(PlayerRef, 0,12)
 			Utility.Wait(0.01)
 			MfgConsoleFunc.SetPhoneMe(PlayerRef, 0,6)
-			RegisterForSingleUpdate(0.5)
+			doRegister()
 		endif
 	else
 		;cold outro
@@ -65,7 +64,7 @@ event OnUpdate()
 			MfgConsoleFunc.SetModifier(PlayerRef, 13, coldExpression)
 			MfgConsoleFunc.SetModifier(PlayerRef, 4, coldExpression)
 			coldExpression  -= 5
-			RegisterForSingleUpdate(0.5)
+			doRegister()
 		else ; if the outro is done we clean up and stop calling update
 			MfgConsoleFunc.SetPhoneMe(PlayerRef, 0,0)
 			PlayerRef.ClearExpressionOverride()
@@ -74,6 +73,12 @@ event OnUpdate()
 	endif
 endevent
 
+Function doRegister() 
+	If  Condiexp_GlobalCold.GetValue() == 0 || Condiexp_ModSuspended.GetValue() == 1 
+		return
+	endif
+	RegisterForSingleUpdate(0.5)
+endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)			
 	trace("CondiExp_Cold_Script OnEffectFinish")
@@ -91,8 +96,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		coldExpression  -= 5
 		Utility.Wait(0.5) ; !!!
 	endwhile
-
-	MfgConsoleFunc.SetPhoneMe(PlayerRef, 0,0)
-	PlayerRef.ClearExpressionOverride()
+	
+	resetMFG(PlayerRef)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent

@@ -9,9 +9,6 @@ EndEvent
 
 Function Drunk()
 
-int randomhappy
-int randomsmile 
-
 Condiexp_CurrentlyBusy.SetValue(1)
 PlayerRef.SetExpressionOverride(2,80)
 
@@ -20,12 +17,12 @@ EndFunction
 
 Event OnUpdateGameTime()
 CondiExp_PlayerIsDrunk.SetValue(0)
-Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 Utility.Wait(3)
 PlayerRef.ClearExpressionOverride()
+Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
 
 

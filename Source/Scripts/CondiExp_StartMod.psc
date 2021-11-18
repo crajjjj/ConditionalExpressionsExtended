@@ -264,6 +264,12 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 	Endif
 EndEvent
 
+;Function StopBWA()
+;	int h = ModEvent.Create("BWA_ForceBlushOff")
+;	ModEvent.PushForm(h, PlayerRef as form)
+;	ModEvent.PushInt(h, 3)
+;endfunction
+
 Function StopMod()
 	log("Stopped")
 	Condiexp_ModSuspended.SetValue(1)

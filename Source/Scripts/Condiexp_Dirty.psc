@@ -37,7 +37,7 @@ Function ShowExpression()
 	ElseIf randomLook == 8
 		LookDown(50, PlayerRef)
 	endif 
-	Utility.Wait(1)
+	Utility.Wait(2)
 	
 	;and back
 	i = 95

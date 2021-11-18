@@ -25,7 +25,7 @@ Function log(String asMessage, Int aiPriority = 0) Global
 EndFunction
 
 Function trace(String msg, Int aiPriority = 0) Global 
-	log(msg,aiPriority)
+	;log(msg,aiPriority)
 EndFunction
 
 Function logAndPrintConsole(String asMessage, Int aiPriority = 0) Global

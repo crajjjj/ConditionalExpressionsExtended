@@ -147,8 +147,9 @@ Bool function checkIfModShouldBeSuspended()
 	endif
 	
 	if (PlayerRef.IsInFaction(SexLabAnimatingFaction))
-		;check is implemented in ck
+		;check is implemented in ck as well
 		log("CondiExp_StartMod: player is in sl faction. Will suspend")
+		return true
 	endif
 
 	return false

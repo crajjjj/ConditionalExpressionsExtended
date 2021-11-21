@@ -68,9 +68,9 @@ Function BreatheAndSob(int trauma)
 
 	Inhale(33,73, PlayerRef)
 	;;;;;;;;;;; SOUNDS ;;;;;;;;;;;;
-	Int sobchance25percent= Utility.RandomInt(1, 5)
+	Int sobchance = Utility.RandomInt(1, 5)
 	 
-	If Condiexp_Sounds.GetValue() > 0 && sobchance25percent == 3
+	If Condiexp_Sounds.GetValue() > 0 && sobchance == 3
 		playBreathOrRandomSob(trauma)  
 	endif
 	;;;;;;;;;
@@ -94,8 +94,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(3); keep script running
 	trace("CondiExp_TraumaScript OnEffectFinish")
 	if (Condiexp_CurrentlyTrauma.GetValue() == 0)
-		PlayerRef.ClearExpressionOverride()
-		MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+		resetMFG(PlayerRef)
 	endif
 
 	Condiexp_CurrentlyBusy.SetValue(0)

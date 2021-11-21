@@ -14,7 +14,7 @@ GlobalVariable Property Condiexp_Sounds Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
 	trace("CondiExp_ArousedScript OnEffectStart")
-	RegisterForSingleUpdate(0.01)
+	doRegister(0.01)
 EndEvent
 
 Function doRegister(float seconds) 
@@ -32,43 +32,63 @@ Function doRegister(float seconds)
 endfunction
 
 event OnUpdate()
-	ShowExpression() 
-EndEvent
-
-Function ShowExpression() 
-    Int aroused = Condiexp_CurrentlyAroused.GetValue() as Int
 	;either 0 or aroused level > Condiexp_MinAroused
+	Int aroused = Condiexp_CurrentlyAroused.GetValue() as Int
 	if aroused > 0
 		MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
 		Utility.Wait(1)
-
-		trace("CondiExp_ArousedScript playing effect")
-		Int randomseed = Utility.RandomInt(1, 20)
-		_arousedVariants(aroused, PlayerRef, randomseed + aroused)
-		Utility.Wait(1)
-
-		Int randomLook = Utility.RandomInt(1, 10)
-		If randomLook == 2
-			LookLeft(50, PlayerRef)
-		ElseIf randomLook == 4
-			LookRight(50, PlayerRef)
-		ElseIf randomLook == 8
-			LookDown(50, PlayerRef)
-		endif 
-
+		ShowExpression(aroused)
 		Utility.Wait(1)
 		Int Seconds = Utility.RandomInt(2, 4)
-		RegisterForSingleUpdate(Seconds)
-	endif
+		doRegister(Seconds)
+	endif 
 
+EndEvent
+
+Function ShowExpression(int aroused) 
+	Int power = Utility.RandomInt(1, 20) + aroused
+	if power > 100
+		power = 100
+	endif
+	int i = 0
+	trace("CondiExp_ArousedScript playing effect")
+
+	while i < power
+		_arousedVariants(aroused, PlayerRef, i)
+        i = i + 5
+        if (i > power)
+            i = power
+        Endif
+        Utility.Wait(0.1)
+    endwhile
+
+	Int randomLook = Utility.RandomInt(1, 10)
+	If randomLook == 2
+		LookLeft(50, PlayerRef)
+	ElseIf randomLook == 4
+		LookRight(50, PlayerRef)
+	ElseIf randomLook == 8
+		LookDown(50, PlayerRef)
+	endif 
+	Utility.Wait(1)
+	
+	;and back
+	i = power
+    while i > 0
+		_arousedVariants(aroused, PlayerRef, i)
+        i = i - 5
+         if (i < 0)
+             i = 0
+        Endif
+        Utility.Wait(0.1)
+    endwhile
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(3); keep script running
 	trace("CondiExp_ArousedScript OnEffectFinish")
 	if (Condiexp_CurrentlyAroused.GetValue() == 0)
-		PlayerRef.ClearExpressionOverride()
-		MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+		resetMFG(PlayerRef)
 	endif
 
 	Condiexp_CurrentlyBusy.SetValue(0)

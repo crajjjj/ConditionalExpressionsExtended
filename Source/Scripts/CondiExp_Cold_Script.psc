@@ -76,11 +76,11 @@ endevent
 Function doRegister() 
 	bool isSuspended =  Condiexp_ModSuspended.GetValue() == 1
 	bool isDisabled = Condiexp_GlobalCold.GetValue() == 0
-	bool stamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5 
-	bool health = PlayerRef.GetActorValuePercentage("Health") > 0.5
+	bool lowStamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5
+	bool lowHealth = PlayerRef.GetActorValuePercentage("Health") < 0.5
 	bool isSwimming = PlayerRef.IsSwimming()
 
-	If  isSuspended || isDisabled || stamina || health || isSwimming 
+	If  isSuspended || isDisabled || lowStamina || lowHealth || isSwimming 
 		return
 	endif
 

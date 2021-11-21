@@ -33,10 +33,10 @@ EndEvent
 Function doRegister(float seconds) 
 	bool isSuspended =  Condiexp_ModSuspended.GetValue() == 1
 	bool isDisabled = Condiexp_GlobalTrauma.GetValue() == 0
-	bool stamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5 
-	bool health = PlayerRef.GetActorValuePercentage("Health") > 0.5
+	bool lowStamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5
+	bool lowHealth = PlayerRef.GetActorValuePercentage("Health") < 0.5
 	bool isSwimming = PlayerRef.IsSwimming()
-	If  isSuspended || isDisabled || stamina || health || isSwimming 
+	If  isSuspended || isDisabled || lowHealth || lowStamina || isSwimming 
 		return
 	endif
 	RegisterForSingleUpdate(seconds)

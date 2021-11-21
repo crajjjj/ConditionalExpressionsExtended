@@ -5,6 +5,7 @@ Actor Property PlayerRef Auto
 import CondiExp_log
 import CondiExp_util
 
+;no loops cause dirty is not strong emotion and can be overridden by pain etc
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
 	trace("Condiexp_Dirty OnEffectStart")
@@ -12,6 +13,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Utility.Wait(1)
 	ShowExpression() 
 EndEvent
+
 
 Function ShowExpression() 
     Int dirty = Condiexp_CurrentlyDirty.GetValue() as Int

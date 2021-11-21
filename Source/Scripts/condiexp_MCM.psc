@@ -19,6 +19,7 @@ GlobalVariable Property Condiexp_GlobalMana Auto
 GlobalVariable Property Condiexp_Sounds Auto
 GlobalVariable Property Condiexp_GlobalTrauma Auto
 GlobalVariable Property Condiexp_GlobalDirty Auto
+GlobalVariable Property Condiexp_GlobalAroused Auto
 
 Race Property OrcRace Auto
 Race Property OrcRaceVampire Auto
@@ -48,6 +49,7 @@ int uninstall
 int Sounds_B
 int Trauma_B
 int Dirty_B
+int Aroused_B
 
 bool CombatToggle = true
 bool DrunkToggle = true
@@ -63,6 +65,7 @@ bool HeadacheToggle = True
 bool SoundsToggle = True
 bool TraumaToggle = true
 bool DirtyToggle = true
+bool ArousedToggle = true
 
 int EatingFastSlow_M
 string EatingFastSlow
@@ -141,6 +144,7 @@ Headache_B = AddToggleOption("Headache/Diseased", HeadacheToggle)
 Sounds_B = AddToggleOption("Breathing Sounds", SoundsToggle)
 Trauma_B = AddToggleOption("Trauma Expression", TraumaToggle)
 Dirty_B = AddToggleOption("Dirty Expression", DirtyToggle)
+Aroused_B = AddToggleOption("Aroused Expression", ArousedToggle)
 AddEmptyOption()
 AddEmptyOption()
 AddHeaderOption("Maintenance")
@@ -312,6 +316,15 @@ if (option == Combat_B) && CombatToggle == True
 		SetToggleOptionValue(Dirty_B, DirtyToggle)
 		Condiexp_GlobalDirty.SetValue(1)
 
+	elseif (option == Aroused_B) && ArousedToggle == True
+		ArousedToggle = False
+		SetToggleOptionValue(Aroused_B, ArousedToggle)
+		Condiexp_GlobalAroused.SetValue(0)
+	elseif (option == Aroused_B) && ArousedToggle == False
+		ArousedToggle = True
+		SetToggleOptionValue(Aroused_B, ArousedToggle)
+		Condiexp_GlobalAroused.SetValue(1)
+
 	elseif (option == Sounds_B) && SoundsToggle == True
 		SoundsToggle = False
 		SetToggleOptionValue(Sounds_B, SoundsToggle)
@@ -381,6 +394,8 @@ elseif (option == Trauma_B)
 SetInfoText("Your character will react to abuse (painful subtle expressions).\n There's also a pain sound once in a while. Integrated with Apropos2 and Zap slave faction based mods")
 elseif (option == Dirty_B)
 SetInfoText("Your character will react to dirt (disgusted subtle expressions).\n Integrated with Dirt&Blood,Keep it clean,Bathing in Skyrim")
+elseif (option == Aroused_B)
+	SetInfoText("Your character will react to arousal (pleasure subtle expressions).\n Integrated with SexLab Aroused")
 endif
 endevent
 

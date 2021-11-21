@@ -5,6 +5,9 @@ import CondiExp_util
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_CurrentlyTrauma Auto
+GlobalVariable Property Condiexp_ModSuspended Auto
+GlobalVariable Property Condiexp_GlobalTrauma Auto
+
 GlobalVariable Property Condiexp_Sounds Auto
 sound property CondiExp_BreathingFemale auto
 sound property CondiExp_SobbingFemale1 auto
@@ -20,12 +23,24 @@ Faction Property SexLabAnimatingFaction Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
 	trace("CondiExp_TraumaScript OnEffectStart")
-	RegisterForSingleUpdate(0.01)
+	doRegister(0.01)
 EndEvent
 
 event OnUpdate()
-	ShowExpression() 
+	ShowExpression()
 EndEvent
+
+Function doRegister(float seconds) 
+	bool isSuspended =  Condiexp_ModSuspended.GetValue() == 1
+	bool isDisabled = Condiexp_GlobalTrauma.GetValue() == 0
+	bool stamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5 
+	bool health = PlayerRef.GetActorValuePercentage("Health") > 0.5
+	bool isSwimming = PlayerRef.IsSwimming()
+	If  isSuspended || isDisabled || stamina || health || isSwimming 
+		return
+	endif
+	RegisterForSingleUpdate(seconds)
+endfunction
 
 Function ShowExpression() 
     Int trauma = Condiexp_CurrentlyTrauma.GetValue() as Int
@@ -39,7 +54,9 @@ Function ShowExpression()
 		_painVariants(trauma, PlayerRef, randomseed + trauma*10)
 		Utility.Wait(2)
 		BreatheAndSob(trauma)
-		RegisterForSingleUpdate(3)
+		
+		Int Seconds = Utility.RandomInt(2, 4)
+		doRegister(Seconds)
 	endif
 
 EndFunction
@@ -82,7 +99,6 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	endif
 
 	Condiexp_CurrentlyBusy.SetValue(0)
-;	log("Trauma OnEffectFinish")
 EndEvent
 
 Function playBreathOrRandomSob(int trauma)

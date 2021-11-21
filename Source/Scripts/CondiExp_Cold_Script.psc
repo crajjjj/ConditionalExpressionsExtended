@@ -74,9 +74,16 @@ event OnUpdate()
 endevent
 
 Function doRegister() 
-	If  Condiexp_GlobalCold.GetValue() == 0 || Condiexp_ModSuspended.GetValue() == 1 
+	bool isSuspended =  Condiexp_ModSuspended.GetValue() == 1
+	bool isDisabled = Condiexp_GlobalCold.GetValue() == 0
+	bool stamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5 
+	bool health = PlayerRef.GetActorValuePercentage("Health") > 0.5
+	bool isSwimming = PlayerRef.IsSwimming()
+
+	If  isSuspended || isDisabled || stamina || health || isSwimming 
 		return
 	endif
+
 	RegisterForSingleUpdate(0.5)
 endfunction
 

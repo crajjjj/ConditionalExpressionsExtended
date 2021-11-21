@@ -2,7 +2,7 @@ Scriptname CondiExp_StartMod extends ReferenceAlias
 import CondiExp_log
 import CondiExp_util
 
-Spell Property CondiExp_Fatigue1 Auto
+Spell Property CondiExp_Fatigue1 Auto ;condi_effects spell
 Actor Property PlayerRef Auto
 Formlist property CondiExp_Drugs Auto
 Formlist property CondiExp_Drinks Auto
@@ -11,16 +11,28 @@ GlobalVariable Property CondiExp_CurrentlyBusy Auto
 GlobalVariable Property CondiExp_PlayerIsHigh Auto
 GlobalVariable Property CondiExp_PlayerIsDrunk Auto
 GlobalVariable Property CondiExp_PlayerJustAte Auto
-GlobalVariable Property Condiexp_GlobalCold Auto
+
 GlobalVariable Property Condiexp_GlobalTrauma Auto
 GlobalVariable Property Condiexp_CurrentlyTrauma Auto
+GlobalVariable Property Condiexp_MinTrauma Auto
+
 GlobalVariable Property Condiexp_GlobalDirty Auto
 GlobalVariable Property Condiexp_CurrentlyDirty Auto
+GlobalVariable Property Condiexp_MinDirty Auto
+
+GlobalVariable Property Condiexp_GlobalCold Auto
 GlobalVariable Property Condiexp_ColdMethod Auto
 GlobalVariable Property Condiexp_CurrentlyCold Auto
-GlobalVariable Property Condiexp_ColdGlobal Auto
+GlobalVariable Property Condiexp_ColdGlobal Auto ;to delete
+
+GlobalVariable Property Condiexp_GlobalAroused Auto
+GlobalVariable Property Condiexp_CurrentlyAroused Auto
+GlobalVariable Property Condiexp_MinAroused Auto
+
 GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_Sounds Auto
+
+GlobalVariable Property Condiexp_UpdateInterval Auto
 
 Race Property KhajiitRace Auto
 Race Property KhajiitRaceVampire Auto
@@ -50,6 +62,8 @@ Quest ActorsQuest
 Faction zbfFactionSlave
 ;Devious Devices
 MagicEffect zadGagEffect
+;SLA
+slaFrameworkScr sla
 
 
 Event OnInit()
@@ -81,7 +95,13 @@ function init()
 			log("CondiExp_StartMod: Found Devious Devices - Integration: " + zadGagEffect.GetName() )
 		endif
 	endif
-
+	if !sla
+		sla = Game.GetFormFromFile(0x4290F, "SexLabAroused.esm") As slaFrameworkScr
+		if sla
+			log("CondiExp_StartMod: Found SexLabAroused: " + sla.GetName() )
+		endif
+	endif
+	
 	; checking what bath mod is loaded
 	LoadedBathMod = "None Found"
 	if GetDABDirtinessStage2Effect() != none ; if Dirt and Blood is loaded
@@ -116,6 +136,7 @@ Event OnUpdate()
 	updateColdStatus()
 	updateTraumaStatus()
 	updateDirtyStatus()
+	updateArousalStatus()
 
 	;check if there's a conflicting mod based on custom conditions
 	if checkIfModShouldBeSuspended()	
@@ -131,7 +152,7 @@ Event OnUpdate()
  	endif
 
 	if PlayerRef.HasSpell(CondiExp_Fatigue1)
-		RegisterForSingleUpdate(5)
+		RegisterForSingleUpdate(Condiexp_UpdateInterval.GetValue())
 	endif
 	
 EndEvent
@@ -156,7 +177,7 @@ Bool function checkIfModShouldBeSuspended()
 endfunction
 
 function updateColdStatus()
-	if Condiexp_ColdGlobal.GetValue() == 0
+	if Condiexp_GlobalCold.GetValue() == 0
 		Condiexp_CurrentlyCold.SetValue(0)
 		return
 	endif
@@ -191,15 +212,23 @@ function updateDirtyStatus()
 		Condiexp_CurrentlyDirty.SetValue(0.0)
 		return
 	EndIf
+	int dirty = 0
 	if PlayerRef.HasMagicEffect(DirtinessStage2Effect) || (BloodinessStage2Effect && PlayerRef.HasMagicEffect(BloodinessStage2Effect))
-		Condiexp_CurrentlyDirty.SetValue(0.0) ;not enough dirt to be sad
+		dirty = 1  ;not enough dirt to be sad
 	elseif (PlayerRef.HasMagicEffect(DirtinessStage3Effect) || (BloodinessStage3Effect && PlayerRef.HasMagicEffect(BloodinessStage3Effect)))
-		Condiexp_CurrentlyDirty.SetValue(2.0)
+		dirty = 2
 	elseif (PlayerRef.HasMagicEffect(DirtinessStage4Effect) || (BloodinessStage4Effect && PlayerRef.HasMagicEffect(BloodinessStage4Effect)) || (DirtinessStage5Effect && PlayerRef.HasMagicEffect(DirtinessStage5Effect)) || (BloodinessStage5Effect && PlayerRef.HasMagicEffect(BloodinessStage5Effect)))
-		Condiexp_CurrentlyDirty.SetValue(3.0)
+		dirty = 3
+	else
+		dirty = 4
+	endIf
+
+	If dirty > 0 && dirty > Condiexp_MinDirty.GetValue()
+		Condiexp_CurrentlyDirty.SetValue(dirty)
 	else
 		Condiexp_CurrentlyDirty.SetValue(0.0)
-	endIf
+	EndIf
+	
 	trace("CondiExp_StartMod: updateDirtyStatus() " + Condiexp_CurrentlyDirty.getValue())
 endfunction
 
@@ -211,8 +240,8 @@ function updateTraumaStatus()
 	int trauma = 0
 	;check apropos
 	if ActorsQuest
-		trauma = GetWearState(PlayerRef)
-		if trauma > 0
+		trauma = GetWearState0to10(PlayerRef)
+		if trauma > 0 && trauma > Condiexp_MinTrauma.GetValue()
 			Condiexp_CurrentlyTrauma.SetValue(trauma)
 			trace("CondiExp_StartMod: updateTraumaStatus - GetWearState(): " + Condiexp_CurrentlyTrauma.getValue())
 			return
@@ -232,6 +261,28 @@ function updateTraumaStatus()
 	;nothing found: 0
 	Condiexp_CurrentlyTrauma.SetValue(trauma)
 	trace("CondiExp_StartMod: updateTraumaStatus():  " + Condiexp_CurrentlyTrauma.getValue())
+	
+endfunction
+
+function updateArousalStatus()
+	if Condiexp_GlobalAroused.GetValue() == 0
+		Condiexp_CurrentlyAroused.SetValue(0)
+		return
+	endif
+	int aroused = 0
+	;check sla
+	if sla
+		aroused = getArousal0To100(PlayerRef)
+		if aroused > 0 && aroused > Condiexp_MinAroused.GetValue()
+			Condiexp_CurrentlyAroused.SetValue(aroused)
+			trace("CondiExp_StartMod: updateArousalStatus(): " + Condiexp_CurrentlyAroused.getValue())
+			return
+		endif	
+	endif
+
+	;nothing found: 0
+	Condiexp_CurrentlyAroused.SetValue(aroused)
+	trace("CondiExp_StartMod: updateArousalStatus():  " + Condiexp_CurrentlyAroused.getValue())
 	
 endfunction
 
@@ -341,7 +392,7 @@ Function NewRace()
 	endif
 endfunction
 
-Int Function GetWearState(Actor PlayerRef) 		
+Int Function GetWearState0to10(Actor PlayerRef) 		
 	if !ActorsQuest
 		return 0
 	endif
@@ -374,6 +425,19 @@ ReferenceAlias Function GetAproposAlias(Actor akTarget, Quest apropos2Quest )
 		i += 1
 	EndWhile
 	Return AproposTwoAlias
+EndFunction
+
+Int Function getArousal0To100(Actor PlayerRef)
+	if !sla
+		return 0
+	endif
+	Int arousal = sla.GetActorArousal(PlayerRef)
+	if arousal < 0
+		arousal = 0
+	elseif arousal > 100
+		arousal = 100
+	endIf
+	return arousal
 EndFunction
 
 Function resetConditions()

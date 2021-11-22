@@ -8,45 +8,22 @@ GlobalVariable Property Condiexp_GlobalAroused Auto
 GlobalVariable Property Condiexp_CurrentlyAroused Auto
 GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_Sounds Auto
-
-
+bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
+	playing = true
 	trace("CondiExp_ArousedScript OnEffectStart")
-	doRegister(0.01)
-EndEvent
-
-Function doRegister(float seconds) 
-	bool isSuspended =  Condiexp_ModSuspended.GetValue() == 1
-	bool isDisabled = Condiexp_GlobalAroused.GetValue() == 0
-	bool lowStamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5
-	bool lowHealth = PlayerRef.GetActorValuePercentage("Health") < 0.5
-	bool inCombat = PlayerRef.IsInCombat()
-	bool isSwimming = PlayerRef.IsSwimming()
-	bool IsSneaking = PlayerRef.IsSneaking()
-	If  isSuspended || isDisabled || lowStamina || lowHealth || inCombat || isSwimming || IsSneaking
-		return
-	endif
-	RegisterForSingleUpdate(seconds)
-endfunction
-
-event OnUpdate()
+	Int Seconds = Utility.RandomInt(2, 4)
+	Utility.Wait(Seconds)
 	;either 0 or aroused level > Condiexp_MinAroused
 	Int aroused = Condiexp_CurrentlyAroused.GetValue() as Int
-	if aroused > 0
-		MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
-		Utility.Wait(1)
-		ShowExpression(aroused)
-		Utility.Wait(1)
-		Int Seconds = Utility.RandomInt(2, 4)
-		doRegister(Seconds)
-	endif 
-
+	ShowExpression(aroused)
+	Utility.Wait(1)
 EndEvent
 
 Function ShowExpression(int aroused) 
-	Int power = Utility.RandomInt(1, 20) + aroused
+	Int power = 20 + aroused
 	if power > 100
 		power = 100
 	endif
@@ -54,12 +31,12 @@ Function ShowExpression(int aroused)
 	trace("CondiExp_ArousedScript playing effect")
 
 	while i < power
-		_arousedVariants(aroused, PlayerRef, i)
+		_arousedVariants(aroused, PlayerRef, power, i)
         i = i + 5
         if (i > power)
             i = power
         Endif
-        Utility.Wait(0.1)
+        Utility.Wait(0.5)
     endwhile
 
 	Int randomLook = Utility.RandomInt(1, 10)
@@ -70,27 +47,33 @@ Function ShowExpression(int aroused)
 	ElseIf randomLook == 8
 		LookDown(50, PlayerRef)
 	endif 
-	Utility.Wait(1)
+	Utility.Wait(0.5)
 	
 	;and back
 	i = power
     while i > 0
-		_arousedVariants(aroused, PlayerRef, i)
+		_arousedVariants(aroused, PlayerRef, power, i)
         i = i - 5
          if (i < 0)
              i = 0
         Endif
-        Utility.Wait(0.1)
+        Utility.Wait(1)
     endwhile
+	Utility.Wait(1)
+	playing = false
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	Utility.Wait(3); keep script running
-	trace("CondiExp_ArousedScript OnEffectFinish")
-	if (Condiexp_CurrentlyAroused.GetValue() == 0)
-		resetMFG(PlayerRef)
-	endif
-
+	; keep script running
+	int safeguard = 0
+	While (playing && safeguard <= 30)
+		Utility.Wait(1)
+		safeguard = safeguard + 1
+	EndWhile
+	resetMFG(PlayerRef)
+	Utility.Wait(3)
+	trace("CondiExp_ArousedScript OnEffectFinish " + safeguard)
+	
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
 
@@ -105,16 +88,16 @@ EndEvent
 ; 5 - Dialogue Puzzled		13 - Mood Puzzled
 ; 6 - Dialogue Disgusted	14 - Mood Disgusted
 ; aiStrength is from 0 to 100 (percent)
-Function _arousedVariants(Int index, Actor act, Int Power)
-	
+Function _arousedVariants(Int index, Actor act, int Power, int PowerCur)
+	float modifier = PowerCur / Power
 	if Power > 100
 		Power = 100
 	endif
 
 	if index > 0 &&  index <= 40
 		act.SetExpressionOverride(2, Power)
-		mfgconsolefunc.SetPhoneme(act, 5, 30)
-		mfgconsolefunc.SetPhoneme(act, 6, 10)
+		mfgconsolefunc.SetPhoneme(act, 5, (30* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 6, (10* modifier) as Int)
 	elseIf  index > 40 &&  index <= 50
 		act.SetExpressionOverride(10, Power)
 		mfgconsolefunc.SetModifier(act, 0, 10)
@@ -124,19 +107,19 @@ Function _arousedVariants(Int index, Actor act, Int Power)
 		mfgconsolefunc.SetModifier(act, 7, 100)
 		mfgconsolefunc.SetModifier(act, 12, 30)
 		mfgconsolefunc.SetModifier(act, 13, 30)
-		mfgconsolefunc.SetPhoneme(act, 4, 35)
-		mfgconsolefunc.SetPhoneme(act, 10, 20)
-		mfgconsolefunc.SetPhoneme(act, 12, 30)
+		mfgconsolefunc.SetPhoneme(act, 4, (35* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 10, (20* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 12, (30* modifier) as Int)
 	elseIf  index > 50 &&  index <= 60
 		act.SetExpressionOverride(4, Power)
 		mfgconsolefunc.SetModifier(act, 11, 20)
-		mfgconsolefunc.SetPhoneme(act, 1, 10)
-		mfgconsolefunc.SetPhoneme(act, 11, 10)
+		mfgconsolefunc.SetPhoneme(act, 1, (10* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 11, (10* modifier) as Int)
 	elseIf  index > 60 &&  index <= 70
 		act.SetExpressionOverride(10, Power)
-		mfgconsolefunc.SetPhoneme(act, 0, 30)
-		mfgconsolefunc.SetPhoneme(act, 7, 60)
-		mfgconsolefunc.SetPhoneme(act, 12, 60)
+		mfgconsolefunc.SetPhoneme(act, 0, (30* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 7, (60* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 12, (60* modifier) as Int)
 		mfgconsolefunc.SetModifier(act, 0, 30)
 		mfgconsolefunc.SetModifier(act, 1, 30)
 		mfgconsolefunc.SetModifier(act, 4, 100)
@@ -145,9 +128,9 @@ Function _arousedVariants(Int index, Actor act, Int Power)
 		mfgconsolefunc.SetModifier(act, 13, 70)
 	elseIf index > 70 &&  index <= 80
 		act.SetExpressionOverride(10, Power)
-		mfgconsolefunc.SetPhoneme(act, 0, 60)
-		mfgconsolefunc.SetPhoneme(act, 6, 50)
-		mfgconsolefunc.SetPhoneme(act, 7, 50)
+		mfgconsolefunc.SetPhoneme(act, 0, (60* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 6, (50* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 7, (50* modifier) as Int)
 		mfgconsolefunc.SetModifier(act, 0, 30)
 		mfgconsolefunc.SetModifier(act, 1, 30)
 		mfgconsolefunc.SetModifier(act, 2, 70)
@@ -158,9 +141,9 @@ Function _arousedVariants(Int index, Actor act, Int Power)
 		mfgconsolefunc.SetModifier(act, 13, 70)
 	else
 		act.SetExpressionOverride(7, Power)
-		mfgconsolefunc.SetPhoneme(act, 0, 60)
-		mfgconsolefunc.SetPhoneme(act, 6, 50)
-		mfgconsolefunc.SetPhoneme(act, 7, 50)
+		mfgconsolefunc.SetPhoneme(act, 0, (60* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 6, (50* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 7, (50* modifier) as Int)
 		mfgconsolefunc.SetModifier(act, 0, 30)
 		mfgconsolefunc.SetModifier(act, 1, 30)
 		mfgconsolefunc.SetModifier(act, 2, 80)

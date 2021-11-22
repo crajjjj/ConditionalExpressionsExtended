@@ -79,27 +79,27 @@ endEvent
 function init()
 	if !ActorsQuest
 		ActorsQuest = Game.GetFormFromFile(0x02902C, "Apropos2.esp") as Quest	
-		if ActorsQuest
-			log("CondiExp_StartMod: Found Apropos: " + ActorsQuest.GetName() )
-		endif
+	endif
+	if ActorsQuest
+		log("CondiExp_StartMod: Found Apropos: " + ActorsQuest.GetName() )
 	endif
 	if !zbfFactionSlave
 		zbfFactionSlave = Game.GetFormFromFile(0x0096AE, "ZaZAnimationPack.esm") as Faction	
-		if zbfFactionSlave
-			log("CondiExp_StartMod: Found ZaZAnimationPack: " + zbfFactionSlave.GetName() )
-		endif
+	endif
+	if zbfFactionSlave
+		log("CondiExp_StartMod: Found ZaZAnimationPack: " + zbfFactionSlave.GetName() )
 	endif
 	if !zadGagEffect
 		zadGagEffect = Game.GetFormFromFile(0x02B077, "Devious Devices - Integration.esm") as MagicEffect
-		if zadGagEffect
-			log("CondiExp_StartMod: Found Devious Devices - Integration: " + zadGagEffect.GetName() )
-		endif
+	endif
+	if zadGagEffect
+		log("CondiExp_StartMod: Found Devious Devices - Integration: " + zadGagEffect.GetName() )
 	endif
 	if !sla
 		sla = Game.GetFormFromFile(0x4290F, "SexLabAroused.esm") As slaFrameworkScr
-		if sla
-			log("CondiExp_StartMod: Found SexLabAroused: " + sla.GetName() )
-		endif
+	endif
+	if sla
+		log("CondiExp_StartMod: Found SexLabAroused: " + sla.GetName() )
 	endif
 	
 	; checking what bath mod is loaded
@@ -129,7 +129,7 @@ function init()
 	;for compatibility with other mods
 	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
 	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
-	RegisterForSingleUpdate(5)
+	RegisterForSingleUpdate(1)
 endfunction
 
 Event OnUpdate()
@@ -204,11 +204,11 @@ function updateColdStatus()
 			Condiexp_CurrentlyCold.SetValue(0)
 		endif
 	endif
-	trace("CondiExp_StartMod: updateColdStatus() " + Condiexp_CurrentlyDirty.getValue())
+	trace("CondiExp_StartMod: updateColdStatus() " + Condiexp_CurrentlyCold.getValue())
 endfunction
 
 function updateDirtyStatus()
-	If (Condiexp_GlobalDirty.GetValue() == 0)
+	If (Condiexp_GlobalDirty.GetValue() == 0 || LoadedBathMod == "None Found")
 		Condiexp_CurrentlyDirty.SetValue(0.0)
 		return
 	EndIf
@@ -220,7 +220,7 @@ function updateDirtyStatus()
 	elseif (PlayerRef.HasMagicEffect(DirtinessStage4Effect) || (BloodinessStage4Effect && PlayerRef.HasMagicEffect(BloodinessStage4Effect)) || (DirtinessStage5Effect && PlayerRef.HasMagicEffect(DirtinessStage5Effect)) || (BloodinessStage5Effect && PlayerRef.HasMagicEffect(BloodinessStage5Effect)))
 		dirty = 3
 	else
-		dirty = 4
+		dirty = 0
 	endIf
 
 	If dirty > 0 && dirty > Condiexp_MinDirty.GetValue()
@@ -259,7 +259,7 @@ function updateTraumaStatus()
 	endif
 
 	;nothing found: 0
-	Condiexp_CurrentlyTrauma.SetValue(trauma)
+	Condiexp_CurrentlyTrauma.SetValue(0)
 	trace("CondiExp_StartMod: updateTraumaStatus():  " + Condiexp_CurrentlyTrauma.getValue())
 	
 endfunction
@@ -281,8 +281,8 @@ function updateArousalStatus()
 	endif
 
 	;nothing found: 0
-	Condiexp_CurrentlyAroused.SetValue(aroused)
-	trace("CondiExp_StartMod: updateArousalStatus():  " + Condiexp_CurrentlyAroused.getValue())
+	Condiexp_CurrentlyAroused.SetValue(0)
+	trace("CondiExp_StartMod: updateArousalStatus(): " + Condiexp_CurrentlyAroused.getValue())
 	
 endfunction
 
@@ -444,6 +444,7 @@ Function resetConditions()
 	Condiexp_CurrentlyCold.SetValue(0)
 	Condiexp_CurrentlyDirty.SetValue(0)
 	Condiexp_CurrentlyTrauma.SetValue(0)
+	Condiexp_CurrentlyAroused.SetValue(0)
 	Condiexp_CurrentlyBusy.SetValue(0)
 endfunction
 

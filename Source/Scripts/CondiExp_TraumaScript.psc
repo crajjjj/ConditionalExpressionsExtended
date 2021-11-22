@@ -18,62 +18,37 @@ sound property CondiExp_SobbingFemale5 auto
 ;todelete
 Faction Property SexLabAnimatingFaction Auto
 
-
+bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
+	playing = true
 	trace("CondiExp_TraumaScript OnEffectStart")
-	doRegister(0.01)
+	Int Seconds = Utility.RandomInt(2, 4)
+	Utility.Wait(Seconds)
+	Int trauma = Condiexp_CurrentlyTrauma.GetValue() as Int
+	Utility.Wait(1)
+	ShowExpression(trauma)
+	Utility.Wait(1) 
 EndEvent
 
-event OnUpdate()
-	ShowExpression()
-EndEvent
-
-Function doRegister(float seconds) 
-	bool isSuspended =  Condiexp_ModSuspended.GetValue() == 1
-	bool isDisabled = Condiexp_GlobalTrauma.GetValue() == 0
-	bool lowStamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5
-	bool lowHealth = PlayerRef.GetActorValuePercentage("Health") < 0.5
-	bool isSwimming = PlayerRef.IsSwimming()
-	If  isSuspended || isDisabled || lowHealth || lowStamina || isSwimming 
-		return
+Function ShowExpression(int trauma) 
+	Int power = 20 + trauma*10
+	if power > 100
+		power = 100
 	endif
-	RegisterForSingleUpdate(seconds)
-endfunction
+	int i = 0
+	trace("CondiExp_TraumaScript playing effect:" + trauma)
 
-Function ShowExpression() 
-    Int trauma = Condiexp_CurrentlyTrauma.GetValue() as Int
+	while i < power
+		_painVariants(trauma, PlayerRef, power, i)
+        i = i + 5
+        if (i > power)
+            i = power
+        Endif
+        Utility.Wait(0.5)
+    endwhile
 
-	if trauma > 0
-		MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
-		Utility.Wait(1)
-
-		trace("CondiExp_TraumaScript playing effect")
-		Int randomseed = Utility.RandomInt(1, 20)
-		_painVariants(trauma, PlayerRef, randomseed + trauma*10)
-		Utility.Wait(2)
-		BreatheAndSob(trauma)
-		
-		Int Seconds = Utility.RandomInt(2, 4)
-		doRegister(Seconds)
-	endif
-
-EndFunction
-
-Function BreatheAndSob(int trauma)
-	If PlayerRef.IsDead()
-		return
-	endif
-
-	Inhale(33,73, PlayerRef)
-	;;;;;;;;;;; SOUNDS ;;;;;;;;;;;;
-	Int sobchance = Utility.RandomInt(1, 5)
-	 
-	If Condiexp_Sounds.GetValue() > 0 && sobchance == 3
-		playBreathOrRandomSob(trauma)  
-	endif
-	;;;;;;;;;
 	Int randomLook = Utility.RandomInt(1, 10)
 	If randomLook == 2
 		LookLeft(50, PlayerRef)
@@ -83,26 +58,54 @@ Function BreatheAndSob(int trauma)
 		LookDown(50, PlayerRef)
 	endif 
 	Utility.Wait(1)
+	BreatheAndSob(trauma)
+	;and back
+	i = power
+    while i > 0
+		_painVariants(trauma, PlayerRef, power, i)
+        i = i - 5
+         if (i < 0)
+             i = 0
+        Endif
+        Utility.Wait(0.5)
+    endwhile	
+	Utility.Wait(1)
+	playing = false
+EndFunction
 
-	Exhale(73,10, PlayerRef)
+Event OnEffectFinish(Actor akTarget, Actor akCaster)
+	; keep script running
+	int safeguard = 0
+	While (playing && safeguard <= 30)
+		Utility.Wait(1)
+		safeguard = safeguard + 1
+	EndWhile
+	trace("CondiExp_TraumaScript OnEffectFinish" + safeguard)
+	resetMFG(PlayerRef)
+	Utility.Wait(3)
+	Condiexp_CurrentlyBusy.SetValue(0)
+EndEvent
+
+
+Function BreatheAndSob(int trauma)
+	If PlayerRef.IsDead()
+		return
+	endif
+	;;;;;;;;;;; SOUNDS ;;;;;;;;;;;;
+	Int sobchance = Utility.RandomInt(1, 5)
+	 
+	If Condiexp_Sounds.GetValue() > 0 && sobchance == 3
+		playBreathOrRandomSob(trauma)  
+	endif
+	;;;;;;;;;
 
 	Utility.Wait(1)
 	
 EndFunction
 
-Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	Utility.Wait(3); keep script running
-	trace("CondiExp_TraumaScript OnEffectFinish")
-	if (Condiexp_CurrentlyTrauma.GetValue() == 0)
-		resetMFG(PlayerRef)
-	endif
-
-	Condiexp_CurrentlyBusy.SetValue(0)
-EndEvent
-
 Function playBreathOrRandomSob(int trauma)
 	
-	if trauma<=3
+	if trauma <= 3
 		CondiExp_BreathingFemale.play(PlayerRef) 
 		return
 	endIf
@@ -131,46 +134,40 @@ endfunction
 ; 5 - Dialogue Puzzled		13 - Mood Puzzled
 ; 6 - Dialogue Disgusted	14 - Mood Disgusted
 ; aiStrength is from 0 to 100 (percent)
-Function _painVariants(Int index, Actor act, Int Power)
+Function _painVariants(Int index, Actor act, int Power, int PowerCur)
 	
 	if Power > 100
 		Power = 100
 	endif
-
+	float modifier = PowerCur / Power
+	
 	if index == 1
+		act.SetExpressionOverride(1, Power)
+		mfgconsolefunc.SetPhoneme(act, 1, (40 * modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 5, (30* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 7, (70* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 15, (60* modifier) as Int)
+	elseIf index == 2
 		act.SetExpressionOverride(3, Power)
 		mfgconsolefunc.SetModifier(act, 11, 50)
 		mfgconsolefunc.SetModifier(act, 13, 14)
-		mfgconsolefunc.SetPhoneme(act, 2, 50)
-		mfgconsolefunc.SetPhoneme(act, 13, 20)
-		mfgconsolefunc.SetPhoneme(act, 15, 40)
-	elseIf index == 2
-		act.SetExpressionOverride(3, Power)
-		mfgconsolefunc.SetModifier(act, 2, 10)
-		mfgconsolefunc.SetModifier(act, 3, 10)
-		mfgconsolefunc.SetModifier(act, 6, 50)
-		mfgconsolefunc.SetModifier(act, 7, 50)
-		mfgconsolefunc.SetModifier(act, 11, 30)
-		mfgconsolefunc.SetModifier(act, 12, 30)
-		mfgconsolefunc.SetModifier(act, 13, 30)
-		mfgconsolefunc.SetPhoneme(act, 0, 20)
+		mfgconsolefunc.SetPhoneme(act, 2, (50* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 13, (20* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 15, (40* modifier) as Int)
 	elseIf index == 3
 		act.SetExpressionOverride(3, Power)
 		mfgconsolefunc.SetModifier(act, 11, 50)
 		mfgconsolefunc.SetModifier(act, 13, 14)
-		mfgconsolefunc.SetPhoneme(act, 2, 50)
-		mfgconsolefunc.SetPhoneme(act, 13, 20)
-		mfgconsolefunc.SetPhoneme(act, 15, 40)
+		mfgconsolefunc.SetPhoneme(act, 2, (50* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 13, (20* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 15, (40* modifier) as Int)
 	elseIf index == 4
-		act.SetExpressionOverride(8, Power)
-		mfgconsolefunc.SetModifier(act, 0, 100)
-		mfgconsolefunc.SetModifier(act, 1, 100)
-		mfgconsolefunc.SetModifier(act, 2, 100)
-		mfgconsolefunc.SetModifier(act, 3, 100)
-		mfgconsolefunc.SetModifier(act, 4, 100)
-		mfgconsolefunc.SetModifier(act, 5, 100)
-		mfgconsolefunc.SetPhoneme(act, 2, 100)
-		mfgconsolefunc.SetPhoneme(act, 5, 40)
+		act.SetExpressionOverride(3, Power)
+		mfgconsolefunc.SetModifier(act, 11, 50)
+		mfgconsolefunc.SetModifier(act, 13, 14)
+		mfgconsolefunc.SetPhoneme(act, 2, (50* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 13, (20* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 15, (40* modifier) as Int)
 	elseIf index == 5
 		act.SetExpressionOverride(9, Power)
 		mfgconsolefunc.SetModifier(act, 2, 100)
@@ -178,8 +175,8 @@ Function _painVariants(Int index, Actor act, Int Power)
 		mfgconsolefunc.SetModifier(act, 4, 100)
 		mfgconsolefunc.SetModifier(act, 5, 100)
 		mfgconsolefunc.SetModifier(act, 11, 90)
-		mfgconsolefunc.SetPhoneme(act, 0, 30)
-		mfgconsolefunc.SetPhoneme(act, 2, 30)
+		mfgconsolefunc.SetPhoneme(act, 2, (10* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 0, (10* modifier) as Int)
 	elseIf index == 6
 		act.SetExpressionOverride(9, Power)
 		mfgconsolefunc.SetModifier(act, 2, 100)
@@ -187,18 +184,19 @@ Function _painVariants(Int index, Actor act, Int Power)
 		mfgconsolefunc.SetModifier(act, 4, 100)
 		mfgconsolefunc.SetModifier(act, 5, 100)
 		mfgconsolefunc.SetModifier(act, 11, 90)
-		mfgconsolefunc.SetPhoneme(act, 0, 100)
-		mfgconsolefunc.SetPhoneme(act, 2, 100)
-		mfgconsolefunc.SetPhoneme(act, 11, 40)
+		mfgconsolefunc.SetPhoneme(act, 0, (100* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 2, (100* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 11, (20* modifier) as Int)
 	elseIf index == 7
-		act.SetExpressionOverride(9, Power)
+		act.SetExpressionOverride(8, Power)
+		mfgconsolefunc.SetModifier(act, 0, 100)
+		mfgconsolefunc.SetModifier(act, 1, 100)
 		mfgconsolefunc.SetModifier(act, 2, 100)
 		mfgconsolefunc.SetModifier(act, 3, 100)
 		mfgconsolefunc.SetModifier(act, 4, 100)
 		mfgconsolefunc.SetModifier(act, 5, 100)
-		mfgconsolefunc.SetModifier(act, 11, 90)
-		mfgconsolefunc.SetPhoneme(act, 0, 30)
-		mfgconsolefunc.SetPhoneme(act, 2, 30)
+		mfgconsolefunc.SetPhoneme(act, 2, (100* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 5, (40* modifier) as Int)
 	else
 		act.SetExpressionOverride(8, Power)
 		mfgconsolefunc.SetModifier(act, 0, 100)
@@ -207,8 +205,8 @@ Function _painVariants(Int index, Actor act, Int Power)
 		mfgconsolefunc.SetModifier(act, 3, 100)
 		mfgconsolefunc.SetModifier(act, 4, 100)
 		mfgconsolefunc.SetModifier(act, 5, 100)
-		mfgconsolefunc.SetPhoneme(act, 2, 100)
-		mfgconsolefunc.SetPhoneme(act, 5, 100)
-		mfgconsolefunc.SetPhoneme(act, 11, 40)
+		mfgconsolefunc.SetPhoneme(act, 2, (100* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 5, (100* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 11, (20* modifier) as Int)
 	endIf
 endFunction

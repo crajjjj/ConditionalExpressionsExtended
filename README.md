@@ -22,7 +22,7 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
 ## Installation
 
 - Override original mod (Conditional Expressions - Subtle Face Animations mod (v 1.2.0)) with this one
-- Mod currently requires a new save (without Conditional Expressions installed before) 
+- Mod requires a new save (without Conditional Expressions installed before) 
 
 
 ### Advanced config (not recommended):

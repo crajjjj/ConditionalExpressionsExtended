@@ -5,12 +5,15 @@ Actor Property PlayerRef Auto
 import CondiExp_log
 import CondiExp_util
 
+bool playing = false
+
 ;no loops cause dirty is not strong emotion and can be overridden by pain etc
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
+	playing = true
+	Int Seconds = Utility.RandomInt(2, 4)
+	Utility.Wait(Seconds)
 	trace("Condiexp_Dirty OnEffectStart")
-	MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
-	Utility.Wait(1)
 	ShowExpression() 
 EndEvent
 
@@ -21,14 +24,14 @@ Function ShowExpression()
 	Utility.Wait(1)
 	trace("Condiexp_Dirty OnEffectStart")
     int i = 0
-
-    while i < 95
-        _sadVariants(dirty, PlayerRef, i)
+	Int power = 100
+    while i < power
+        _sadVariants(dirty, PlayerRef, power ,i)
         i = i + 5
-        if (i > 95)
-            i = 95
+        if (i > power)
+            i = power
         Endif
-        Utility.Wait(0.1)
+        Utility.Wait(0.5)
     endwhile
 
 	Int randomLook = Utility.RandomInt(1, 10)
@@ -39,28 +42,33 @@ Function ShowExpression()
 	ElseIf randomLook == 8
 		LookDown(50, PlayerRef)
 	endif 
-	Utility.Wait(2)
+	Utility.Wait(3)
 	
 	;and back
-	i = 95
+	i = power
     while i > 0
-          _sadVariants(dirty, PlayerRef, i)
+          _sadVariants(dirty, PlayerRef, power, i)
         i = i - 5
          if (i < 0)
              i = 0
         Endif
-        Utility.Wait(0.1)
+        Utility.Wait(0.5)
     endwhile
+	Utility.Wait(1)
+	playing = false
 EndFunction
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	Utility.Wait(3) ;wait for effect cycle to end !!!
-	trace("Condiexp_Dirty OnEffectFinish")
-	if (Condiexp_CurrentlyDirty.GetValue() == 0)
-		resetMFG(PlayerRef)
-	endif
-
+	; keep script running
+	int safeguard = 0
+	While (playing && safeguard <= 30)
+		Utility.Wait(1)
+		safeguard = safeguard + 1
+	EndWhile
+	trace("Condiexp_Dirty OnEffectFinish" + safeguard)
+	resetMFG(PlayerRef)
+	Utility.Wait(3)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
 
@@ -75,15 +83,15 @@ EndEvent
 ; 6 - Dialogue Disgusted	14 - Mood Disgusted
 ; aiStrength is from 0 to 100 (percent)
 
-Function _sadVariants(Int index, Actor act, Int Power)
-	
+Function _sadVariants(Int index, Actor act, int Power, int PowerCur)
+	float modifier = PowerCur / Power
 	if Power > 100
 		Power = 100
 	endif
 
 	if index == 1
 		act.SetExpressionOverride(3, Power)
-		mfgconsolefunc.SetPhoneme(act, 2, 100)
+		mfgconsolefunc.SetPhoneme(act, 2, (100* modifier) as Int)
 	elseIf index == 2
 		act.SetExpressionOverride(3, Power)
 		mfgconsolefunc.SetModifier(act, 2, 50)
@@ -92,8 +100,8 @@ Function _sadVariants(Int index, Actor act, Int Power)
 		mfgconsolefunc.SetModifier(act, 5, 50)
 		mfgconsolefunc.SetModifier(act, 12, 50)
 		mfgconsolefunc.SetModifier(act, 13, 50)
-        mfgconsolefunc.SetPhoneme(act, 1, 10)
-		mfgconsolefunc.SetPhoneme(act, 2, 100)
+        mfgconsolefunc.SetPhoneme(act, 1, (10* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 2, (100* modifier) as Int)
 	else
 		act.SetExpressionOverride(3, Power)
         mfgconsolefunc.SetModifier(act, 2, 50)
@@ -103,8 +111,8 @@ Function _sadVariants(Int index, Actor act, Int Power)
         mfgconsolefunc.SetModifier(act, 8, 50)
         mfgconsolefunc.SetModifier(act, 12, 30)
 		mfgconsolefunc.SetModifier(act, 13, 30)
-		mfgconsolefunc.SetPhoneme(act, 1, 10)
-		mfgconsolefunc.SetPhoneme(act, 2, 100)
-		mfgconsolefunc.SetPhoneme(act, 7, 50)
+		mfgconsolefunc.SetPhoneme(act, 1, (10* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 2, (100* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 7, (50* modifier) as Int)
 	endIf
 endFunction

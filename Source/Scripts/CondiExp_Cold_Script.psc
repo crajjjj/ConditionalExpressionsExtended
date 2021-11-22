@@ -13,13 +13,16 @@ int coldExpression = 0
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
 	trace("CondiExp_Cold_Script OnEffectStart")
-	RegisterForSingleUpdate(0.01)
+	Int Seconds = Utility.RandomInt(1, 3)
+	Utility.Wait(Seconds)
+	ShowExpression()
 EndEvent
 
-event OnUpdate()
-	if (Condiexp_CurrentlyCold.GetValue() == 1 && Condiexp_ModSuspended.GetValue() == 0 && Condiexp_GlobalCold.GetValue() == 1)
+Function ShowExpression()
+	
+	while isCold()
+		Utility.Wait(0.5)
 		PlayerRef.SetExpressionOverride(1,50)
-		
 		 ; cold intro
 		if (coldExpression <= 65) 
 			if (coldExpression < 0)
@@ -30,8 +33,6 @@ event OnUpdate()
 			MfgConsoleFunc.SetModifier(PlayerRef, 13, coldExpression)
 			MfgConsoleFunc.SetModifier(PlayerRef, 4, coldExpression)
 			coldExpression += 5
-			
-			RegisterForSingleUpdate(0.5)
 		else ; this is Tremble
 			MfgConsoleFunc.SetPhoneMe(PlayerRef, 0,0)
 			Utility.Wait(0.01)
@@ -52,45 +53,44 @@ event OnUpdate()
 			MfgConsoleFunc.SetPhoneMe(PlayerRef, 0,12)
 			Utility.Wait(0.01)
 			MfgConsoleFunc.SetPhoneMe(PlayerRef, 0,6)
-			doRegister()
 		endif
-	else
-		;cold outro
-		if (coldExpression >= 0)
-			if (coldExpression > 65)
-				coldExpression = 65
-			endif
-			MfgConsoleFunc.SetModifier(PlayerRef, 12, coldExpression)
-			MfgConsoleFunc.SetModifier(PlayerRef, 13, coldExpression)
-			MfgConsoleFunc.SetModifier(PlayerRef, 4, coldExpression)
-			coldExpression  -= 5
-			doRegister()
-		else ; if the outro is done we clean up and stop calling update
-			MfgConsoleFunc.SetPhoneMe(PlayerRef, 0,0)
-			PlayerRef.ClearExpressionOverride()
-			Condiexp_CurrentlyBusy.SetValue(0)
+	endwhile
+	
+	;cold outro
+	while (coldExpression >= 0)
+		if (coldExpression > 65)
+			coldExpression = 65
 		endif
-	endif
-endevent
+		MfgConsoleFunc.SetModifier(PlayerRef, 12, coldExpression)
+		MfgConsoleFunc.SetModifier(PlayerRef, 13, coldExpression)
+		MfgConsoleFunc.SetModifier(PlayerRef, 4, coldExpression)
+		coldExpression  -= 5
+	endwhile
+	
+	; if the outro is done we clean up and stop
+	resetMFG(PlayerRef)
+endFunction
 
-Function doRegister() 
+bool Function isCold() 
+	bool isCold = Condiexp_CurrentlyCold.GetValue() == 1
+
 	bool isSuspended =  Condiexp_ModSuspended.GetValue() == 1
 	bool isDisabled = Condiexp_GlobalCold.GetValue() == 0
 	bool lowStamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5
 	bool lowHealth = PlayerRef.GetActorValuePercentage("Health") < 0.5
 	bool isSwimming = PlayerRef.IsSwimming()
 
-	If  isSuspended || isDisabled || lowStamina || lowHealth || isSwimming 
-		return
+	If isSuspended || isDisabled || lowStamina || lowHealth || isSwimming 
+		return false
 	endif
 
-	RegisterForSingleUpdate(0.5)
+	return isCold
 endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)			
 	trace("CondiExp_Cold_Script OnEffectFinish")
 ;OnEffectFinish is called, this script instance will only remain existing so long this function hasn't ended
-;an OnUpdate might be still going so we first wait for it
+;a function might be still going so we first wait for it
 
 	; now we start/continue the outro sequence
 	while (coldExpression >= 0)

@@ -30,14 +30,11 @@ Function ShowExpression(int aroused)
 	int i = 0
 	trace("CondiExp_ArousedScript playing effect")
 
-	while i < power
-		_arousedVariants(aroused, PlayerRef, power, i)
-        i = i + 5
-        if (i > power)
-            i = power
-        Endif
-        Utility.Wait(0.5)
-    endwhile
+	;random skip 20%
+	Int randomSkip = Utility.RandomInt(1, 10)
+	if randomSkip > 2
+		_arousedVariants(aroused, PlayerRef, power, power)
+	endif
 
 	Int randomLook = Utility.RandomInt(1, 10)
 	If randomLook == 2
@@ -47,19 +44,8 @@ Function ShowExpression(int aroused)
 	ElseIf randomLook == 8
 		LookDown(50, PlayerRef)
 	endif 
-	Utility.Wait(0.5)
 	
-	;and back
-	i = power
-    while i > 0
-		_arousedVariants(aroused, PlayerRef, power, i)
-        i = i - 5
-         if (i < 0)
-             i = 0
-        Endif
-        Utility.Wait(1)
-    endwhile
-	Utility.Wait(1)
+	Utility.Wait(10)
 	playing = false
 EndFunction
 
@@ -89,7 +75,8 @@ EndEvent
 ; 6 - Dialogue Disgusted	14 - Mood Disgusted
 ; aiStrength is from 0 to 100 (percent)
 Function _arousedVariants(Int index, Actor act, int Power, int PowerCur)
-	float modifier = PowerCur / Power
+	;float modifier = PowerCur / Power
+	float modifier = 1 
 	if Power > 100
 		Power = 100
 	endif

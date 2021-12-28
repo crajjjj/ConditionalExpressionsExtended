@@ -23,17 +23,13 @@ Function ShowExpression()
 
 	Utility.Wait(1)
 	trace("Condiexp_Dirty OnEffectStart")
-    int i = 0
 	Int power = 100
-    while i < power
-        _sadVariants(dirty, PlayerRef, power ,i)
-        i = i + 5
-        if (i > power)
-            i = power
-        Endif
-        Utility.Wait(0.5)
-    endwhile
 
+	;random skip 33%
+	Int randomSkip = Utility.RandomInt(1, 10)
+	if randomSkip > 3
+    	_sadVariants(dirty, PlayerRef, power, power)
+	endif
 	Int randomLook = Utility.RandomInt(1, 10)
 	If randomLook == 2
 		LookLeft(50, PlayerRef)
@@ -42,19 +38,7 @@ Function ShowExpression()
 	ElseIf randomLook == 8
 		LookDown(50, PlayerRef)
 	endif 
-	Utility.Wait(3)
-	
-	;and back
-	i = power
-    while i > 0
-          _sadVariants(dirty, PlayerRef, power, i)
-        i = i - 5
-         if (i < 0)
-             i = 0
-        Endif
-        Utility.Wait(0.5)
-    endwhile
-	Utility.Wait(1)
+	Utility.Wait(10)
 	playing = false
 EndFunction
 
@@ -84,7 +68,12 @@ EndEvent
 ; aiStrength is from 0 to 100 (percent)
 
 Function _sadVariants(Int index, Actor act, int Power, int PowerCur)
-	float modifier = PowerCur / Power
+	if index > 10
+		return
+	endif
+
+	;float modifier = PowerCur / Power
+	float modifier = 1 
 	if Power > 100
 		Power = 100
 	endif

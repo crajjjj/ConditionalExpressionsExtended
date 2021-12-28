@@ -31,7 +31,7 @@ In console:  set [global variable name] [amount]
 
 Sample: set Condiexp_MinAroused 30
 
-- Condiexp_MinTrauma range 0-10 default 0
+- Condiexp_MinTrauma range 1-10 default 1
 - Condiexp_MinAroused range 0-100 default 30
 - Condiexp_MinDirty range 0-4 default 1
 - Condiexp_UpdateInterval seconds default 5

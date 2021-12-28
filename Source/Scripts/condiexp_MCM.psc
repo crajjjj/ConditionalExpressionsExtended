@@ -82,13 +82,13 @@ int function GetVersion()
 endFunction
 
 Event OnConfigInit()
-	logAndNotification("MCM menu initialized")	
+	Notification("MCM menu initialized")	
 EndEvent
 
 event OnVersionUpdate(int a_version)
     if (a_version > 1)
       DetectRace()
-	  endIf
+	endIf
 endEvent
 
 Event OnConfigOpen()

@@ -241,7 +241,7 @@ function updateTraumaStatus()
 	;check apropos
 	if ActorsQuest
 		trauma = GetWearState0to10(PlayerRef)
-		if trauma > 0 && trauma > Condiexp_MinTrauma.GetValue()
+		if trauma > 1 && trauma > Condiexp_MinTrauma.GetValue()
 			Condiexp_CurrentlyTrauma.SetValue(trauma)
 			trace("CondiExp_StartMod: updateTraumaStatus - GetWearState(): " + Condiexp_CurrentlyTrauma.getValue())
 			return

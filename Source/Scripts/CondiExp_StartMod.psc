@@ -1,6 +1,8 @@
 Scriptname CondiExp_StartMod extends ReferenceAlias  
 import CondiExp_log
 import CondiExp_util
+import CondiExp_Interface_Appr2
+import CondiExp_Interface_Sla
 
 Spell Property CondiExp_Fatigue1 Auto ;condi_effects spell
 Actor Property PlayerRef Auto
@@ -42,10 +44,9 @@ Keyword property Vampire Auto
 Faction Property SexLabAnimatingFaction Auto
 
 
-
-
 String Property LoadedBathMod Auto Hidden
 Bool Property isSuspendedByDhlpEvent Auto Hidden
+
 ;Bathing mod
 MagicEffect DirtinessStage2Effect 
 MagicEffect DirtinessStage3Effect
@@ -63,40 +64,42 @@ Faction zbfFactionSlave
 ;Devious Devices
 MagicEffect zadGagEffect
 ;SLA
-slaFrameworkScr sla
+Quest sla
 
+int _checkPlugins = 0
 
 Event OnInit()
+	_checkPlugins = 1
 	StartMod()
-	init()
 EndEvent
 
 Event onPlayerLoadGame()
 	log("CondiExp_StartMod: Game reload event")
-	init()
+	_checkPlugins = 1 
+	RegisterForSingleUpdate(1)
 endEvent
 
 function init()
-	if !ActorsQuest
+	if !ActorsQuest && isAprReady()
 		ActorsQuest = Game.GetFormFromFile(0x02902C, "Apropos2.esp") as Quest	
 	endif
 	if ActorsQuest
 		log("CondiExp_StartMod: Found Apropos: " + ActorsQuest.GetName() )
 	endif
-	if !zbfFactionSlave
+	if !zbfFactionSlave && isZaZReady()
 		zbfFactionSlave = Game.GetFormFromFile(0x0096AE, "ZaZAnimationPack.esm") as Faction	
 	endif
 	if zbfFactionSlave
 		log("CondiExp_StartMod: Found ZaZAnimationPack: " + zbfFactionSlave.GetName() )
 	endif
-	if !zadGagEffect
+	if !zadGagEffect && isDDintegrationReady()
 		zadGagEffect = Game.GetFormFromFile(0x02B077, "Devious Devices - Integration.esm") as MagicEffect
 	endif
 	if zadGagEffect
 		log("CondiExp_StartMod: Found Devious Devices - Integration: " + zadGagEffect.GetName() )
 	endif
-	if !sla
-		sla = Game.GetFormFromFile(0x4290F, "SexLabAroused.esm") As slaFrameworkScr
+	if !sla && isSLAReady()
+		sla = Game.GetFormFromFile(0x4290F, "SexLabAroused.esm") As Quest
 	endif
 	if sla
 		log("CondiExp_StartMod: Found SexLabAroused: " + sla.GetName() )
@@ -129,17 +132,26 @@ function init()
 	;for compatibility with other mods
 	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
 	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
-	RegisterForSingleUpdate(1)
 endfunction
 
 Event OnUpdate()
+	;postponed module init
+	If _checkPlugins > 0
+		_checkPlugins += 1
+		If _checkPlugins >= 2
+			log("WidgetController: moduleSetup")
+			init()
+			_checkPlugins = 0
+		EndIf
+	EndIf
+
 	updateColdStatus()
 	updateTraumaStatus()
 	updateDirtyStatus()
 	updateArousalStatus()
 
 	;check if there's a conflicting mod based on custom conditions
-	if checkIfModShouldBeSuspended()	
+	if checkIfModShouldBeSuspended()
 		if isModEnabled()
 			log("CondiExp_StartMod: suspended according to conditions check")
 			Condiexp_ModSuspended.SetValue(1)
@@ -240,7 +252,7 @@ function updateTraumaStatus()
 	int trauma = 0
 	;check apropos
 	if ActorsQuest
-		trauma = GetWearState0to10(PlayerRef)
+		trauma = GetWearState0to10(PlayerRef, ActorsQuest)
 		if trauma > 1 && trauma > Condiexp_MinTrauma.GetValue()
 			Condiexp_CurrentlyTrauma.SetValue(trauma)
 			trace("CondiExp_StartMod: updateTraumaStatus - GetWearState(): " + Condiexp_CurrentlyTrauma.getValue())
@@ -272,7 +284,7 @@ function updateArousalStatus()
 	int aroused = 0
 	;check sla
 	if sla
-		aroused = getArousal0To100(PlayerRef)
+		aroused = getArousal0To100(PlayerRef, sla)
 		if aroused > 0 && aroused > Condiexp_MinAroused.GetValue()
 			Condiexp_CurrentlyAroused.SetValue(aroused)
 			trace("CondiExp_StartMod: updateArousalStatus(): " + Condiexp_CurrentlyAroused.getValue())
@@ -315,12 +327,6 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 		CondiExp_PlayerJustAte.SetValue(0)
 	Endif
 EndEvent
-
-;Function StopBWA()
-;	int h = ModEvent.Create("BWA_ForceBlushOff")
-;	ModEvent.PushForm(h, PlayerRef as form)
-;	ModEvent.PushInt(h, 3)
-;endfunction
 
 Function StopMod()
 	log("Stopped")
@@ -391,54 +397,6 @@ Function NewRace()
 		endif
 	endif
 endfunction
-
-Int Function GetWearState0to10(Actor PlayerRef) 		
-	if !ActorsQuest
-		return 0
-	endif
-	
-	ReferenceAlias AproposTwoAlias = GetAproposAlias(PlayerRef, ActorsQuest)
-	if GetAproposAlias(PlayerRef, ActorsQuest) != None
-		Int damage = (AproposTwoAlias as Apropos2ActorAlias).AverageAbuseState
-		;log("WT Damage" + damage)
-		If damage <= 10
-			return damage
-		Else
-			return 10
-		EndIf
-	Else
-		return 0
-	Endif
-EndFunction
-
-ReferenceAlias Function GetAproposAlias(Actor akTarget, Quest apropos2Quest )
-	; Search Apropos2 actor aliases as the player alias is not set in stone
-	ReferenceAlias AproposTwoAlias = None
-	Int i = 0
-	ReferenceAlias AliasSelect
-	While i < apropos2Quest.GetNumAliases() 
-		AliasSelect = ActorsQuest.GetNthAlias(i) as ReferenceAlias
-		If AliasSelect.GetReference() as Actor == akTarget
-			AproposTwoAlias = AliasSelect
-		EndIf
-		Return AproposTwoAlias
-		i += 1
-	EndWhile
-	Return AproposTwoAlias
-EndFunction
-
-Int Function getArousal0To100(Actor PlayerRef)
-	if !sla
-		return 0
-	endif
-	Int arousal = sla.GetActorArousal(PlayerRef)
-	if arousal < 0
-		arousal = 0
-	elseif arousal > 100
-		arousal = 100
-	endIf
-	return arousal
-EndFunction
 
 Function resetConditions()
 	Condiexp_CurrentlyCold.SetValue(0)

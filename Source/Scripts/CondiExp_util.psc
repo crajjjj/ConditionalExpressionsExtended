@@ -8,7 +8,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 10201
+    Return 10202
     ; 1.0.0   -> 10000
     ; 1.1.0   -> 10100
     ; 1.1.1  -> 10101
@@ -17,7 +17,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.2.1"
+    Return "1.2.2"
 EndFunction
 
 String Function StringIfElse(Bool isTrue, String returnTrue, String returnFalse = "") Global
@@ -31,6 +31,19 @@ EndFunction
 Bool Function isAprReady() Global
 	Return isDependencyReady("Apropos2.esp") 
 EndFunction
+
+Bool Function isDDintegrationReady() Global
+	Return isDependencyReady("Devious Devices - Integration.esm") 
+EndFunction
+
+Bool Function isZaZReady() Global
+	Return isDependencyReady("ZaZAnimationPack.esm") 
+EndFunction
+
+Bool Function isSLAReady() Global
+	Return isDependencyReady("SexLabAroused.esm") 
+EndFunction
+
 
 Bool Function isDependencyReady(String modname) Global
 	Return Game.GetModbyName(modname) != 255

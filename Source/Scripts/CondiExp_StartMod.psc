@@ -3,6 +3,7 @@ import CondiExp_log
 import CondiExp_util
 import CondiExp_Interface_Appr2
 import CondiExp_Interface_Sla
+import CondiExp_Interface_SL
 
 Spell Property CondiExp_Fatigue1 Auto ;condi_effects spell
 Actor Property PlayerRef Auto
@@ -59,6 +60,8 @@ MagicEffect BloodinessStage5Effect
 
 ;Apropos2
 Quest ActorsQuest
+;Sexlab
+Quest sexlab
 ;Zaz slave faction
 Faction zbfFactionSlave
 ;Devious Devices
@@ -104,6 +107,14 @@ function init()
 	if sla
 		log("CondiExp_StartMod: Found SexLabAroused: " + sla.GetName() )
 	endif
+	if !sexlab && isSLReady()
+		sexlab = Game.GetFormFromFile(0x000D62, "SexLab.esm") As Quest
+	endif
+	if sexlab
+		log("CondiExp_StartMod: Found SexLab: " + sexlab.GetName())
+	endif
+
+
 	
 	; checking what bath mod is loaded
 	LoadedBathMod = "None Found"
@@ -224,6 +235,7 @@ function updateDirtyStatus()
 		Condiexp_CurrentlyDirty.SetValue(0.0)
 		return
 	EndIf
+
 	int dirty = 0
 	if PlayerRef.HasMagicEffect(DirtinessStage2Effect) || (BloodinessStage2Effect && PlayerRef.HasMagicEffect(BloodinessStage2Effect))
 		dirty = 1  ;not enough dirt to be sad
@@ -234,6 +246,14 @@ function updateDirtyStatus()
 	else
 		dirty = 0
 	endIf
+	
+	;check cum
+	if sexlab
+		if IsPlayerCumsoaked(sexlab, PlayerRef)
+			dirty = 3
+			trace("CondiExp_StartMod: updateDirtyStatus(): cumsoaked")
+		endif
+	endif
 
 	If dirty > 0 && dirty > Condiexp_MinDirty.GetValue()
 		Condiexp_CurrentlyDirty.SetValue(dirty)
@@ -257,7 +277,7 @@ function updateTraumaStatus()
 			Condiexp_CurrentlyTrauma.SetValue(trauma)
 			trace("CondiExp_StartMod: updateTraumaStatus - GetWearState(): " + Condiexp_CurrentlyTrauma.getValue())
 			return
-		endif	
+		endif
 	endif
 		
 	;check zap slave
@@ -289,7 +309,7 @@ function updateArousalStatus()
 			Condiexp_CurrentlyAroused.SetValue(aroused)
 			trace("CondiExp_StartMod: updateArousalStatus(): " + Condiexp_CurrentlyAroused.getValue())
 			return
-		endif	
+		endif
 	endif
 
 	;nothing found: 0

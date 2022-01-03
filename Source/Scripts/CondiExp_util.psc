@@ -40,6 +40,10 @@ Bool Function isZaZReady() Global
 	Return isDependencyReady("ZaZAnimationPack.esm") 
 EndFunction
 
+bool Function isSLReady() global
+	return isDependencyReady("SexLab.esm")
+EndFunction
+
 Bool Function isSLAReady() Global
 	Return isDependencyReady("SexLabAroused.esm") 
 EndFunction

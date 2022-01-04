@@ -3,15 +3,16 @@ Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-Blush()
+    Blush()
 EndEvent
 
 Function Blush()
-PlayerRef.SetExpressionOverride(4,90)
-Condiexp_CurrentlyBusy.SetValue(1)
+    PlayerRef.SetExpressionOverride(4,90)
+    Condiexp_CurrentlyBusy.SetValue(1)
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-PlayerRef.ClearExpressionOverride()
-Condiexp_CurrentlyBusy.SetValue(0)
+    Utility.Wait(1)
+    PlayerRef.ClearExpressionOverride()
+    Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent

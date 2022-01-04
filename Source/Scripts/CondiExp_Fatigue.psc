@@ -61,6 +61,8 @@ Endif
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+Utility.Wait(1)
 Condiexp_CurrentlyBusy.SetValue(0)
 Breathing = False
+
 EndEvent

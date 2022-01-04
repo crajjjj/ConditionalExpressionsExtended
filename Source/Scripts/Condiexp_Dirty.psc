@@ -30,6 +30,7 @@ Function ShowExpression()
 	if randomSkip > 3
     	_sadVariants(dirty, PlayerRef, power, power)
 	endif
+
 	Int randomLook = Utility.RandomInt(1, 10)
 	If randomLook == 2
 		LookLeft(50, PlayerRef)
@@ -68,31 +69,23 @@ EndEvent
 ; aiStrength is from 0 to 100 (percent)
 
 Function _sadVariants(Int index, Actor act, int Power, int PowerCur)
-	if index > 10
-		return
-	endif
+	Int expression = Utility.RandomInt(1, index)
 
-	;float modifier = PowerCur / Power
-	float modifier = 1 
-	if Power > 100
-		Power = 100
-	endif
-
-	if index == 1
-		act.SetExpressionOverride(3, Power)
-		mfgconsolefunc.SetPhoneme(act, 2, (100* modifier) as Int)
-	elseIf index == 2
-		act.SetExpressionOverride(3, Power)
+	if expression == 1
+		act.SetExpressionOverride(3, 30)
+		mfgconsolefunc.SetPhoneme(act, 2, 100)
+	elseIf expression == 2
+		act.SetExpressionOverride(3, 60)
 		mfgconsolefunc.SetModifier(act, 2, 50)
 		mfgconsolefunc.SetModifier(act, 3, 50)
 		mfgconsolefunc.SetModifier(act, 4, 50)
 		mfgconsolefunc.SetModifier(act, 5, 50)
 		mfgconsolefunc.SetModifier(act, 12, 50)
 		mfgconsolefunc.SetModifier(act, 13, 50)
-        mfgconsolefunc.SetPhoneme(act, 1, (10* modifier) as Int)
-		mfgconsolefunc.SetPhoneme(act, 2, (100* modifier) as Int)
+        mfgconsolefunc.SetPhoneme(act, 1, 10)
+		mfgconsolefunc.SetPhoneme(act, 2, 100)
 	else
-		act.SetExpressionOverride(3, Power)
+		act.SetExpressionOverride(3, 90)
         mfgconsolefunc.SetModifier(act, 2, 50)
 		mfgconsolefunc.SetModifier(act, 3, 50)
 		mfgconsolefunc.SetModifier(act, 4, 50)
@@ -100,8 +93,8 @@ Function _sadVariants(Int index, Actor act, int Power, int PowerCur)
         mfgconsolefunc.SetModifier(act, 8, 50)
         mfgconsolefunc.SetModifier(act, 12, 30)
 		mfgconsolefunc.SetModifier(act, 13, 30)
-		mfgconsolefunc.SetPhoneme(act, 1, (10* modifier) as Int)
-		mfgconsolefunc.SetPhoneme(act, 2, (100* modifier) as Int)
-		mfgconsolefunc.SetPhoneme(act, 7, (50* modifier) as Int)
+		mfgconsolefunc.SetPhoneme(act, 1, 10)
+		mfgconsolefunc.SetPhoneme(act, 2, 100)
+		mfgconsolefunc.SetPhoneme(act, 7, 50)
 	endIf
 endFunction

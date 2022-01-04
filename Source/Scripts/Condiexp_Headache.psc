@@ -35,7 +35,7 @@ i = 0
 Endif
 Utility.Wait(0.1)
 endwhile
-
+Utility.Wait(1)
 Condiexp_CurrentlyBusy.SetValue(0)
 PlayerRef.ClearExpressionOverride()
 EndEvent

@@ -49,6 +49,7 @@ MfgConsoleFunc.SetPhoneMe(PlayerRef,4,30)
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+Utility.Wait(1)
 Condiexp_CurrentlyBusy.SetValue(0)
 PlayerRef.ClearExpressionOverride()
 MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)

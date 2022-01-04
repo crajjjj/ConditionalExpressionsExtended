@@ -89,8 +89,8 @@ endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)			
 	trace("CondiExp_Cold_Script OnEffectFinish")
-;OnEffectFinish is called, this script instance will only remain existing so long this function hasn't ended
-;a function might be still going so we first wait for it
+	;OnEffectFinish is called, this script instance will only remain existing so long this function hasn't ended
+	;a function might be still going so we first wait for it
 
 	; now we start/continue the outro sequence
 	while (coldExpression >= 0)
@@ -103,7 +103,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		coldExpression  -= 5
 		Utility.Wait(0.5) ; !!!
 	endwhile
-	
+	Utility.Wait(1)
 	resetMFG(PlayerRef)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent

@@ -247,12 +247,20 @@ function updateDirtyStatus()
 		dirty = 0
 	endIf
 	
-	;check cum
-	if sexlab
-		if IsPlayerCumsoaked(sexlab, PlayerRef)
+	;check cum oral
+	if sexlab && dirty < 3
+		if IsPlayerCumsoakedOral(sexlab, PlayerRef)
 			dirty = 3
 			trace("CondiExp_StartMod: updateDirtyStatus(): cumsoaked")
 		endif
+	endif
+
+	;check cum else
+	if sexlab && dirty < 2
+			if IsPlayerCumsoakedVagOrAnal(sexlab, PlayerRef)
+				dirty = 2
+				trace("CondiExp_StartMod: updateDirtyStatus(): cumsoaked")
+			endif
 	endif
 
 	If dirty > 0 && dirty > Condiexp_MinDirty.GetValue()

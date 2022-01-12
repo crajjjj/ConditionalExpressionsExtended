@@ -1,6 +1,9 @@
 Scriptname CondiExp_util Hidden
 
 Import Debug
+Import mfgconsolefunc
+import Utility
+import Math
 
 String Function GetModName() Global
 	return "Conditional Expressions Extended"
@@ -8,7 +11,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 10203
+    Return 10204
     ; 1.0.0   -> 10000
     ; 1.1.0   -> 10100
     ; 1.1.1  -> 10101
@@ -17,7 +20,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.2.3"
+    Return "1.2.4"
 EndFunction
 
 String Function StringIfElse(Bool isTrue, String returnTrue, String returnFalse = "") Global
@@ -547,6 +550,49 @@ Function Puzzled(int n, Actor PlayerRef) Global
 	PlayerRef.ClearExpressionOverride()
 endfunction
 
+Function SmoothSetPhoneme(Actor act, Int number, Int str_dest) global
+	While (!SetModifier(act, 14, 0))
+		If (!act)
+			Return
+		EndIf
+		Wait(5.0)
+	EndWhile
+	Int t1 = GetPhoneme(act, number)
+	Int t2
+	Int speed = 1
+	While (t1 != str_dest)
+		t2 = (str_dest - t1) / Abs(str_dest - t1) as Int
+		t1 = t1 + t2 * speed
+		If ((str_dest - t1) / t2 < 0)
+			t1 = str_dest
+		EndIf
+		SetPhoneme(act, number, t1)
+	EndWhile
+EndFunction
+
+Function SmoothSetExpression(Actor act, Int number, Int exp_dest, int exp_value ) global
+	While (!SetModifier(act, 14, 0))
+		If (!act)
+			Return
+		EndIf
+		Wait(5.0)
+	EndWhile
+	Int t2
+	Int speed = 1
+	While (exp_value != exp_dest)
+		t2 = (exp_dest - exp_value) / Abs(exp_dest - exp_value) as Int
+		exp_value = exp_value + t2 * speed
+		If ((exp_dest - exp_value) / t2 < 0)
+			exp_value = exp_dest
+		EndIf
+		act.SetExpressionOverride(number, exp_value)
+	EndWhile
+EndFunction
+
+Int Function Round(Float f) global
+	Return Floor(f + 0.5)
+EndFunction
+
 ; Keep It Clean
 MagicEffect function GetKICDirtinessStage2Effect() global
     return Game.GetFormFromFile(0xFBDBA, "Keep It Clean.esp") as MagicEffect
@@ -609,4 +655,22 @@ endFunction
 Function resetMFG(Actor ac) global
 	ac.ClearExpressionOverride()
 	MfgConsoleFunc.ResetPhonemeModifier(ac)
+endfunction
+
+Function resetMFGSmooth(Actor ac) global
+	SmoothSetPhoneme(ac, 0, 0)
+	SmoothSetPhoneme(ac, 1, 0)
+	SmoothSetPhoneme(ac, 5, 0)
+	SmoothSetPhoneme(ac, 6, 0)
+	SmoothSetPhoneme(ac, 8, 0)
+	SmoothSetPhoneme(ac, 10, 0)
+	SmoothSetPhoneme(ac, 11, 0)
+	SmoothSetPhoneme(ac, 12, 0)
+	SmoothSetPhoneme(ac, 13, 0)
+	SmoothSetPhoneme(ac, 14, 0)
+	
+	SmoothSetExpression(ac, GetExpressionID(ac), 0, GetExpressionValue(ac))	
+	Utility.Wait(1)
+	
+	resetMFG(ac)
 endfunction

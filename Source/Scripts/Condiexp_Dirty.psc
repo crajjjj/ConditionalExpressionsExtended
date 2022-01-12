@@ -4,6 +4,7 @@ GlobalVariable Property Condiexp_CurrentlyDirty Auto
 Actor Property PlayerRef Auto
 import CondiExp_log
 import CondiExp_util
+Import mfgconsolefunc
 
 bool playing = false
 
@@ -39,7 +40,7 @@ Function ShowExpression()
 	ElseIf randomLook == 8
 		LookDown(50, PlayerRef)
 	endif 
-	Utility.Wait(10)
+	Utility.Wait(7)
 	playing = false
 EndFunction
 
@@ -52,7 +53,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		safeguard = safeguard + 1
 	EndWhile
 	trace("Condiexp_Dirty OnEffectFinish" + safeguard)
-	resetMFG(PlayerRef)
+	resetMFGSmooth(PlayerRef)
 	Utility.Wait(3)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
@@ -72,29 +73,35 @@ Function _sadVariants(Int index, Actor act, int Power, int PowerCur)
 	Int expression = Utility.RandomInt(1, index)
 
 	if expression == 1
-		act.SetExpressionOverride(3, 30)
-		mfgconsolefunc.SetPhoneme(act, 2, 100)
+		;act.SetExpressionOverride(3, 30)
+		SmoothSetExpression(act, 3, 30, 0)
+		SmoothSetPhoneme(act,2,100)
+		;SetPhoneme(act, 2, 100)
 	elseIf expression == 2
-		act.SetExpressionOverride(3, 60)
-		mfgconsolefunc.SetModifier(act, 2, 50)
-		mfgconsolefunc.SetModifier(act, 3, 50)
-		mfgconsolefunc.SetModifier(act, 4, 50)
-		mfgconsolefunc.SetModifier(act, 5, 50)
-		mfgconsolefunc.SetModifier(act, 12, 50)
-		mfgconsolefunc.SetModifier(act, 13, 50)
-        mfgconsolefunc.SetPhoneme(act, 1, 10)
-		mfgconsolefunc.SetPhoneme(act, 2, 100)
+		;act.SetExpressionOverride(3, 60)
+		SetModifier(act, 2, 50)
+		SetModifier(act, 3, 50)
+		SetModifier(act, 4, 50)
+		SetModifier(act, 5, 50)
+		SetModifier(act, 12, 50)
+		SetModifier(act, 13, 50)
+		SmoothSetExpression( act,3, 60, 0)
+        SmoothSetPhoneme(act, 1, 10)
+		SmoothSetPhoneme(act, 2, 100)
+		
 	else
-		act.SetExpressionOverride(3, 90)
-        mfgconsolefunc.SetModifier(act, 2, 50)
-		mfgconsolefunc.SetModifier(act, 3, 50)
-		mfgconsolefunc.SetModifier(act, 4, 50)
-		mfgconsolefunc.SetModifier(act, 5, 50)
-        mfgconsolefunc.SetModifier(act, 8, 50)
-        mfgconsolefunc.SetModifier(act, 12, 30)
-		mfgconsolefunc.SetModifier(act, 13, 30)
-		mfgconsolefunc.SetPhoneme(act, 1, 10)
-		mfgconsolefunc.SetPhoneme(act, 2, 100)
-		mfgconsolefunc.SetPhoneme(act, 7, 50)
+		;act.SetExpressionOverride(3, 90)
+        SetModifier(act, 2, 50)
+		SetModifier(act, 3, 50)
+		SetModifier(act, 4, 50)
+		SetModifier(act, 5, 50)
+        SetModifier(act, 8, 50)
+        SetModifier(act, 12, 30)
+		SetModifier(act, 13, 30)
+		SmoothSetExpression(act,3, 90, 0)
+		
+		SmoothSetPhoneme(act, 2, 100)
+		SmoothSetPhoneme(act, 7, 50)
+		SmoothSetPhoneme(act, 1, 10)
 	endIf
 endFunction

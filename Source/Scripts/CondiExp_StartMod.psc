@@ -73,7 +73,7 @@ int _checkPlugins = 0
 
 Event OnInit()
 	_checkPlugins = 1
-	StartMod()
+	RegisterForSingleUpdate(10)
 EndEvent
 
 Event onPlayerLoadGame()
@@ -114,8 +114,6 @@ function init()
 		log("CondiExp_StartMod: Found SexLab: " + sexlab.GetName())
 	endif
 
-
-	
 	; checking what bath mod is loaded
 	LoadedBathMod = "None Found"
 	if GetDABDirtinessStage2Effect() != none ; if Dirt and Blood is loaded
@@ -143,6 +141,8 @@ function init()
 	;for compatibility with other mods
 	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
 	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
+
+	StartMod()
 endfunction
 
 Event OnUpdate()
@@ -221,7 +221,7 @@ function updateColdStatus()
 			Condiexp_CurrentlyCold.SetValue(0)
 		endif
 	elseIf Condiexp_ColdMethod.GetValue() == 3
-		If Weather.GetCurrentWeather().GetClassification() == 3 && !PlayerRef.HasKeyword(Vampire) && !PlayerRef.IsinInterior()
+		If !PlayerRef.HasKeyword(Vampire) && !PlayerRef.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
 			Condiexp_CurrentlyCold.SetValue(1)
 		else
 			Condiexp_CurrentlyCold.SetValue(0)
@@ -357,19 +357,17 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 EndEvent
 
 Function StopMod()
-	log("Stopped")
 	Condiexp_ModSuspended.SetValue(1)
 	utility.wait(3)
 	resetConditions()
 	PlayerRef.RemoveSpell(CondiExp_Fatigue1)
 	resetMFG(PlayerRef)
-	
+	log("Stopped")
 endfunction
 
 Function StartMod()
 	log("Started")
 	CondiExp_CurrentlyBusy.SetValue(0)
-	resetMFG(PlayerRef)
 
 	Utility.Wait(0.5)
 	PlayerRef.AddSpell(CondiExp_Fatigue1, false)

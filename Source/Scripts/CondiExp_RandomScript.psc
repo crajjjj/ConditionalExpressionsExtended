@@ -12,9 +12,10 @@ GlobalVariable Property Condiexp_CurrentlyTrauma Auto
 GlobalVariable Property Condiexp_CurrentlyDirty Auto
 GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_GlobalRandom Auto
+GlobalVariable Property Condiexp_Verbose Auto
 bool playing = false
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	trace("CondiExp_RandomScript OnEffectStart")
+	verbose("CondiExp_RandomScript OnEffectStart", Condiexp_Verbose.GetValue() as Int)
 	ShowExpression()
 	doRegister() 
 	playing = true
@@ -57,7 +58,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		Utility.Wait(1)
 		safeguard = safeguard + 1
 	EndWhile
-	trace("CondiExp_RandomScript OnEffectFinish" + safeguard)
 	resetMFG(PlayerRef)
+	verbose("CondiExp_RandomScript OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int )
 	Utility.Wait(3)
 EndEvent

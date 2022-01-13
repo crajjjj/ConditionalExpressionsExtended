@@ -1,14 +1,16 @@
 Scriptname Condiexp_Dirty extends ActiveMagicEffect  
-GlobalVariable Property Condiexp_CurrentlyBusy Auto
-GlobalVariable Property Condiexp_CurrentlyDirty Auto
-Actor Property PlayerRef Auto
 import CondiExp_log
 import CondiExp_util
 Import mfgconsolefunc
 
+GlobalVariable Property Condiexp_CurrentlyBusy Auto
+GlobalVariable Property Condiexp_CurrentlyDirty Auto
+Actor Property PlayerRef Auto
+GlobalVariable Property Condiexp_Verbose Auto
+
 bool playing = false
 
-;no loops cause dirty is not strong emotion and can be overridden by pain etc
+;dirty is not strong emotion and can be overridden by pain etc
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
 	playing = true
@@ -23,13 +25,16 @@ Function ShowExpression()
     Int dirty = Condiexp_CurrentlyDirty.GetValue() as Int
 
 	Utility.Wait(1)
-	trace("Condiexp_Dirty OnEffectStart")
+	
 	Int power = 100
 
 	;random skip 33%
 	Int randomSkip = Utility.RandomInt(1, 10)
 	if randomSkip > 3
+		verbose("Condiexp_Dirty playing effect: " + dirty, Condiexp_Verbose.GetValue() as Int )
     	_sadVariants(dirty, PlayerRef, power, power)
+	else
+		verbose("Condiexp_Dirty skipping effect: " + dirty, Condiexp_Verbose.GetValue() as Int )
 	endif
 
 	Int randomLook = Utility.RandomInt(1, 10)
@@ -39,7 +44,7 @@ Function ShowExpression()
 		LookRight(50, PlayerRef)
 	ElseIf randomLook == 8
 		LookDown(50, PlayerRef)
-	endif 
+	endif
 	Utility.Wait(7)
 	playing = false
 EndFunction
@@ -52,8 +57,8 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		Utility.Wait(1)
 		safeguard = safeguard + 1
 	EndWhile
-	trace("Condiexp_Dirty OnEffectFinish" + safeguard)
 	resetMFGSmooth(PlayerRef)
+	verbose("Condiexp_Dirty OnEffectFinish.Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
 	Utility.Wait(3)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
@@ -73,31 +78,25 @@ Function _sadVariants(Int index, Actor act, int Power, int PowerCur)
 	Int expression = Utility.RandomInt(1, index)
 
 	if expression == 1
-		;act.SetExpressionOverride(3, 30)
+	
 		SmoothSetExpression(act, 3, 30, 0)
 		SmoothSetPhoneme(act,2,100)
-		;SetPhoneme(act, 2, 100)
+	
 	elseIf expression == 2
-		;act.SetExpressionOverride(3, 60)
-		SetModifier(act, 2, 50)
-		SetModifier(act, 3, 50)
-		SetModifier(act, 4, 50)
-		SetModifier(act, 5, 50)
-		SetModifier(act, 12, 50)
-		SetModifier(act, 13, 50)
+	
+		SmoothSetModifier(act,2,3,50)
+		SmoothSetModifier(act,4,5,50)
+		SmoothSetModifier(act,12,13,50)
+
 		SmoothSetExpression( act,3, 60, 0)
         SmoothSetPhoneme(act, 1, 10)
 		SmoothSetPhoneme(act, 2, 100)
 		
 	else
-		;act.SetExpressionOverride(3, 90)
-        SetModifier(act, 2, 50)
-		SetModifier(act, 3, 50)
-		SetModifier(act, 4, 50)
-		SetModifier(act, 5, 50)
-        SetModifier(act, 8, 50)
-        SetModifier(act, 12, 30)
-		SetModifier(act, 13, 30)
+		SmoothSetModifier(act,2,3,50)
+		SmoothSetModifier(act,4,5,50)
+
+		SmoothSetModifier(act,12,13,50)
 		SmoothSetExpression(act,3, 90, 0)
 		
 		SmoothSetPhoneme(act, 2, 100)

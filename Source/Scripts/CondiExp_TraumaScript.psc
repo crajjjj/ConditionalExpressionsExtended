@@ -18,6 +18,7 @@ sound property CondiExp_SobbingFemale4 auto
 sound property CondiExp_SobbingFemale5 auto
 ;todelete
 Faction Property SexLabAnimatingFaction Auto
+GlobalVariable Property Condiexp_Verbose Auto
 
 bool playing = false
 
@@ -34,14 +35,30 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function ShowExpression(int trauma) 
-	Int power = 20 + trauma*10
+	Int power = 20 + trauma * 10
 	if power > 100
 		power = 100
 	endif
-	Int randomEffect = Utility.RandomInt(1, 12)
-	trace("CondiExp_TraumaScript playing effect:" + trauma)
-	_painVariants(randomEffect, PlayerRef, power, power)
+	
+	;random skip 20%
+	Int randomSkip = Utility.RandomInt(1, 10)
+	if randomSkip > 2
+		int topMargin = 3
+		int bottomMargin = 1
+		if trauma > 4 && trauma <= 7
+			topMargin = 6
+		else
+			bottomMargin = 4
+			topMargin = 10
+		endif 
+		Int randomEffect = Utility.RandomInt(bottomMargin, topMargin)
+		verbose("CondiExp_TraumaScript Trauma: " + trauma + ".Effect: " + randomEffect, Condiexp_Verbose.GetValue() as Int)
+		_painVariants(randomEffect, PlayerRef, power, power)
+	else
+		verbose("CondiExp_TraumaScript skipping.Trauma: " + trauma, Condiexp_Verbose.GetValue() as Int)
+	endif
 	Utility.Wait(1)
+
 	Int randomLook = Utility.RandomInt(1, 10)
 	If randomLook == 2
 		LookLeft(50, PlayerRef)
@@ -63,8 +80,8 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		Utility.Wait(1)
 		safeguard = safeguard + 1
 	EndWhile
-	trace("CondiExp_TraumaScript OnEffectFinish" + safeguard)
 	resetMFGSmooth(PlayerRef)
+	verbose("CondiExp_TraumaScript OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
 	Utility.Wait(3)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
@@ -93,7 +110,7 @@ Function playBreathOrRandomSob(int trauma)
 	endIf
 
 	Int randomSob = Utility.RandomInt(1, 5)
-	trace("Playing sob: " + randomSob)
+	verbose("Playing sob: " + randomSob, Condiexp_Verbose.GetValue() as Int)
 	if randomSob == 1
 		CondiExp_SobbingFemale1.play(PlayerRef)
 	elseIf randomSob == 2
@@ -117,91 +134,83 @@ endfunction
 ; 6 - Dialogue Disgusted	14 - Mood Disgusted
 ; aiStrength is from 0 to 100 (percent)
 Function _painVariants(Int index, Actor act, int Power, int PowerCur)
-	;random skip 20%
-	if index > 10
-		return
-	endif
-
 	if Power > 100
 		Power = 100
 	endif
-	;float modifier = PowerCur / Power
-	float modifier = 1 
 
 	if index == 1
-		;act.SetExpressionOverride(1, Power)
 		SmoothSetExpression(act,1,Power,0)
-		SmoothSetPhoneme(act, 1, (10 * modifier) as Int)
-		SmoothSetPhoneme(act, 5, (30* modifier) as Int)
-		SmoothSetPhoneme(act, 7, (70* modifier) as Int)
-		SmoothSetPhoneme(act, 15, (60* modifier) as Int)
+		SmoothSetPhoneme(act, 1, 10)
+		SmoothSetPhoneme(act, 5, 30)
+		SmoothSetPhoneme(act, 7, 70)
+		SmoothSetPhoneme(act, 15, 60)
 	elseIf index == 2
-		;act.SetExpressionOverride(3, Power)
+		
 		SmoothSetExpression(act,3,Power,0)
-		SetModifier(act, 11, 50)
-		SetModifier(act, 13, 14)
-		SmoothSetPhoneme(act, 2, (50* modifier) as Int)
-		SmoothSetPhoneme(act, 13, (10* modifier) as Int)
-		SmoothSetPhoneme(act, 15, (20* modifier) as Int)
+
+		SmoothSetModifier(act,11,-1,50)
+		SmoothSetModifier(act,13,-1,14)
+
+		SmoothSetPhoneme(act, 2, 50)
+		SmoothSetPhoneme(act, 13, 10)
+		SmoothSetPhoneme(act, 15, 20)
 	elseIf index == 3
-		;act.SetExpressionOverride(3, Power)
+	
 		SmoothSetExpression(act,3,Power,0)
-		SetModifier(act, 11, 50)
-		SetModifier(act, 13, 14)
-		SmoothSetPhoneme(act, 2, (50* modifier) as Int)
-		SmoothSetPhoneme(act, 13, (15* modifier) as Int)
-		SmoothSetPhoneme(act, 15, (25* modifier) as Int)
+
+		SmoothSetModifier(act,11,-1,50)
+		SmoothSetModifier(act,13,-1,14)
+
+		SmoothSetPhoneme(act, 2, 50)
+		SmoothSetPhoneme(act, 13, 15)
+		SmoothSetPhoneme(act, 15, 25)
 	elseIf index == 4
-		;act.SetExpressionOverride(3, Power)
 		SmoothSetExpression(act,3,Power,0)
-		SetModifier(act, 11, 50)
-		SetModifier(act, 13, 14)
-		SmoothSetPhoneme(act, 2, (50* modifier) as Int)
-		SmoothSetPhoneme(act, 13, (10* modifier) as Int)
-		SmoothSetPhoneme(act, 15, (20* modifier) as Int)
+	
+		SmoothSetModifier(act,11,-1,50)
+		SmoothSetModifier(act,13,-1,14)
+
+		SmoothSetPhoneme(act, 2, 50)
+		SmoothSetPhoneme(act, 13, 10)
+		SmoothSetPhoneme(act, 15, 20)
 	elseIf index == 5
-		;act.SetExpressionOverride(9, Power)
+	
 		SmoothSetExpression(act,9, Power, 0)
-		SetModifier(act, 2, 100)
-		SetModifier(act, 3, 100)
-		SetModifier(act, 4, 100)
-		SetModifier(act, 5, 100)
-		SetModifier(act, 11, 90)
-		SmoothSetPhoneme(act, 2, (10* modifier) as Int)
-		SmoothSetPhoneme(act, 0, (10* modifier) as Int)
+	
+		SmoothSetModifier(act,2,3,100)
+		SmoothSetModifier(act,4,5,100)
+		SmoothSetModifier(act,11,-1,90)
+
+		SmoothSetPhoneme(act, 2, 10)
+		SmoothSetPhoneme(act, 0, 10)
 	elseIf index == 6
-		;act.SetExpressionOverride(9, Power)
 		SmoothSetExpression(act,9,Power,0)
-		SetModifier(act, 2, 100)
-		SetModifier(act, 3, 100)
-		SetModifier(act, 4, 100)
-		SetModifier(act, 5, 100)
-		SetModifier(act, 11, 90)
-		SmoothSetPhoneme(act, 0, (100* modifier) as Int)
-		SmoothSetPhoneme(act, 2, (100* modifier) as Int)
-		SmoothSetPhoneme(act, 11, (20* modifier) as Int)
+
+		SmoothSetModifier(act,2,3,100)
+		SmoothSetModifier(act,4,5,100)
+		SmoothSetModifier(act,11,-1,90)
+
+		SmoothSetPhoneme(act, 0, 10)
+		SmoothSetPhoneme(act, 2, 100)
+		SmoothSetPhoneme(act, 11, 20)
 	elseIf index == 7
-		;act.SetExpressionOverride(8, Power)
 		SmoothSetExpression(act,8,Power,0)
-		SetModifier(act, 0, 100)
-		SetModifier(act, 1, 100)
-		SetModifier(act, 2, 100)
-		SetModifier(act, 3, 100)
-		SetModifier(act, 4, 100)
-		SetModifier(act, 5, 100)
-		SmoothSetPhoneme(act, 2, (100* modifier) as Int)
-		SmoothSetPhoneme(act, 5, (40* modifier) as Int)
+
+		SmoothSetModifier(act,0,1,100)
+		SmoothSetModifier(act,2,3,100)
+
+		SmoothSetModifier(act,4,5,100)
+		SmoothSetPhoneme(act, 2, 100)
+		SmoothSetPhoneme(act, 5, 40)
 	else
-		;act.SetExpressionOverride(8, Power)
 		SmoothSetExpression(act,8,Power,0)
-		SetModifier(act, 0, 100)
-		SetModifier(act, 1, 100)
-		SetModifier(act, 2, 100)
-		SetModifier(act, 3, 100)
-		SetModifier(act, 4, 100)
-		SetModifier(act, 5, 100)
-		SetPhoneme(act, 2, (50* modifier) as Int)
-		SmoothSetPhoneme(act, 5, (50* modifier) as Int)
-		SmoothSetPhoneme(act, 11, (10* modifier) as Int)
+	
+		SmoothSetModifier(act,0,1,100)
+		SmoothSetModifier(act,2,3,100)
+		SmoothSetModifier(act,4,5,100)
+
+		SmoothSetPhoneme(act, 2, 50)
+		SmoothSetPhoneme(act, 5, 50)
+		SmoothSetPhoneme(act, 11, 10)
 	endIf
 endFunction

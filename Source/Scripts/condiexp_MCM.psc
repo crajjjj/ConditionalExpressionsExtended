@@ -20,6 +20,7 @@ GlobalVariable Property Condiexp_Sounds Auto
 GlobalVariable Property Condiexp_GlobalTrauma Auto
 GlobalVariable Property Condiexp_GlobalDirty Auto
 GlobalVariable Property Condiexp_GlobalAroused Auto
+GlobalVariable Property Condiexp_Verbose Auto
 
 Race Property OrcRace Auto
 Race Property OrcRaceVampire Auto
@@ -50,6 +51,7 @@ int Sounds_B
 int Trauma_B
 int Dirty_B
 int Aroused_B
+int Verbose_B
 
 bool CombatToggle = true
 bool DrunkToggle = true
@@ -66,6 +68,7 @@ bool SoundsToggle = True
 bool TraumaToggle = true
 bool DirtyToggle = true
 bool ArousedToggle = true
+bool VerboseToggle = false 
 
 int EatingFastSlow_M
 string EatingFastSlow
@@ -151,7 +154,7 @@ AddHeaderOption("Maintenance")
 Update = AddTextOption("Update/Restart", "")
 restore = AddTextOption("Reset Current Expression", "")
 Uninstall = AddTextOption("Prepare to Uninstall", "")
-
+Verbose_B =  AddToggleOption("Verbose Notifications", VerboseToggle)
 EndIf
 endEvent
 
@@ -325,6 +328,15 @@ if (option == Combat_B) && CombatToggle == True
 		SetToggleOptionValue(Aroused_B, ArousedToggle)
 		Condiexp_GlobalAroused.SetValue(1)
 
+	elseif (option == Verbose_B) && VerboseToggle == True
+		VerboseToggle = False
+		SetToggleOptionValue(Verbose_B, VerboseToggle)
+		Condiexp_Verbose.SetValue(0)
+	elseif (option == Verbose_B) && VerboseToggle == False
+		VerboseToggle = True
+		SetToggleOptionValue(Verbose_B, VerboseToggle)
+		Condiexp_Verbose.SetValue(1)
+
 	elseif (option == Sounds_B) && SoundsToggle == True
 		SoundsToggle = False
 		SetToggleOptionValue(Sounds_B, SoundsToggle)
@@ -396,6 +408,8 @@ elseif (option == Dirty_B)
 SetInfoText("Your character will react to dirt (disgusted subtle expressions).\n Integrated with Dirt&Blood,Keep it clean,Bathing in Skyrim")
 elseif (option == Aroused_B)
 	SetInfoText("Your character will react to arousal (pleasure subtle expressions).\n Integrated with SexLab Aroused")
+elseif (option == Verbose_B)
+	SetInfoText("Verbose debug notifications")
 endif
 endevent
 

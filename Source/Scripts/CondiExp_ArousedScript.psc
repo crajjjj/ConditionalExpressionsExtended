@@ -9,6 +9,8 @@ GlobalVariable Property Condiexp_GlobalAroused Auto
 GlobalVariable Property Condiexp_CurrentlyAroused Auto
 GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_Sounds Auto
+GlobalVariable Property Condiexp_Verbose Auto
+
 bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
@@ -29,12 +31,21 @@ Function ShowExpression(int aroused)
 		power = 100
 	endif
 	int i = 0
-	trace("CondiExp_ArousedScript playing effect")
-
+	
 	;random skip 20%
 	Int randomSkip = Utility.RandomInt(1, 10)
 	if randomSkip > 2
-		_arousedVariants(aroused, PlayerRef, power, power)
+		int topMargin = 3
+		if aroused > 50 &&  aroused <= 80
+			topMargin = 5
+		else
+			topMargin = 6
+		endif 
+		Int randomEffect = Utility.RandomInt(1, topMargin)
+		verbose("CondiExp_ArousedScript arousal: " + aroused + ".Effect: " + randomEffect, Condiexp_Verbose.GetValue() as Int)
+		_arousedVariants(randomEffect, PlayerRef, power, power)
+	else
+		verbose("CondiExp_ArousedScript skipping.Arousal: " + aroused, Condiexp_Verbose.GetValue() as Int)
 	endif
 
 	Int randomLook = Utility.RandomInt(1, 10)
@@ -46,7 +57,7 @@ Function ShowExpression(int aroused)
 		LookDown(50, PlayerRef)
 	endif 
 	
-	Utility.Wait(10)
+	Utility.Wait(5)
 	playing = false
 EndFunction
 
@@ -59,8 +70,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	EndWhile
 	resetMFGSmooth(PlayerRef)
 	Utility.Wait(3)
-	trace("CondiExp_ArousedScript OnEffectFinish " + safeguard)
-	
+	verbose("CondiExp_ArousedScript OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
 
@@ -76,75 +86,62 @@ EndEvent
 ; 6 - Dialogue Disgusted	14 - Mood Disgusted
 ; aiStrength is from 0 to 100 (percent)
 Function _arousedVariants(Int index, Actor act, int Power, int PowerCur)
-	;float modifier = PowerCur / Power
-	float modifier = 1 
 	if Power > 100
 		Power = 100
 	endif
+	
+	if index == 1
 
-	if index > 0 &&  index <= 40
-		;act.SetExpressionOverride(2, Power)
 		SmoothSetExpression(act, 2, Power, 0)
-		SmoothSetPhoneme(act, 5, (30* modifier) as Int)
-		SmoothSetPhoneme(act, 6, (10* modifier) as Int)
-	elseIf  index > 40 &&  index <= 50
-		;act.SetExpressionOverride(10, Power)
+		SmoothSetPhoneme(act, 5, 30)
+		SmoothSetPhoneme(act, 6, 10)
+	elseIf  index == 2
 		SmoothSetExpression(act, 10, Power, 0)
-		SetModifier(act, 0, 10)
-		SetModifier(act, 1, 10)
-		SetModifier(act, 3, 25)
-		SetModifier(act, 6, 100)
-		SetModifier(act, 7, 100)
-		SetModifier(act, 12, 30)
-		SetModifier(act, 13, 30)
-		SmoothSetPhoneme(act, 4, (35* modifier) as Int)
-		SmoothSetPhoneme(act, 10, (20* modifier) as Int)
-		SmoothSetPhoneme(act, 12, (30* modifier) as Int)
-	elseIf  index > 50 &&  index <= 60
-		;act.SetExpressionOverride(4, Power)
+		
+		SmoothSetModifier(act,0,1,10)
+		SmoothSetModifier(act,2,3,25)
+		SmoothSetModifier(act,6,7,100)
+		SmoothSetModifier(act,12,13,30)
+		
+		SmoothSetPhoneme(act, 4, 35)
+		SmoothSetPhoneme(act, 10, 20)
+		SmoothSetPhoneme(act, 12, 30)
+	elseIf  index == 3
 		SmoothSetExpression(act, 4, Power, 0)
+
 		SetModifier(act, 11, 20)
-		SmoothSetPhoneme(act, 1, (10* modifier) as Int)
-		SmoothSetPhoneme(act, 11, (10* modifier) as Int)
-	elseIf  index > 60 &&  index <= 70
-		;act.SetExpressionOverride(10, Power)
+
+		SmoothSetPhoneme(act, 1, 10)
+		SmoothSetPhoneme(act, 11, 10)
+	elseIf  index == 4
+
 		SmoothSetExpression(act, 10, Power, 0)
-		SmoothSetPhoneme(act, 0, (30* modifier) as Int)
-		SmoothSetPhoneme(act, 7, (60* modifier) as Int)
-		SmoothSetPhoneme(act, 12, (60* modifier) as Int)
-		SetModifier(act, 0, 30)
-		SetModifier(act, 1, 30)
-		SetModifier(act, 4, 100)
-		SetModifier(act, 5, 100)
-		SetModifier(act, 12, 30)
-		SetModifier(act, 13, 30)
-	elseIf index > 70 &&  index <= 80
-		;act.SetExpressionOverride(10, Power)
+		SmoothSetPhoneme(act, 0, 30)
+		SmoothSetPhoneme(act, 7, 60)
+		SmoothSetPhoneme(act, 12, 60)
+
+		SmoothSetModifier(act,0,1,30)
+		SmoothSetModifier(act,4,5,100)
+		SmoothSetModifier(act,12,13,30)
+	elseIf index == 5
 		SmoothSetExpression(act, 10, Power, 0)
-		SmoothSetPhoneme(act, 0, (60* modifier) as Int)
-		SmoothSetPhoneme(act, 6, (50* modifier) as Int)
-		SmoothSetPhoneme(act, 7, (50* modifier) as Int)
-		SetModifier(act, 0, 30)
-		SetModifier(act, 1, 30)
-		SetModifier(act, 2, 70)
-		SetModifier(act, 3, 70)
-		SetModifier(act, 4, 100)
-		SetModifier(act, 5, 100)
-		SetModifier(act, 12, 40)
-		SetModifier(act, 13, 40)
+		SmoothSetPhoneme(act, 0, 60)
+		SmoothSetPhoneme(act, 6, 50)
+		SmoothSetPhoneme(act, 7, 50)
+
+		SmoothSetModifier(act,0,1,30)
+		SmoothSetModifier(act,2,3,70)
+		SmoothSetModifier(act,4,5,100)
+		SmoothSetModifier(act,12,13,40)
 	else
-		;act.SetExpressionOverride(7, Power)
 		SmoothSetExpression(act, 7, Power, 0)
-		SmoothSetPhoneme(act, 0, (60* modifier) as Int)
-		SmoothSetPhoneme(act, 6, (50* modifier) as Int)
-		SmoothSetPhoneme(act, 7, (50* modifier) as Int)
-		SetModifier(act, 0, 30)
-		SetModifier(act, 1, 30)
-		SetModifier(act, 2, 80)
-		SetModifier(act, 3, 80)
-		SetModifier(act, 4, 100)
-		SetModifier(act, 5, 100)
-		SetModifier(act, 12, 60)
-		SetModifier(act, 13, 60)
+		SmoothSetPhoneme(act, 0, 60)
+		SmoothSetPhoneme(act, 6, 50)
+		SmoothSetPhoneme(act, 7, 50)
+
+		SmoothSetModifier(act,0,1,30)
+		SmoothSetModifier(act,2,3,80)
+		SmoothSetModifier(act,4,5,100)
+		SmoothSetModifier(act,12,13,60)
 	endIf
 endFunction

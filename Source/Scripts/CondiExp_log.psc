@@ -28,6 +28,13 @@ Function trace(String msg, Int aiPriority = 0) Global
 	;log(msg,aiPriority)
 EndFunction
 
+Function verbose(String msg, Int enabled = 0) Global 
+	;log(msg,aiPriority)
+	If (enabled == 1)
+		Debug.Notification("[CondiExp] " + msg)
+	EndIf
+EndFunction
+
 Function logAndPrintConsole(String asMessage, Int aiPriority = 0) Global
 	log(asMessage,aiPriority)
 	PrintConsole(asMessage)

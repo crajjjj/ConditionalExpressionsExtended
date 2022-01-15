@@ -66,6 +66,8 @@ Quest sexlab
 Faction zbfFactionSlave
 ;Devious Devices
 MagicEffect zadGagEffect
+;Toys
+Keyword ToysEffectMouthOpen 
 ;SLA
 Quest sla
 
@@ -112,6 +114,12 @@ function init()
 	endif
 	if sexlab
 		log("CondiExp_StartMod: Found SexLab: " + sexlab.GetName())
+	endif
+	if !ToysEffectMouthOpen && isToysReady()
+		ToysEffectMouthOpen = Game.GetFormFromFile(0x0008C2, "Toys.esm") as Keyword
+	endif
+	if ToysEffectMouthOpen
+		log("CondiExp_StartMod: Found Toys: " + ToysEffectMouthOpen.GetName() )
 	endif
 
 	; checking what bath mod is loaded
@@ -189,7 +197,12 @@ Bool function checkIfModShouldBeSuspended()
 		log("CondiExp_StartMod: dd gag effect was detected. Will suspend")
 		return true
 	endif
-	
+
+	if ToysEffectMouthOpen && PlayerRef.WornHasKeyword(ToysEffectMouthOpen)
+		log("CondiExp_StartMod: ToysEffectMouthOpen effect was detected. Will suspend")
+		return true
+	endif
+
 	if (PlayerRef.IsInFaction(SexLabAnimatingFaction))
 		;check is implemented in ck as well
 		log("CondiExp_StartMod: player is in sl faction. Will suspend")

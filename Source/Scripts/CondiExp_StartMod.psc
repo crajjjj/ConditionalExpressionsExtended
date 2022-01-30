@@ -65,11 +65,12 @@ Quest sexlab
 ;Zaz slave faction
 Faction zbfFactionSlave
 ;Devious Devices
-MagicEffect zadGagEffect
+MagicEffect vZadGagEffect
 ;Toys
 Keyword ToysEffectMouthOpen 
 ;SLA
 Quest sla
+Faction slaArousalFaction
 
 int _checkPlugins = 0
 
@@ -80,7 +81,7 @@ EndEvent
 
 Event onPlayerLoadGame()
 	log("CondiExp_StartMod: Game reload event")
-	_checkPlugins = 1 
+	_checkPlugins = 1
 	RegisterForSingleUpdate(1)
 endEvent
 
@@ -97,16 +98,19 @@ function init()
 	if zbfFactionSlave
 		log("CondiExp_StartMod: Found ZaZAnimationPack: " + zbfFactionSlave.GetName() )
 	endif
-	if !zadGagEffect && isDDintegrationReady()
-		zadGagEffect = Game.GetFormFromFile(0x02B077, "Devious Devices - Integration.esm") as MagicEffect
+	if !vZadGagEffect && isDDintegrationReady()
+		vZadGagEffect = Game.GetFormFromFile(0x02B077, "Devious Devices - Integration.esm") as MagicEffect
 	endif
-	if zadGagEffect
-		log("CondiExp_StartMod: Found Devious Devices - Integration: " + zadGagEffect.GetName() )
+	if vZadGagEffect
+		log("CondiExp_StartMod: Found Devious Devices - Integration: " + vZadGagEffect.GetName() )
 	endif
-	if !sla && isSLAReady()
-		sla = Game.GetFormFromFile(0x4290F, "SexLabAroused.esm") As Quest
+	if !sla || !slaArousalFaction
+		if isSLAReady()
+			sla = Game.GetFormFromFile(0x4290F, "SexLabAroused.esm") As Quest
+			slaArousalFaction = Game.GetFormFromFile(0x3FC36, "SexLabAroused.esm") As Faction
+		endif
 	endif
-	if sla
+	if sla && slaArousalFaction
 		log("CondiExp_StartMod: Found SexLabAroused: " + sla.GetName() )
 	endif
 	if !sexlab && isSLReady()
@@ -119,7 +123,7 @@ function init()
 		ToysEffectMouthOpen = Game.GetFormFromFile(0x0008C2, "Toys.esm") as Keyword
 	endif
 	if ToysEffectMouthOpen
-		log("CondiExp_StartMod: Found Toys: " + ToysEffectMouthOpen.GetName() )
+		log("CondiExp_StartMod: Found Toys: " + ToysEffectMouthOpen.GetName())
 	endif
 
 	; checking what bath mod is loaded
@@ -193,7 +197,7 @@ Bool function checkIfModShouldBeSuspended()
 		return true
 	endif
 
-	if zadGagEffect && PlayerRef.HasMagicEffect(zadGagEffect)
+	if vZadGagEffect && PlayerRef.HasMagicEffect(vZadGagEffect)
 		log("CondiExp_StartMod: dd gag effect was detected. Will suspend")
 		return true
 	endif
@@ -325,7 +329,7 @@ function updateArousalStatus()
 	int aroused = 0
 	;check sla
 	if sla
-		aroused = getArousal0To100(PlayerRef, sla)
+		aroused = getArousal0To100(PlayerRef, sla, slaArousalFaction)
 		if aroused > 0 && aroused > Condiexp_MinAroused.GetValue()
 			Condiexp_CurrentlyAroused.SetValue(aroused)
 			trace("CondiExp_StartMod: updateArousalStatus(): " + Condiexp_CurrentlyAroused.getValue())

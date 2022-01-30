@@ -11,7 +11,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 10206
+    Return 10207
     ; 1.0.0   -> 10000
     ; 1.1.0   -> 10100
     ; 1.1.1  -> 10101
@@ -20,7 +20,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.2.6"
+    Return "1.2.7"
 EndFunction
 
 String Function StringIfElse(Bool isTrue, String returnTrue, String returnFalse = "") Global
@@ -40,7 +40,7 @@ Bool Function isDDintegrationReady() Global
 EndFunction
 
 Bool Function isZaZReady() Global
-	Return isDependencyReady("ZaZAnimationPack.esm") 
+	Return isDependencyReady("ZaZAnimationPack.esm")
 EndFunction
 
 bool Function isSLReady() global
@@ -48,11 +48,11 @@ bool Function isSLReady() global
 EndFunction
 
 Bool Function isSLAReady() Global
-	Return isDependencyReady("SexLabAroused.esm") 
+	Return isDependencyReady("SexLabAroused.esm")
 EndFunction
 
 Bool Function isToysReady() Global
-	Return isDependencyReady("Toys.esm") 
+	Return isDependencyReady("Toys.esm")
 EndFunction
 
 Bool Function isDependencyReady(String modname) Global

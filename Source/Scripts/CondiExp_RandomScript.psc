@@ -1,6 +1,8 @@
 Scriptname CondiExp_RandomScript extends ActiveMagicEffect  
 import CondiExp_util
 import CondiExp_log
+import CondiExp_Expression_Util
+
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyCold Auto
 GlobalVariable Property Condiexp_ColdGlobal Auto
@@ -43,8 +45,8 @@ EndFunction
 Event OnUpdate()
 	If !PlayerRef.GetAnimationVariableInt("i1stPerson")
 		If Condiexp_CurrentlyBusy.GetValue() == 0
-				ShowExpression() 
-				doRegister() 
+				ShowExpression()
+				doRegister()
 			Else
 				playing = false
 		EndIf

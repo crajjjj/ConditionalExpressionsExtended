@@ -31,6 +31,7 @@ CondiExp_StartMod Property Go Auto
 Spell Property CondiExp_Effects Auto
 Actor Property PlayerRef Auto
 Quest Property CondiExpQuest Auto
+Quest Property CondiExpFollowerQuest Auto
 
 
 int Combat_B
@@ -52,6 +53,7 @@ int Trauma_B
 int Dirty_B
 int Aroused_B
 int Verbose_B
+int Followers_B
 
 bool CombatToggle = true
 bool DrunkToggle = true
@@ -69,6 +71,7 @@ bool TraumaToggle = true
 bool DirtyToggle = true
 bool ArousedToggle = true
 bool VerboseToggle = false 
+bool FollowersToggle = false 
 
 int EatingFastSlow_M
 string EatingFastSlow
@@ -129,9 +132,9 @@ AddEmptyOption()
 AddEmptyOption()
 EatingFastSlow_M = AddMenuOption("Eating Expression", EatingFastSlowList[EatingFastSlowIndex])
 If PlayerRef.IsInCombat()
-Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle, OPTION_FLAG_DISABLED)
+	Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle, OPTION_FLAG_DISABLED)
 else
-Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle)
+	Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle)
 endif
 Random_B = AddToggleOption("Random Idle Expressions", RandomToggle)
 Cold_B = AddToggleOption("Cold Expression", ColdToggle)
@@ -155,6 +158,7 @@ Update = AddTextOption("Update/Restart", "")
 restore = AddTextOption("Reset Current Expression", "")
 Uninstall = AddTextOption("Prepare to Uninstall", "")
 Verbose_B =  AddToggleOption("Verbose Notifications", VerboseToggle)
+Followers_B =  AddToggleOption("Followers Support", CondiExpFollowerQuest.IsRunning())
 EndIf
 endEvent
 
@@ -337,32 +341,47 @@ if (option == Combat_B) && CombatToggle == True
 		SetToggleOptionValue(Verbose_B, VerboseToggle)
 		Condiexp_Verbose.SetValue(1)
 
+	elseif (option == Followers_B) && FollowersToggle == True
+		FollowersToggle = False
+		SetToggleOptionValue(Followers_B, FollowersToggle)
+		StopQuest(CondiExpFollowerQuest)
+	elseif (option == Followers_B) && FollowersToggle == False
+		FollowersToggle = True
+		SetToggleOptionValue(Followers_B, FollowersToggle)
+		ResetQuest(CondiExpFollowerQuest)
+
+
 	elseif (option == Sounds_B) && SoundsToggle == True
 		SoundsToggle = False
 		SetToggleOptionValue(Sounds_B, SoundsToggle)
 		Condiexp_Sounds.SetValue(0)
 	elseif (option == Sounds_B) && SoundsToggle == False
 		SoundsToggle = True
-		SetToggleOptionValue(Sounds_B, SoundsToggle)	
+		SetToggleOptionValue(Sounds_B, SoundsToggle)
 		DetectRace()
 	
 	elseif option == restore
-	ShowMessage("Default expression restored - If in the middle of a face animation, expression will be restored once animation is finished.")
-	Go.resetConditions()
-	resetMFG(PlayerRef)
-
+		ShowMessage("Default expression restored - If in the middle of a face animation, expression will be restored once animation is finished.")
+		Go.resetConditions()
+		resetMFG(PlayerRef)
 
 	elseif option == uninstall
-	ShowMessage("Mod is now prepared to be uninstalled. Please, exit menu, save and uninstall. Keep in mind: It's never 100% safe to uninstall mods mid-game, always make back-ups of your saves before installing mods!")
-	Go.StopMod()
-	CondiExpQuest.Stop()
+		ShowMessage("Mod is now prepared to be uninstalled. Please, exit menu, save and uninstall. Keep in mind: It's never 100% safe to uninstall mods mid-game, always make back-ups of your saves before installing mods!")
+		Go.StopMod()
+		StopQuest(CondiExpFollowerQuest)
+		StopQuest(CondiExpQuest)
+
 
 	elseif option == update
-	ShowMessage("Please, exit menu. All functionalities will be restarted.")
-	Utility.Wait(0.5)
-	Go.StopMod()
-	Go.StartMod()
-	Debug.Notification("Conditional Expressions has been restarted correctly!")
+		ShowMessage("Please, exit menu. All functionalities will be restarted.")
+		Utility.Wait(0.5)
+		Go.StopMod()
+		Go.StartMod()
+		if (FollowersToggle)
+			ResetQuest(CondiExpFollowerQuest)
+		endIf
+		
+		Debug.Notification("Conditional Expressions has been restarted correctly!")
 	endif
 endevent
 

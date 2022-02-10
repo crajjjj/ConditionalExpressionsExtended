@@ -174,7 +174,7 @@ Event OnUpdate()
 	updateArousalStatus()
 
 	;check if there's a conflicting mod based on custom conditions
-	if checkIfModShouldBeSuspended()
+	if checkIfModShouldBeSuspended(PlayerRef)
 		if isModEnabled()
 			log("CondiExp_StartMod: suspended according to conditions check")
 			Condiexp_ModSuspended.SetValue(1)
@@ -192,24 +192,24 @@ Event OnUpdate()
 	
 EndEvent
 
-Bool function checkIfModShouldBeSuspended()
+Bool function checkIfModShouldBeSuspended(Actor act)
 	if isSuspendedByDhlpEvent
 		return true
 	endif
 
-	if vZadGagEffect && PlayerRef.HasMagicEffect(vZadGagEffect)
-		log("CondiExp_StartMod: dd gag effect was detected. Will suspend")
+	if vZadGagEffect && act.HasMagicEffect(vZadGagEffect)
+		log("CondiExp_StartMod: dd gag effect was detected. Will suspend for actor:" + act.GetName() )
 		return true
 	endif
 
-	if ToysEffectMouthOpen && PlayerRef.WornHasKeyword(ToysEffectMouthOpen)
-		log("CondiExp_StartMod: ToysEffectMouthOpen effect was detected. Will suspend")
+	if ToysEffectMouthOpen && act.WornHasKeyword(ToysEffectMouthOpen)
+		log("CondiExp_StartMod: ToysEffectMouthOpen effect was detected. Will suspend for actor:" + act.GetName())
 		return true
 	endif
 
-	if (PlayerRef.IsInFaction(SexLabAnimatingFaction))
+	if (act.IsInFaction(SexLabAnimatingFaction))
 		;check is implemented in ck as well
-		log("CondiExp_StartMod: player is in sl faction. Will suspend")
+		log("CondiExp_StartMod: actor is in sl faction. Will suspend for actor:" + act.GetName())
 		return true
 	endif
 

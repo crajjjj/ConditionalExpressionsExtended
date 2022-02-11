@@ -1,6 +1,7 @@
 Scriptname Condiexp_Dirty extends ActiveMagicEffect  
 import CondiExp_log
 import CondiExp_util
+import CondiExp_Expression_Util
 Import mfgconsolefunc
 
 GlobalVariable Property Condiexp_CurrentlyBusy Auto

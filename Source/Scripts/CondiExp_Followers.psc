@@ -79,17 +79,20 @@ Event OnUpdate()
 	EndIf
 
 	If (act.GetActorValuePercentage("Health") < 0.34 && GetExpressionID(act) != 1)
+		log("CondiExp_Followers actor: " + act.GetName() + ".Low health emotion")
 		exp_value = SmoothSetExpression(act, 1, RandomInt(50, 100), exp_value)
 		RegisterForSingleUpdate(sm.Condiexp_UpdateInterval.GetValue())
 		Return
 	EndIf
 
 	If (act.IsInCombat() && GetExpressionID(act) != 15 && act.GetActorValuePercentage("Health") >= 0.34)
+		log("CondiExp_Followers actor: " + act.GetName() + ".In combat emotion")
 		exp_value = SmoothSetExpression(act, 15, RandomInt(50, 100), exp_value)
 		RegisterForSingleUpdate(sm.Condiexp_UpdateInterval.GetValue())
 		Return
 	EndIf
 
+	log("CondiExp_Followers actor: " + act.GetName() + ".Random emotion")
 	RandomEmotion(act)
 	RegisterForSingleUpdate(sm.Condiexp_UpdateInterval.GetValue())
 EndEvent

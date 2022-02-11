@@ -1,5 +1,6 @@
 Scriptname CondiExp_Fatigue extends activemagiceffect  
 import CondiExp_util
+import CondiExp_Expression_Util
 
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_Sounds Auto

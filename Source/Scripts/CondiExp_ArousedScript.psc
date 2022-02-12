@@ -38,7 +38,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	EndWhile
 	resetMFGSmooth(PlayerRef)
 	Utility.Wait(3)
-	verbose("CondiExp_ArousedScript OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
+	verbose(akTarget, "Aroused: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
 

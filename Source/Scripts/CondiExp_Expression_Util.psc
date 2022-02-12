@@ -7,7 +7,7 @@ import Math
 import CondiExp_log
 import CondiExp_util
 
-Function PlayArousedExpression(Actor akTarget, int aroused, int verboseInt) global
+Function PlayArousedExpression(Actor act, int aroused, int verboseInt) global
 	Int power = 20 + aroused
 	if power > 100
 		power = 100
@@ -24,17 +24,17 @@ Function PlayArousedExpression(Actor akTarget, int aroused, int verboseInt) glob
 			topMargin = 6
 		endif 
 		Int randomEffect = Utility.RandomInt(1, topMargin)
-		verbose("CondiExp_Aroused actor: " + akTarget.GetName() + ".Arousal: " + aroused + ".Effect: " + randomEffect, verboseInt)
-		_arousedVariants(randomEffect, akTarget, power, power)
+		verbose(act, "Aroused: Arousal: " + aroused + ".Effect: " + randomEffect, verboseInt)
+		_arousedVariants(randomEffect, act, power, power)
 	endif
 
 	Int randomLook = Utility.RandomInt(1, 10)
 	If randomLook == 2
-		LookLeft(50, akTarget)
+		LookLeft(50, act)
 	ElseIf randomLook == 4
-		LookRight(50, akTarget)
+		LookRight(50, act)
 	ElseIf randomLook == 8
-		LookDown(50, akTarget)
+		LookDown(50, act)
 	endif 
 	Utility.Wait(5)
 EndFunction
@@ -57,10 +57,10 @@ Function PlayTraumaExpression(Actor act, int trauma, int verboseInt) global
 			topMargin = 10
 		endif 
 		Int randomEffect = Utility.RandomInt(bottomMargin, topMargin)
-		verbose("CondiExp_TraumaScript Trauma: " + trauma + ".Effect: " + randomEffect, verboseInt)
+		verbose(act,"Trauma: Trauma: " + trauma + ".Effect: " + randomEffect, verboseInt)
 		_painVariants(randomEffect, act, power, power)
 	else
-		verbose("CondiExp_TraumaScript skipping. Trauma: " + trauma, verboseInt)
+		verbose(act,"Trauma: skipping. Trauma: " + trauma, verboseInt)
 	endif
 	Utility.Wait(1)
 
@@ -80,10 +80,10 @@ Function PlayDirtyExpression(Actor act, int dirty, int verboseInt) global
 	;random skip 33%
 	Int randomSkip = Utility.RandomInt(1, 10)
 	if randomSkip > 3
-		verbose("Condiexp_Dirty playing effect: " + dirty, verboseInt)
+		verbose(act, "Dirty: playing effect: " + dirty, verboseInt)
     	_sadVariants(dirty, act, power, power)
 	else
-		verbose("Condiexp_Dirty skipping effect: " + dirty, verboseInt)
+		verbose(act, "Dirty: skipping effect: " + dirty, verboseInt)
 	endif
 
 	Int randomLook = Utility.RandomInt(1, 10)

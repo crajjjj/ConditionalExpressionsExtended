@@ -28,10 +28,11 @@ Function trace(String msg, Int aiPriority = 0) Global
 	;log(msg,aiPriority)
 EndFunction
 
-Function verbose(String msg, Int enabled = 0) Global 
+Function verbose(Actor act, String msg, Int enabled = 0) Global 
 	;log(msg,aiPriority)
 	If (enabled == 1)
-		Debug.Notification("[CondiExp] " + msg)
+		Debug.Notification("[CondiExp] (Actor:"+ act.GetLeveledActorBase().GetName() +") " + msg)
+		log(msg)
 	EndIf
 EndFunction
 

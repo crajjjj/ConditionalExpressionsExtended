@@ -17,7 +17,7 @@ GlobalVariable Property Condiexp_GlobalRandom Auto
 GlobalVariable Property Condiexp_Verbose Auto
 bool playing = false
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	verbose("CondiExp_RandomScript OnEffectStart", Condiexp_Verbose.GetValue() as Int)
+	verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValue() as Int)
 	ShowExpression()
 	doRegister() 
 	playing = true
@@ -61,6 +61,6 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		safeguard = safeguard + 1
 	EndWhile
 	resetMFG(PlayerRef)
-	verbose("CondiExp_RandomScript OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int )
+	verbose(akTarget, "Random: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int )
 	Utility.Wait(3)
 EndEvent

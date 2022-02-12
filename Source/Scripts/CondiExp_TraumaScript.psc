@@ -46,7 +46,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		safeguard = safeguard + 1
 	EndWhile
 	resetMFGSmooth(PlayerRef)
-	verbose("CondiExp_TraumaScript OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
+	verbose(akTarget, "Trauma: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
 	Utility.Wait(3)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
@@ -74,7 +74,7 @@ Function playBreathOrRandomSob(int trauma)
 	endIf
 
 	Int randomSob = Utility.RandomInt(1, 5)
-	verbose("Playing sob: " + randomSob, Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef, "Playing sob: " + randomSob, Condiexp_Verbose.GetValue() as Int)
 	if randomSob == 1
 		CondiExp_SobbingFemale1.play(PlayerRef)
 	elseIf randomSob == 2

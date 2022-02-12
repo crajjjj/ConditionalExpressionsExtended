@@ -24,18 +24,24 @@ EndFunction
 
 Event OnPlayerLoadGame()
 	ResetQuest(this_quest)
+	log("CondiExp_Followers OnPlayerLoadGame.Actor: " + act.GetName())
 EndEvent
 
 Event OnInit()
-	act = self.GetRef() as Actor
+	act = self.GetActorReference()
 	If (!act)
 		Return
 	EndIf
 	While (!ResetPhonemeModifier(act))
 		Wait(1.0)
 	EndWhile
+	If act == Game.GetPlayer()
+		Notification("FollowersQuest: started")
+		Return
+	EndIf
+	log("CondiExp_Followers OnInit. Actor: " + act.GetName())
 	Defaults()
-	RegisterForSingleUpdate(sm.Condiexp_UpdateInterval.GetValue())
+	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 EndEvent
 
 Event OnUpdate()
@@ -45,17 +51,15 @@ Event OnUpdate()
 		EndIf
 		Wait(5.0)
 	EndWhile
+
+	resetMFGSmooth(act)
+
+	If (sm.checkIfModShouldBeSuspended(act))
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		return
+	endif
 	
-	if (sm.checkIfModShouldBeSuspended(act))
-		return
-	endif
-
-	If (!sm.isModEnabled())
-		return
-	endif
-
 	If (act.IsDead())
-		ResetPhonemeModifier(act)
 		If (RandomInt(0, 1))
 			SmoothSetModifier(act, 6, 7, RandomInt(80, 100))
 			SmoothSetModifier(act, 11, -1, 100)
@@ -71,30 +75,53 @@ Event OnUpdate()
 
 	If (act.GetSleepState() == 3)
 		If (GetModifier(act, 0) != 90)
-			ResetPhonemeModifier(act)
 			SmoothSetModifier(act, 0, 1, 90)
 		EndIf
-		RegisterForSingleUpdate(sm.Condiexp_UpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
 
 	If (act.GetActorValuePercentage("Health") < 0.34 && GetExpressionID(act) != 1)
-		log("CondiExp_Followers actor: " + act.GetName() + ".Low health emotion")
-		exp_value = SmoothSetExpression(act, 1, RandomInt(50, 100), exp_value)
-		RegisterForSingleUpdate(sm.Condiexp_UpdateInterval.GetValue())
+		trace("CondiExp_Followers Low health emotion.Aactor: " + act.GetName())
+		SmoothSetExpression(act, 1, RandomInt(50, 100), 0)
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
 
 	If (act.IsInCombat() && GetExpressionID(act) != 15 && act.GetActorValuePercentage("Health") >= 0.34)
-		log("CondiExp_Followers actor: " + act.GetName() + ".In combat emotion")
-		exp_value = SmoothSetExpression(act, 15, RandomInt(50, 100), exp_value)
-		RegisterForSingleUpdate(sm.Condiexp_UpdateInterval.GetValue())
+		trace("CondiExp_Followers In combat emotion.Actor: " + act.GetName())
+		SmoothSetExpression(act, 15, RandomInt(50, 100), 0)
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
 
-	log("CondiExp_Followers actor: " + act.GetName() + ".Random emotion")
+	int trauma = sm.getTraumaStatus(act)
+	If (trauma > 0)
+		trace("CondiExp_Followers Trauma emotion. Actor: " + act.GetName())
+		PlayTraumaExpression( act, trauma, sm.Condiexp_Verbose.GetValue() as Int )
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		Return
+	EndIf
+
+	int dirty = sm.getDirtyStatus(act)
+	If (dirty > 0)
+		trace("CondiExp_Followers Dirty emotion. Actor: " + act.GetName())
+		PlayDirtyExpression( act, dirty, sm.Condiexp_Verbose.GetValue() as Int)
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		Return
+	EndIf
+
+	int aroused = sm.getArousalStatus(act)
+	If (aroused > 0)
+		trace("CondiExp_Followers Aroused emotion. Actor: " + act.GetName())
+		PlayArousedExpression( act, aroused, sm.Condiexp_Verbose.GetValue() as Int)
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		Return
+	EndIf
+
+	trace("CondiExp_Followers Random emotion. Actor: " + act.GetName() + ".")
 	RandomEmotion(act)
-	RegisterForSingleUpdate(sm.Condiexp_UpdateInterval.GetValue())
+	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 EndEvent
 
 

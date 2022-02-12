@@ -1,6 +1,8 @@
 Scriptname CondiExp_util Hidden
 
 Import Debug
+Import CondiExp_util
+Import CondiExp_log
 Import mfgconsolefunc
 import Utility
 import Math
@@ -28,9 +30,11 @@ Function ResetQuest(Quest this_quest) Global
 		Wait(1.0)
 	EndWhile
 	If (this_quest.IsRunning())
+		CondiExp_log.log("Stopping Quest:" + this_quest.GetName())
 		this_quest.Reset()
 		this_quest.Stop()
 	EndIf
+	CondiExp_log.log("Starting Quest:" + this_quest.GetName())
 	this_quest.Start()
 EndFunction
 
@@ -39,6 +43,7 @@ Function StopQuest(Quest this_quest) Global
 		Wait(1.0)
 	EndWhile
 	If (this_quest.IsRunning())
+		CondiExp_log.log("Stopping Quest:" + this_quest.GetName())
 		this_quest.Reset()
 		this_quest.Stop()
 	EndIf

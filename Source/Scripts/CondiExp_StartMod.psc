@@ -36,6 +36,8 @@ GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_Sounds Auto
 
 GlobalVariable Property Condiexp_UpdateInterval Auto
+GlobalVariable Property Condiexp_FollowersUpdateInterval Auto
+GlobalVariable Property Condiexp_Verbose Auto
 
 Race Property KhajiitRace Auto
 Race Property KhajiitRaceVampire Auto
@@ -168,10 +170,14 @@ Event OnUpdate()
 		EndIf
 	EndIf
 
-	updateColdStatus()
-	updateTraumaStatus()
-	updateDirtyStatus()
-	updateArousalStatus()
+	Condiexp_CurrentlyCold.SetValue(getColdStatus(PlayerRef))
+	trace("CondiExp_StartMod: getColdStatus() " + Condiexp_CurrentlyCold.getValue())
+	Condiexp_CurrentlyTrauma.SetValue(getTraumaStatus(PlayerRef))
+	trace("CondiExp_StartMod: getTraumaStatus() " + Condiexp_CurrentlyTrauma.getValue())
+	Condiexp_CurrentlyDirty.SetValue(getDirtyStatus(PlayerRef))
+	trace("CondiExp_StartMod: getDirtyStatus() " + Condiexp_CurrentlyDirty.getValue())
+	Condiexp_CurrentlyAroused.SetValue(getArousalStatus(PlayerRef))
+	trace("CondiExp_StartMod: getArousalStatus() " + Condiexp_CurrentlyAroused.getValue())
 
 	;check if there's a conflicting mod based on custom conditions
 	if checkIfModShouldBeSuspended(PlayerRef)
@@ -216,49 +222,47 @@ Bool function checkIfModShouldBeSuspended(Actor act)
 	return false
 endfunction
 
-function updateColdStatus()
+int function getColdStatus(Actor act )
 	if Condiexp_GlobalCold.GetValue() == 0
-		Condiexp_CurrentlyCold.SetValue(0)
-		return
+		return 0
 	endif
 	If Condiexp_ColdMethod.GetValue() == 1
 		GlobalVariable Temp = Game.GetFormFromFile(0x00068119, "Frostfall.esp") as GlobalVariable
 		If Temp.GetValue() > 2 
-			Condiexp_CurrentlyCold.SetValue(1)
+			return 1
 			else
-			Condiexp_CurrentlyCold.SetValue(0)
+			return 0
 		endif
 	elseIf Condiexp_ColdMethod.GetValue() == 2
 		Spell Cold1 = Game.GetFormFromFile(0x00029028, "Frostbite.esp") as Spell
 		Spell Cold2 = Game.GetFormFromFile(0x00029029, "Frostbite.esp") as Spell
 		Spell Cold3 = Game.GetFormFromFile(0x0002902C, "Frostbite.esp") as Spell
-		If PlayerRef.HasSpell(Cold1) || PlayerRef.HasSpell(Cold2) || PlayerRef.HasSpell(Cold3)  
-			Condiexp_CurrentlyCold.SetValue(1)
+		If act.HasSpell(Cold1) || act.HasSpell(Cold2) || act.HasSpell(Cold3)  
+			return 1
 			else
-			Condiexp_CurrentlyCold.SetValue(0)
+			return 0
 		endif
 	elseIf Condiexp_ColdMethod.GetValue() == 3
-		If !PlayerRef.HasKeyword(Vampire) && !PlayerRef.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
-			Condiexp_CurrentlyCold.SetValue(1)
+		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
+			return 1
 		else
-			Condiexp_CurrentlyCold.SetValue(0)
+			return 0
 		endif
 	endif
-	trace("CondiExp_StartMod: updateColdStatus() " + Condiexp_CurrentlyCold.getValue())
+	
 endfunction
 
-function updateDirtyStatus()
+int function getDirtyStatus(Actor act)
 	If (Condiexp_GlobalDirty.GetValue() == 0 || LoadedBathMod == "None Found")
-		Condiexp_CurrentlyDirty.SetValue(0.0)
-		return
+		return 0
 	EndIf
 
 	int dirty = 0
-	if PlayerRef.HasMagicEffect(DirtinessStage2Effect) || (BloodinessStage2Effect && PlayerRef.HasMagicEffect(BloodinessStage2Effect))
+	if act.HasMagicEffect(DirtinessStage2Effect) || (BloodinessStage2Effect && act.HasMagicEffect(BloodinessStage2Effect))
 		dirty = 1  ;not enough dirt to be sad
-	elseif (PlayerRef.HasMagicEffect(DirtinessStage3Effect) || (BloodinessStage3Effect && PlayerRef.HasMagicEffect(BloodinessStage3Effect)))
+	elseif (act.HasMagicEffect(DirtinessStage3Effect) || (BloodinessStage3Effect && act.HasMagicEffect(BloodinessStage3Effect)))
 		dirty = 2
-	elseif (PlayerRef.HasMagicEffect(DirtinessStage4Effect) || (BloodinessStage4Effect && PlayerRef.HasMagicEffect(BloodinessStage4Effect)) || (DirtinessStage5Effect && PlayerRef.HasMagicEffect(DirtinessStage5Effect)) || (BloodinessStage5Effect && PlayerRef.HasMagicEffect(BloodinessStage5Effect)))
+	elseif (act.HasMagicEffect(DirtinessStage4Effect) || (BloodinessStage4Effect && act.HasMagicEffect(BloodinessStage4Effect)) || (DirtinessStage5Effect && act.HasMagicEffect(DirtinessStage5Effect)) || (BloodinessStage5Effect && act.HasMagicEffect(BloodinessStage5Effect)))
 		dirty = 3
 	else
 		dirty = 0
@@ -266,7 +270,7 @@ function updateDirtyStatus()
 	
 	;check cum oral
 	if sexlab && dirty < 3
-		if IsPlayerCumsoakedOral(sexlab, PlayerRef)
+		if IsPlayerCumsoakedOral(sexlab, act)
 			dirty = 3
 			trace("CondiExp_StartMod: updateDirtyStatus(): cumsoaked 3")
 		endif
@@ -274,73 +278,63 @@ function updateDirtyStatus()
 
 	;check cum else
 	if sexlab && dirty < 2
-			if IsPlayerCumsoakedVagOrAnal(sexlab, PlayerRef)
+			if IsPlayerCumsoakedVagOrAnal(sexlab, act)
 				dirty = 2
 				trace("CondiExp_StartMod: updateDirtyStatus(): cumsoaked 2")
 			endif
 	endif
 
 	If dirty > 0 && dirty > Condiexp_MinDirty.GetValue()
-		Condiexp_CurrentlyDirty.SetValue(dirty)
+		return dirty
 	else
-		Condiexp_CurrentlyDirty.SetValue(0.0)
+		return 0
 	EndIf
-	
-	trace("CondiExp_StartMod: updateDirtyStatus() " + Condiexp_CurrentlyDirty.getValue())
 endfunction
 
-function updateTraumaStatus()
+int function getTraumaStatus(Actor act)
 	if Condiexp_GlobalTrauma.GetValue() == 0
-		Condiexp_CurrentlyTrauma.SetValue(0)
-		return
+		return 0
 	endif
 	int trauma = 0
 	;check apropos
 	if ActorsQuest
-		trauma = GetWearState0to10(PlayerRef, ActorsQuest)
+		trauma = GetWearState0to10(act, ActorsQuest)
 		if trauma > 1 && trauma > Condiexp_MinTrauma.GetValue()
-			Condiexp_CurrentlyTrauma.SetValue(trauma)
-			trace("CondiExp_StartMod: updateTraumaStatus - GetWearState(): " + Condiexp_CurrentlyTrauma.getValue())
-			return
+			trace("CondiExp_StartMod: updateTraumaStatus - GetWearState(): " + trauma)
+			return trauma
 		endif
 	endif
 		
 	;check zap slave
 	if zbfFactionSlave
-		if (PlayerRef.IsInFaction(zbfFactionSlave))
+		if (act.IsInFaction(zbfFactionSlave))
 			trauma = 10
-			Condiexp_CurrentlyTrauma.SetValue(trauma)
-			trace("CondiExp_StartMod: updateTraumaStatus - zbfFactionSlave:  " + Condiexp_CurrentlyTrauma.getValue())
-			return
+			trace("CondiExp_StartMod: updateTraumaStatus - zbfFactionSlave:  " + trauma)
+			return trauma
 		endif
 	endif
 
 	;nothing found: 0
-	Condiexp_CurrentlyTrauma.SetValue(0)
-	trace("CondiExp_StartMod: updateTraumaStatus():  " + Condiexp_CurrentlyTrauma.getValue())
-	
+	return 0
 endfunction
 
-function updateArousalStatus()
+int function getArousalStatus(Actor act)
 	if Condiexp_GlobalAroused.GetValue() == 0
-		Condiexp_CurrentlyAroused.SetValue(0)
-		return
+		return 0
 	endif
 	int aroused = 0
 	;check sla
 	if sla
-		aroused = getArousal0To100(PlayerRef, sla, slaArousalFaction)
+		aroused = getArousal0To100(act, sla, slaArousalFaction)
 		if aroused > 0 && aroused > Condiexp_MinAroused.GetValue()
-			Condiexp_CurrentlyAroused.SetValue(aroused)
 			trace("CondiExp_StartMod: updateArousalStatus(): " + Condiexp_CurrentlyAroused.getValue())
-			return
+			return aroused
 		endif
 	endif
 
 	;nothing found: 0
-	Condiexp_CurrentlyAroused.SetValue(0)
-	trace("CondiExp_StartMod: updateArousalStatus(): " + Condiexp_CurrentlyAroused.getValue())
-	
+	return 0
+
 endfunction
 
 Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)

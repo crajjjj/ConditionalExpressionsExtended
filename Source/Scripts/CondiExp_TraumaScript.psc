@@ -31,48 +31,12 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Utility.Wait(Seconds)
 	Int trauma = Condiexp_CurrentlyTrauma.GetValue() as Int
 	Utility.Wait(1)
-	ShowExpression(trauma)
-	Utility.Wait(1) 
-EndEvent
-
-Function ShowExpression(int trauma) 
-	Int power = 20 + trauma * 10
-	if power > 100
-		power = 100
-	endif
-	
-	;random skip 20%
-	Int randomSkip = Utility.RandomInt(1, 10)
-	if randomSkip > 2
-		int topMargin = 3
-		int bottomMargin = 1
-		if trauma > 4 && trauma <= 7
-			topMargin = 6
-		else
-			bottomMargin = 4
-			topMargin = 10
-		endif 
-		Int randomEffect = Utility.RandomInt(bottomMargin, topMargin)
-		verbose("CondiExp_TraumaScript Trauma: " + trauma + ".Effect: " + randomEffect, Condiexp_Verbose.GetValue() as Int)
-		_painVariants(randomEffect, PlayerRef, power, power)
-	else
-		verbose("CondiExp_TraumaScript skipping.Trauma: " + trauma, Condiexp_Verbose.GetValue() as Int)
-	endif
-	Utility.Wait(1)
-
-	Int randomLook = Utility.RandomInt(1, 10)
-	If randomLook == 2
-		LookLeft(50, PlayerRef)
-	ElseIf randomLook == 4
-		LookRight(50, PlayerRef)
-	ElseIf randomLook == 8
-		LookDown(50, PlayerRef)
-	endif 
+	PlayTraumaExpression(PlayerRef, trauma, Condiexp_Verbose.GetValue() as Int)
 	Utility.Wait(1)
 	BreatheAndSob(trauma)
 	Utility.Wait(6)
 	playing = false
-EndFunction
+EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	; keep script running
@@ -86,7 +50,6 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(3)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
-
 
 Function BreatheAndSob(int trauma)
 	If PlayerRef.IsDead()
@@ -124,94 +87,4 @@ Function playBreathOrRandomSob(int trauma)
 		CondiExp_SobbingFemale5.play(PlayerRef)
 	endif
 endfunction
-; Sets an expression to override any other expression other systems may give this actor.
-;							7 - Mood Neutral
-; 0 - Dialogue Anger		8 - Mood Anger		15 - Combat Anger
-; 1 - Dialogue Fear			9 - Mood Fear		16 - Combat Shout
-; 2 - Dialogue Happy		10 - Mood Happy
-; 3 - Dialogue Sad			11 - Mood Sad
-; 4 - Dialogue Surprise		12 - Mood Surprise
-; 5 - Dialogue Puzzled		13 - Mood Puzzled
-; 6 - Dialogue Disgusted	14 - Mood Disgusted
-; aiStrength is from 0 to 100 (percent)
-Function _painVariants(Int index, Actor act, int Power, int PowerCur)
-	if Power > 100
-		Power = 100
-	endif
 
-	if index == 1
-		SmoothSetExpression(act,1,Power,0)
-		SmoothSetPhoneme(act, 1, 10)
-		SmoothSetPhoneme(act, 5, 30)
-		SmoothSetPhoneme(act, 7, 70)
-		SmoothSetPhoneme(act, 15, 60)
-	elseIf index == 2
-		
-		SmoothSetExpression(act,3,Power,0)
-
-		SmoothSetModifier(act,11,-1,50)
-		SmoothSetModifier(act,13,-1,14)
-
-		SmoothSetPhoneme(act, 2, 50)
-		SmoothSetPhoneme(act, 13, 10)
-		SmoothSetPhoneme(act, 15, 20)
-	elseIf index == 3
-	
-		SmoothSetExpression(act,3,Power,0)
-
-		SmoothSetModifier(act,11,-1,50)
-		SmoothSetModifier(act,13,-1,14)
-
-		SmoothSetPhoneme(act, 2, 50)
-		SmoothSetPhoneme(act, 13, 15)
-		SmoothSetPhoneme(act, 15, 25)
-	elseIf index == 4
-		SmoothSetExpression(act,3,Power,0)
-	
-		SmoothSetModifier(act,11,-1,50)
-		SmoothSetModifier(act,13,-1,14)
-
-		SmoothSetPhoneme(act, 2, 50)
-		SmoothSetPhoneme(act, 13, 10)
-		SmoothSetPhoneme(act, 15, 20)
-	elseIf index == 5
-	
-		SmoothSetExpression(act,9, Power, 0)
-	
-		SmoothSetModifier(act,2,3,100)
-		SmoothSetModifier(act,4,5,100)
-		SmoothSetModifier(act,11,-1,90)
-
-		SmoothSetPhoneme(act, 2, 10)
-		SmoothSetPhoneme(act, 0, 10)
-	elseIf index == 6
-		SmoothSetExpression(act,9,Power,0)
-
-		SmoothSetModifier(act,2,3,100)
-		SmoothSetModifier(act,4,5,100)
-		SmoothSetModifier(act,11,-1,90)
-
-		SmoothSetPhoneme(act, 0, 10)
-		SmoothSetPhoneme(act, 2, 100)
-		SmoothSetPhoneme(act, 11, 20)
-	elseIf index == 7
-		SmoothSetExpression(act,8,Power,0)
-
-		SmoothSetModifier(act,0,1,100)
-		SmoothSetModifier(act,2,3,100)
-
-		SmoothSetModifier(act,4,5,100)
-		SmoothSetPhoneme(act, 2, 100)
-		SmoothSetPhoneme(act, 5, 40)
-	else
-		SmoothSetExpression(act,8,Power,0)
-	
-		SmoothSetModifier(act,0,1,100)
-		SmoothSetModifier(act,2,3,100)
-		SmoothSetModifier(act,4,5,100)
-
-		SmoothSetPhoneme(act, 2, 50)
-		SmoothSetPhoneme(act, 5, 50)
-		SmoothSetPhoneme(act, 11, 10)
-	endIf
-endFunction

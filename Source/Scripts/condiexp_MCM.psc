@@ -21,6 +21,9 @@ GlobalVariable Property Condiexp_GlobalTrauma Auto
 GlobalVariable Property Condiexp_GlobalDirty Auto
 GlobalVariable Property Condiexp_GlobalAroused Auto
 GlobalVariable Property Condiexp_Verbose Auto
+GlobalVariable Property Condiexp_UpdateInterval Auto
+GlobalVariable Property Condiexp_FollowersUpdateInterval Auto
+
 
 Race Property OrcRace Auto
 Race Property OrcRaceVampire Auto
@@ -54,6 +57,7 @@ int Dirty_B
 int Aroused_B
 int Verbose_B
 int Followers_B
+int registerFollowers
 
 bool CombatToggle = true
 bool DrunkToggle = true
@@ -71,7 +75,7 @@ bool TraumaToggle = true
 bool DirtyToggle = true
 bool ArousedToggle = true
 bool VerboseToggle = false 
-bool FollowersToggle = false 
+bool FollowersToggle = true 
 
 int EatingFastSlow_M
 string EatingFastSlow
@@ -159,6 +163,7 @@ restore = AddTextOption("Reset Current Expression", "")
 Uninstall = AddTextOption("Prepare to Uninstall", "")
 Verbose_B =  AddToggleOption("Verbose Notifications", VerboseToggle)
 Followers_B =  AddToggleOption("Followers Support", CondiExpFollowerQuest.IsRunning())
+registerFollowers = AddTextOption("Register Followers", "")
 EndIf
 endEvent
 
@@ -364,6 +369,7 @@ if (option == Combat_B) && CombatToggle == True
 		ShowMessage("Default expression restored - If in the middle of a face animation, expression will be restored once animation is finished.")
 		Go.resetConditions()
 		resetMFG(PlayerRef)
+		ResetQuest(CondiExpFollowerQuest)
 
 	elseif option == uninstall
 		ShowMessage("Mod is now prepared to be uninstalled. Please, exit menu, save and uninstall. Keep in mind: It's never 100% safe to uninstall mods mid-game, always make back-ups of your saves before installing mods!")
@@ -380,9 +386,14 @@ if (option == Combat_B) && CombatToggle == True
 		if (FollowersToggle)
 			ResetQuest(CondiExpFollowerQuest)
 		endIf
-		
-		Debug.Notification("Conditional Expressions has been restarted correctly!")
-	endif
+		Notification("Restarted correctly!")
+	
+	elseif option == registerFollowers
+		ResetQuest(CondiExpFollowerQuest)
+		ShowMessage("Please, exit menu. Followers were registered")
+
+endif
+
 endevent
 
 
@@ -429,6 +440,10 @@ elseif (option == Aroused_B)
 	SetInfoText("Your character will react to arousal (pleasure subtle expressions).\n Integrated with SexLab Aroused")
 elseif (option == Verbose_B)
 	SetInfoText("Verbose debug notifications")
+elseif (option == Followers_B)
+	SetInfoText("Toggle  followers support")
+elseif (option == registerFollowers)
+	SetInfoText("Clicking here will register new followers. Followers are also registered when game is loaded.")		
 endif
 endevent
 

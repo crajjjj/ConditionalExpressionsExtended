@@ -3,8 +3,11 @@
 This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.2.0)
  
 ## What was changed?
+- Followers support (Up to 10 followers)
 - SL compatibility is built-in via sl factions (osmelmc patch).
+- Compatibility with DD and Toys wearables.
 - Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching. (e.g. compatible with Naked Defeat)
+
 - Added abuse (pain) expressions based on apropos2 w&t or ZAP slave faction condition. Expression is different depending on abuse stage. There's a chance also for a sobbing sound. (can be disabled in mcm)
 - Added sad expressions based on dirtiness level (Dirt&Blood || Keep it clean || Bathing in Skyrim are supported)
 - Added aroused expressions based on arousal level (SexLab Aroused)
@@ -22,7 +25,7 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
 ## Installation
 
 - Override original mod (Conditional Expressions - Subtle Face Animations mod (v 1.2.0)) with this one
-- Mod requires a new save (without Conditional Expressions installed before) 
+- Mod requires a new save (without Conditional Expressions installed before). (UPDATE:. you can update but be cautious - go inside and disable cold expressions before update) 
 
 
 ### Advanced config (not recommended):
@@ -35,6 +38,7 @@ Sample: set Condiexp_MinAroused 30
 - Condiexp_MinAroused range 0-100 default 30
 - Condiexp_MinDirty range 0-4 default 1
 - Condiexp_UpdateInterval seconds default 5
+- Condiexp_FollowersUpdateInterval seconds default 3
 
 (range values not inclusive - e.g. setting Condiexp_MinDirty to 4 will disable feature)
 

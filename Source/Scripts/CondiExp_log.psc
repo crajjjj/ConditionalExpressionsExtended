@@ -31,7 +31,8 @@ EndFunction
 Function verbose(Actor act, String msg, Int enabled = 0) Global 
 	;log(msg,aiPriority)
 	If (enabled == 1)
-		Debug.Notification("[CondiExp] (Actor:"+ act.GetLeveledActorBase().GetName() +") " + msg)
+		msg = "[CondiExp] (Actor:"+ act.GetLeveledActorBase().GetName() +") " + msg
+		Debug.Notification(msg)
 		log(msg)
 	EndIf
 EndFunction

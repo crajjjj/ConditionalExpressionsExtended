@@ -39,7 +39,7 @@ endfunction
 
 Function ShowExpression() 
 	Utility.Wait(1)
-	RandomEmotion(PlayerRef)
+	RandomEmotion(PlayerRef, Condiexp_Verbose.GetValue() as Int)
 EndFunction
 
 Event OnUpdate()

@@ -81,23 +81,28 @@ Event OnUpdate()
 		Return
 	EndIf
 
-	If (act.GetActorValuePercentage("Health") < 0.34 && GetExpressionID(act) != 1)
-		trace("CondiExp_Followers Low health emotion.Aactor: " +  act.GetLeveledActorBase().GetName())
-		SmoothSetExpression(act, 1, RandomInt(50, 100), 0)
+	If (act.GetActorValuePercentage("Health") < 0.40 && GetExpressionID(act) != 1)
+		PlayPainExpression(act, verboseInt)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
-
-	If (act.IsInCombat() && GetExpressionID(act) != 15 && act.GetActorValuePercentage("Health") >= 0.34)
-		trace("CondiExp_Followers In combat emotion.Actor: " +  act.GetLeveledActorBase().GetName())
+	
+	;Combat Anger
+	If (act.IsInCombat() && GetExpressionID(act) != 15 && act.GetActorValuePercentage("Health") >= 0.40)
 		SmoothSetExpression(act, 15, RandomInt(50, 100), 0)
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		Return
+	EndIf
+	
+	If (!act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40)
+		verbose(act, "Fatigue: Effect: Breathing", verboseInt)
+		Breathe(act)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
 
 	int trauma = sm.getTraumaStatus(act)
 	If (trauma > 0)
-		trace("CondiExp_Followers Trauma emotion. Actor: " +  act.GetLeveledActorBase().GetName())
 		PlayTraumaExpression( act, trauma, verboseInt)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
@@ -105,7 +110,6 @@ Event OnUpdate()
 
 	int dirty = sm.getDirtyStatus(act)
 	If (dirty > 0)
-		trace("CondiExp_Followers Dirty emotion. Actor: " +  act.GetLeveledActorBase().GetName())
 		PlayDirtyExpression( act, dirty, verboseInt)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
@@ -113,14 +117,12 @@ Event OnUpdate()
 
 	int aroused = sm.getArousalStatus(act)
 	If (aroused > 0)
-		trace("CondiExp_Followers Aroused emotion. Actor: " +  act.GetLeveledActorBase().GetName())
 		PlayArousedExpression( act, aroused, verboseInt)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
 
-	trace("CondiExp_Followers Random emotion. Actor: " +  act.GetLeveledActorBase().GetName())
-	RandomEmotion(act)
+	RandomEmotion(act, verboseInt)
 	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 EndEvent
 

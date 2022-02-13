@@ -14,11 +14,11 @@ sound property CondiExp_BreathingfemaleKhajiit auto
 bool property Breathing Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-Condiexp_CurrentlyBusy.SetValue(1)
-If Breathing == False
-Breathe()
-Breathing = True
-Endif
+    Condiexp_CurrentlyBusy.SetValue(1)
+    If Breathing == False
+        Breathe()
+        Breathing = True
+    Endif
 EndEvent
 
 
@@ -65,5 +65,4 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 Utility.Wait(1)
 Condiexp_CurrentlyBusy.SetValue(0)
 Breathing = False
-
 EndEvent

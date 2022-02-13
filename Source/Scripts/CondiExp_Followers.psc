@@ -11,16 +11,6 @@ Import mfgconsolefunc
 
 
 Actor act
-Int exp_value
-
-State Idle
-	Event OnUpdate()
-	EndEvent
-EndState
-
-Function Defaults()
-	exp_value = 0
-EndFunction
 
 Event OnPlayerLoadGame()
 	ResetQuest(this_quest)
@@ -40,7 +30,6 @@ Event OnInit()
 		Return
 	EndIf
 	log("CondiExp_Followers OnInit. Actor: " + act.GetLeveledActorBase().GetName())
-	Defaults()
 	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 EndEvent
 
@@ -81,14 +70,14 @@ Event OnUpdate()
 		Return
 	EndIf
 
-	If (act.GetActorValuePercentage("Health") < 0.40 && GetExpressionID(act) != 1)
+	If (act.GetActorValuePercentage("Health") < 0.40)
 		PlayPainExpression(act, verboseInt)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
 	
 	;Combat Anger
-	If (act.IsInCombat() && GetExpressionID(act) != 15 && act.GetActorValuePercentage("Health") >= 0.40)
+	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40)
 		SmoothSetExpression(act, 15, RandomInt(50, 100), 0)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
@@ -104,6 +93,7 @@ Event OnUpdate()
 	int trauma = sm.getTraumaStatus(act)
 	If (trauma > 0)
 		PlayTraumaExpression( act, trauma, verboseInt)
+		resetMFGSmooth(act)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
@@ -111,6 +101,7 @@ Event OnUpdate()
 	int dirty = sm.getDirtyStatus(act)
 	If (dirty > 0)
 		PlayDirtyExpression( act, dirty, verboseInt)
+		resetMFGSmooth(act)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
@@ -118,6 +109,7 @@ Event OnUpdate()
 	int aroused = sm.getArousalStatus(act)
 	If (aroused > 0)
 		PlayArousedExpression( act, aroused, verboseInt)
+		resetMFGSmooth(act)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf

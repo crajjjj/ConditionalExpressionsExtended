@@ -136,6 +136,7 @@ Function PlayPainExpression(Actor act, int verboseInt) global
         MfgConsoleFunc.SetModifier(act,1,70)
         MfgConsoleFunc.SetPhoneMe(act,4,30)
     Endif
+	Utility.Wait(1)
 EndFunction
 
 ; Sets an expression to override any other expression other systems may give this actor.
@@ -348,7 +349,7 @@ endFunction
 Function RandomEmotion(Actor act, int verboseInt) Global
 
 	Int Order = Utility.RandomInt(1, 80)
-	verbose(act,"Random: Effect:" + Order)
+	verbose(act,"Random: Effect:" + Order, verboseInt)
 	If Order == 1 || Order == 33
 		LookLeft(70,act)
 		LookRight(70, act)

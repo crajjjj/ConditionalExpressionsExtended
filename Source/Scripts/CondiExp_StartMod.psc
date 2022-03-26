@@ -172,10 +172,13 @@ Event OnUpdate()
 
 	Condiexp_CurrentlyCold.SetValue(getColdStatus(PlayerRef))
 	trace("CondiExp_StartMod: getColdStatus() " + Condiexp_CurrentlyCold.getValue())
+	
 	Condiexp_CurrentlyTrauma.SetValue(getTraumaStatus(PlayerRef))
 	trace("CondiExp_StartMod: getTraumaStatus() " + Condiexp_CurrentlyTrauma.getValue())
+
 	Condiexp_CurrentlyDirty.SetValue(getDirtyStatus(PlayerRef))
 	trace("CondiExp_StartMod: getDirtyStatus() " + Condiexp_CurrentlyDirty.getValue())
+
 	Condiexp_CurrentlyAroused.SetValue(getArousalStatus(PlayerRef))
 	trace("CondiExp_StartMod: getArousalStatus() " + Condiexp_CurrentlyAroused.getValue())
 

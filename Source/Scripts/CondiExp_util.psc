@@ -26,16 +26,8 @@ String Function GetVersionString() Global
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
-	While (this_quest.IsStarting() || this_quest.IsStopping())
-		Wait(1.0)
-	EndWhile
-	If (this_quest.IsRunning())
-		CondiExp_log.log("Stopping Quest:" + this_quest.GetName())
-		this_quest.Reset()
-		this_quest.Stop()
-	EndIf
-	CondiExp_log.log("Starting Quest:" + this_quest.GetName())
-	this_quest.Start()
+	StopQuest(this_quest)
+	StartQuest(this_quest)
 EndFunction
 
 Function StopQuest(Quest this_quest) Global
@@ -46,6 +38,16 @@ Function StopQuest(Quest this_quest) Global
 		CondiExp_log.log("Stopping Quest:" + this_quest.GetName())
 		this_quest.Reset()
 		this_quest.Stop()
+	EndIf
+EndFunction
+
+Function StartQuest(Quest this_quest) Global
+	While (this_quest.IsStarting() || this_quest.IsStopping())
+		Wait(1.0)
+	EndWhile
+	If (this_quest.IsStopped())
+		CondiExp_log.log("Starting Quest:" + this_quest.GetName())
+		this_quest.Start()
 	EndIf
 EndFunction
 
@@ -135,8 +137,11 @@ Function SmoothSetModifier(Actor act, Int number1, Int number2, Int str_dest) gl
 	Int speed_eye_move_min = 5
 	Int speed_eye_move_max = 15
 	Int speed_blink = 0
-	While (!SetModifier(act, 14, 0))
+
+	int safeguard = 0
+	While (!SetModifier(act, 14, 0) && safeguard <= 5)
 		Wait(5.0)
+		safeguard = safeguard + 1
 	EndWhile
 	Int t1 = GetModifier(act, number1)
 	Int t2
@@ -184,8 +189,10 @@ EndFunction
 ;disgust 6
 ;neutral 7
 Int Function SmoothSetExpression(Actor act, Int number, Int exp_dest, int exp_value) global
-	While (!SetModifier(act, 14, 0))
+	int safeguard = 0
+	While (!SetModifier(act, 14, 0) && safeguard <= 5)
 		Wait(5.0)
+		safeguard = safeguard + 1
 	EndWhile
 	Int t2
 	Int speed = 2

@@ -22,9 +22,9 @@ Event OnInit()
 	If (!act)
 		Return
 	EndIf
-	While (!ResetPhonemeModifier(act))
-		Wait(1.0)
-	EndWhile
+	if (!ResetPhonemeModifier(act))
+		Wait(10.0)
+	endif
 	If act == Game.GetPlayer()
 		Notification("FollowersQuest: started")
 		Return
@@ -34,20 +34,21 @@ Event OnInit()
 EndEvent
 
 Event OnUpdate()
-	While (!SetModifier(act, 14, 0))
+	if (!ResetPhonemeModifier(act))
 		If (!act)
 			Return
 		EndIf
-		Wait(5.0)
-	EndWhile
-	int verboseInt = sm.Condiexp_Verbose.GetValue() as Int
-	resetMFGSmooth(act)
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+	Endif
 
 	If (sm.checkIfModShouldBeSuspended(act))
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		return
 	endif
-	
+
+	int verboseInt = sm.Condiexp_Verbose.GetValue() as Int
+	resetMFGSmooth(act)
+
 	If (act.IsDead())
 		If (RandomInt(0, 1))
 			SmoothSetModifier(act, 6, 7, RandomInt(80, 100))

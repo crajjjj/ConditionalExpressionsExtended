@@ -21,8 +21,8 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Int Seconds = Utility.RandomInt(2, 4)
 	Utility.Wait(Seconds)
 	;either 0 or aroused level > Condiexp_MinAroused
-	Int aroused = Condiexp_CurrentlyAroused.GetValue() as Int
-	PlayArousedExpression( PlayerRef, aroused, Condiexp_Verbose.GetValue() as Int)
+	Int arousal = Condiexp_CurrentlyAroused.GetValue() as Int
+	PlayArousedExpression( PlayerRef, arousal, Condiexp_Verbose.GetValue() as Int)
 	playing = false
 	Utility.Wait(1)
 EndEvent

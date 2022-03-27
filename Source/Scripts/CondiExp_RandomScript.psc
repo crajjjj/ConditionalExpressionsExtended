@@ -64,7 +64,10 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		Utility.Wait(1)
 		safeguard = safeguard + 1
 	EndWhile
-	resetMFG(PlayerRef)
+	
 	verbose(akTarget, "Random: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int )
-	Utility.Wait(3)
+	If Condiexp_CurrentlyBusy.GetValue() == 0
+		resetMFGSmooth(PlayerRef)
+	EndIf
+	
 EndEvent

@@ -2,6 +2,7 @@ Scriptname CondieExp_Skooma_Script extends activemagiceffect
 Actor Property PlayerRef Auto
 GlobalVariable Property CondiExp_PlayerIsHigh Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
+condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 High()
@@ -10,7 +11,7 @@ EndEvent
 Function High()
     int randomhappy
     int randomsmile 
-
+    config.currentExpression = "Scooma"
     randomhappy = Utility.RandomInt(30,70)
     randomsmile = Utility.RandomInt(10,50)
     Condiexp_CurrentlyBusy.SetValue(1)

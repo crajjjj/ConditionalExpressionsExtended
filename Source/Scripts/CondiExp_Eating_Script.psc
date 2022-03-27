@@ -5,10 +5,10 @@ GlobalVariable Property CondiExp_PlayerJustAte Auto
 GlobalVariable Property Condiexp_GlobalEating Auto
 Actor Property PlayerRef Auto
 bool property Imeatinghere auto
-
+condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-
+config.currentExpression = "Eating"
 If Condiexp_GlobalEating.GetValue() == 1
 Utility.Wait(3.8)
 elseif Condiexp_GlobalEating.GetValue() == 2

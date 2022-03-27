@@ -2,6 +2,7 @@ Scriptname CondiExp_AngryScript extends ActiveMagicEffect
 Actor Property PlayerRef Auto
 bool property OpenMouth Auto
 keyword property vampire auto
+condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 If PlayerRef.HasKeyword(Vampire)
@@ -12,7 +13,9 @@ endif
 EndEvent
 
 Function Angry()
+
 while PlayerRef.IsinCombat() && OpenMouth == False
+config.currentExpression = "Angry"
 PlayerRef.SetExpressionOverride(15,70)
 MfgConsoleFunc.SetPhoneMe(PlayerRef, 4, 20)
 Utility.Wait(1)

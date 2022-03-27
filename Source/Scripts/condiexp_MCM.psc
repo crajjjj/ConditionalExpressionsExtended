@@ -24,6 +24,11 @@ GlobalVariable Property Condiexp_Verbose Auto
 GlobalVariable Property Condiexp_UpdateInterval Auto
 GlobalVariable Property Condiexp_FollowersUpdateInterval Auto
 
+GlobalVariable Property Condiexp_ExpressionStr Auto
+GlobalVariable Property Condiexp_ModifierStr Auto
+GlobalVariable Property Condiexp_PhonemeStr Auto
+String Property currentExpression Auto
+
 
 Race Property OrcRace Auto
 Race Property OrcRaceVampire Auto
@@ -58,6 +63,11 @@ int Aroused_B
 int Verbose_B
 int Followers_B
 int registerFollowers
+int _update_interval_slider
+int _update_interval_followers_slider
+int _expression_strength_slider
+int _modifier_strength_slider
+int _phoneme_strength_slider
 
 bool CombatToggle = true
 bool DrunkToggle = true
@@ -102,8 +112,10 @@ event OnVersionUpdate(int a_version)
 endEvent
 
 Event OnConfigOpen()
-	Pages = New String[1]
-	Pages[0] = "Settings"
+	Pages = New String[3]
+	Pages[0] = "Expressions"
+	Pages[1] = "Settings"
+	Pages[2] = "Maintenance"
 
 	EatingFastSlowList = new string[3]
 	EatingFastSlowList[0] = "Quick Eating"
@@ -117,55 +129,124 @@ Event OnConfigOpen()
 	ColdMethodList[3] = "Automatic"
 EndEvent
 
-
-
 Event OnPageReset(string page)
 	If (page == "")
-				LoadCustomContent("MCM/MCM_CondiExp.dds", 0.0, 0.0)
-		Else
+		LoadCustomContent("MCM/MCM_CondiExp.dds", 0.0, 0.0)
+	Else
 		UnloadCustomContent()
 	Endif
+	
+	if (page == "Expressions")
+		Expressions()
+	elseIf (page == "Settings")
+		Settings()
+	elseIf (page == "Maintenance")
+		Maintenance()
+	endIf
+EndEvent
 
-If (page == "Settings")
 
-SetCursorFillMode(LEFT_TO_RIGHT)
-AddHeaderOption("Conditional Expressions Extended. Version: " + GetVersionString())
-AddHeaderOption("List of Expressions")
-AddEmptyOption()
-AddEmptyOption()
-AddEmptyOption()
-EatingFastSlow_M = AddMenuOption("Eating Expression", EatingFastSlowList[EatingFastSlowIndex])
-If PlayerRef.IsInCombat()
-	Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle, OPTION_FLAG_DISABLED)
-else
-	Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle)
-endif
-Random_B = AddToggleOption("Random Idle Expressions", RandomToggle)
-Cold_B = AddToggleOption("Cold Expression", ColdToggle)
-Stamina_B = AddToggleOption("Out of Stamina Expression", StaminaToggle)
-coldmethod_M = AddMenuOption("Cold Detection", ColdMethodList[ColdMethodIndex]) 
-Pain_B = AddToggleOption("In Pain Expression", PainToggle)
-Drunk_B = AddToggleOption("Drunk Expression", DrunkToggle)
-Skooma_B = AddToggleOption("'This Is Good Skooma' Expression", SkoomaToggle)
-Clothes_B = AddToggleOption("Embarrassed - No Clothes Expression", ClothesToggle)
-Sneaking_B = AddToggleOption("Sneaking Expression", SneakingToggle)
-Water_B = AddToggleOption("Water/Torch Expression", WaterToggle)
-Headache_B = AddToggleOption("Headache/Diseased", HeadacheToggle)
-Sounds_B = AddToggleOption("Breathing Sounds", SoundsToggle)
-Trauma_B = AddToggleOption("Trauma Expression", TraumaToggle)
-Dirty_B = AddToggleOption("Dirty Expression", DirtyToggle)
-Aroused_B = AddToggleOption("Aroused Expression", ArousedToggle)
-AddEmptyOption()
-AddEmptyOption()
-AddHeaderOption("Maintenance")
-Update = AddTextOption("Update/Restart", "")
-restore = AddTextOption("Reset Current Expression", "")
-Uninstall = AddTextOption("Prepare to Uninstall", "")
-Verbose_B =  AddToggleOption("Verbose Notifications", VerboseToggle)
-Followers_B =  AddToggleOption("Followers Support", CondiExpFollowerQuest.IsRunning())
-registerFollowers = AddTextOption("Register Followers", "")
-EndIf
-endEvent
+Function Expressions()
+	SetCursorFillMode(LEFT_TO_RIGHT)
+	AddHeaderOption("Conditional Expressions Extended. Version: " + GetVersionString())
+	AddHeaderOption("List of Expressions")
+	AddEmptyOption()
+	AddEmptyOption()
+	AddEmptyOption()
+	EatingFastSlow_M = AddMenuOption("Eating Expression", EatingFastSlowList[EatingFastSlowIndex])
+	If PlayerRef.IsInCombat()
+		Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle, OPTION_FLAG_DISABLED)
+		else
+		Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle)
+	endif
+	Random_B = AddToggleOption("Random Idle Expressions", RandomToggle)
+	Cold_B = AddToggleOption("Cold Expression", ColdToggle)
+	Stamina_B = AddToggleOption("Out of Stamina Expression", StaminaToggle)
+	coldmethod_M = AddMenuOption("Cold Detection", ColdMethodList[ColdMethodIndex]) 
+	Pain_B = AddToggleOption("In Pain Expression", PainToggle)
+	Drunk_B = AddToggleOption("Drunk Expression", DrunkToggle)
+	Skooma_B = AddToggleOption("'This Is Good Skooma' Expression", SkoomaToggle)
+	Clothes_B = AddToggleOption("Embarrassed - No Clothes Expression", ClothesToggle)
+	Sneaking_B = AddToggleOption("Sneaking Expression", SneakingToggle)
+	Water_B = AddToggleOption("Water/Torch Expression", WaterToggle)
+	Headache_B = AddToggleOption("Headache/Diseased", HeadacheToggle)
+	Trauma_B = AddToggleOption("Trauma Expression", TraumaToggle)
+	Dirty_B = AddToggleOption("Dirty Expression", DirtyToggle)
+	Aroused_B = AddToggleOption("Aroused Expression", ArousedToggle)
+EndFunction
+
+Function Settings()
+	SetCursorFillMode(TOP_TO_BOTTOM)
+	AddHeaderOption("Settings")
+	AddEmptyOption()
+	Sounds_B = AddToggleOption("Breathing Sounds", SoundsToggle)
+	_update_interval_slider = AddSliderOption("Update interval", Condiexp_UpdateInterval.GetValue(), "{0}", OPTION_FLAG_NONE)
+	_expression_strength_slider = AddSliderOption("Expression Strength", Condiexp_ExpressionStr.GetValue(), "{0}", OPTION_FLAG_NONE)
+	_modifier_strength_slider = AddSliderOption("Expression Strength", Condiexp_ModifierStr.GetValue(), "{0}", OPTION_FLAG_NONE)
+	_phoneme_strength_slider = AddSliderOption("Expression Strength", Condiexp_PhonemeStr.GetValue(), "{0}", OPTION_FLAG_NONE)
+	AddHeaderOption("Followers")
+	Followers_B =  AddToggleOption("Followers Support", CondiExpFollowerQuest.IsRunning())
+	_update_interval_followers_slider = AddSliderOption("Update interval-Followers", Condiexp_FollowersUpdateInterval.GetValue(), "{0}", _getFlag(FollowersToggle))
+	registerFollowers = AddTextOption("Register Followers", "")
+EndFunction
+
+Function Maintenance()
+	SetCursorFillMode(TOP_TO_BOTTOM)
+	AddHeaderOption("Maintenance")
+	AddEmptyOption()
+	Update = AddTextOption("Update/Restart", "")
+	restore = AddTextOption("Reset Current Expression: "+ currentExpression, "")
+	Uninstall = AddTextOption("Prepare to Uninstall", "")
+	Verbose_B =  AddToggleOption("Verbose Notifications", VerboseToggle)
+EndFunction
+
+Event OnOptionSliderOpen(Int mcm_option)
+	If (mcm_option == _update_interval_slider)
+		SetSliderDialogStartValue(Condiexp_UpdateInterval.GetValue())
+		SetSliderDialogRange(1, 60)
+		SetSliderDialogInterval(1.00)
+		SetSliderDialogDefaultValue(5)
+	elseif (mcm_option == _update_interval_followers_slider)
+		SetSliderDialogStartValue(Condiexp_FollowersUpdateInterval.GetValue())
+		SetSliderDialogRange(1, 60)
+		SetSliderDialogInterval(1.00)
+		SetSliderDialogDefaultValue(3)	
+	elseif (mcm_option == _expression_strength_slider)
+		SetSliderDialogStartValue(Condiexp_ExpressionStr.GetValue())
+		SetSliderDialogRange(0.1, 2.0)
+		SetSliderDialogInterval(0.1)
+		SetSliderDialogDefaultValue(1)
+	elseif (mcm_option == _modifier_strength_slider)
+		SetSliderDialogStartValue(Condiexp_ModifierStr.GetValue())
+		SetSliderDialogRange(0.1, 2.0)
+		SetSliderDialogInterval(0.1)
+		SetSliderDialogDefaultValue(1)
+	elseif (mcm_option == _phoneme_strength_slider)
+		SetSliderDialogStartValue(Condiexp_PhonemeStr.GetValue())
+		SetSliderDialogRange(0.1, 2.0)
+		SetSliderDialogInterval(0.1)
+		SetSliderDialogDefaultValue(1)
+	endIf
+EndEvent
+
+Event OnOptionSliderAccept(Int mcm_option, Float Value)
+	If (mcm_option == _update_interval_slider)
+		Condiexp_UpdateInterval.SetValue(Value)
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == _update_interval_followers_slider)
+		Condiexp_FollowersUpdateInterval.SetValue(Value)
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == _expression_strength_slider)
+		Condiexp_ExpressionStr.SetValue(Value)
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == _modifier_strength_slider)
+		Condiexp_ModifierStr.SetValue(Value)
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == _phoneme_strength_slider)
+		Condiexp_PhonemeStr.SetValue(Value)
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	endIf
+EndEvent
 
 event OnOptionMenuOpen(int option)
 	if (option == EatingFastSlow_M)
@@ -369,7 +450,9 @@ if (option == Combat_B) && CombatToggle == True
 		ShowMessage("Default expression restored - If in the middle of a face animation, expression will be restored once animation is finished.")
 		Go.resetConditions()
 		resetMFG(PlayerRef)
-		ResetQuest(CondiExpFollowerQuest)
+		if (FollowersToggle)
+			ResetQuest(CondiExpFollowerQuest)
+		endIf
 
 	elseif option == uninstall
 		ShowMessage("Mod is now prepared to be uninstalled. Please, exit menu, save and uninstall. Keep in mind: It's never 100% safe to uninstall mods mid-game, always make back-ups of your saves before installing mods!")
@@ -391,7 +474,6 @@ if (option == Combat_B) && CombatToggle == True
 	elseif option == registerFollowers
 		ResetQuest(CondiExpFollowerQuest)
 		ShowMessage("Please, exit menu. Followers were registered")
-
 endif
 
 endevent
@@ -443,7 +525,17 @@ elseif (option == Verbose_B)
 elseif (option == Followers_B)
 	SetInfoText("Toggle  followers support")
 elseif (option == registerFollowers)
-	SetInfoText("Clicking here will register new followers. Followers are also registered when game is loaded.")		
+	SetInfoText("Clicking here will register new followers. Followers are also registered when game is loaded.")
+elseif (option == _update_interval_followers_slider)
+	SetInfoText("Update period for followers expressions")
+elseif (option == _update_interval_slider)
+	SetInfoText("Update period for long term conditions checking")
+elseif (option == _expression_strength_slider)
+	SetInfoText("Expression strength - 1 means default unmodified")
+elseif (option == _modifier_strength_slider)
+	SetInfoText("Modifier strength - 1 means default unmodified")
+elseif (option == _phoneme_strength_slider)
+	SetInfoText("Phoneme strength - 1 means default unmodified")	
 endif
 endevent
 
@@ -473,3 +565,11 @@ else
 	endif
 endif
 endfunction
+
+int Function _getFlag(Bool cond = true)
+	If  !cond 	
+   		return OPTION_FLAG_DISABLED  
+	Else
+   		return OPTION_FLAG_NONE
+	EndIf  
+EndFunction

@@ -1,15 +1,18 @@
 Scriptname CondiExp_Sneaking_Script extends ActiveMagicEffect  
-Actor Property PlayerRef Auto
 import  CondiExp_log
 
+Actor Property PlayerRef Auto
+condiexp_MCM Property config auto
+
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-KhajiitLikestoSneak()
+    KhajiitLikestoSneak()
 EndEvent
 
 Function KhajiitLikestoSneak()
-MfgConsoleFunc.SetModifier(PlayerRef,12,45)
-MfgConsoleFunc.SetModifier(PlayerRef,13,45)
-MfgConsoleFunc.SetModifier(PlayerRef,2,20)
+    config.currentExpression = "Sneaking"
+    MfgConsoleFunc.SetModifier(PlayerRef,12,45)
+    MfgConsoleFunc.SetModifier(PlayerRef,13,45)
+    MfgConsoleFunc.SetModifier(PlayerRef,2,20)
 
 Int Order = Utility.RandomInt(1,12)
 If Order < 3

@@ -17,9 +17,12 @@ sound property CondiExp_SobbingFemale2 auto
 sound property CondiExp_SobbingFemale3 auto
 sound property CondiExp_SobbingFemale4 auto
 sound property CondiExp_SobbingFemale5 auto
+
+condiexp_MCM Property config auto
 ;todelete
 Faction Property SexLabAnimatingFaction Auto
 GlobalVariable Property Condiexp_Verbose Auto
+
 
 bool playing = false
 
@@ -31,7 +34,8 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Utility.Wait(Seconds)
 	Int trauma = Condiexp_CurrentlyTrauma.GetValue() as Int
 	Utility.Wait(1)
-	PlayTraumaExpression(PlayerRef, trauma, Condiexp_Verbose.GetValue() as Int)
+	config.currentExpression = "Trauma"
+	PlayTraumaExpression(PlayerRef, trauma, config)
 	Utility.Wait(1)
 	BreatheAndSob(trauma)
 	Utility.Wait(6)
@@ -74,7 +78,7 @@ Function playBreathOrRandomSob(int trauma)
 	endIf
 
 	Int randomSob = Utility.RandomInt(1, 5)
-	verbose(PlayerRef, "Playing sob: " + randomSob, Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef, "Trauma: sobbing: " + randomSob, Condiexp_Verbose.GetValue() as Int)
 	if randomSob == 1
 		CondiExp_SobbingFemale1.play(PlayerRef)
 	elseIf randomSob == 2

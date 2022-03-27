@@ -1,9 +1,11 @@
 Scriptname Condiexp_Headache extends activemagiceffect  
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 Actor Property PlayerRef Auto
+condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusy.SetValue(1)
+    config.currentExpression = "Headache"
     Headache()
 EndEvent
 

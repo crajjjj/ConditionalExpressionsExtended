@@ -13,7 +13,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 10300
+    Return 10301
     ; 1.0.0   -> 10000
     ; 1.1.0   -> 10100
     ; 1.1.1  -> 10101
@@ -22,7 +22,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.3.0"
+    Return "1.3.1"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -98,13 +98,14 @@ EndFunction
 ;OohQ 12  R 13
 ;Th 14    W 15
 ;https://steamcommunity.com/sharedfiles/filedetails/?l=english&id=187155077
-Function SmoothSetPhoneme(Actor act, Int number, Int str_dest) global
+Function SmoothSetPhoneme(Actor act, Int number, Int str_dest, float modifier = 1.0) global
 	While (!SetModifier(act, 14, 0))
 		Wait(5.0)
 	EndWhile
 	Int t1 = GetPhoneme(act, number)
 	Int t2
 	Int speed = 3
+	str_dest = (str_dest * modifier) as Int
 	While (t1 != str_dest)
 		t2 = (str_dest - t1) / Abs(str_dest - t1) as Int
 		t1 = t1 + t2 * speed
@@ -130,8 +131,10 @@ EndFunction
 ;LookUp 11
 ;SquintL 12
 ;SquintR 13
-;set -1 to number2 if not needed 
-Function SmoothSetModifier(Actor act, Int number1, Int number2, Int str_dest) global
+
+;for changing 2 values at the same time (e.g. eyes squint)
+;set -1 to mod2 if not needed 
+Function SmoothSetModifier(Actor act, Int mod1, Int mod2, Int str_dest, float strModifier = 1.0) global
 	Int speed_blink_min = 25
 	Int speed_blink_max = 60
 	Int speed_eye_move_min = 5
@@ -143,11 +146,12 @@ Function SmoothSetModifier(Actor act, Int number1, Int number2, Int str_dest) gl
 		Wait(5.0)
 		safeguard = safeguard + 1
 	EndWhile
-	Int t1 = GetModifier(act, number1)
+	Int t1 = GetModifier(act, mod1)
 	Int t2
 	Int t3
 	Int speed
-	If (number1 < 2)
+	str_dest = (str_dest * strModifier) as Int
+	If (mod1 < 2)
 		If (str_dest > 0)
 			speed_blink = RandomInt(speed_blink_min, speed_blink_max)
 			speed = speed_blink
@@ -158,7 +162,7 @@ Function SmoothSetModifier(Actor act, Int number1, Int number2, Int str_dest) gl
 				speed = Round(RandomInt(speed_blink_min, speed_blink_max) * 0.5)
 			EndIf
 		EndIf
-	ElseIf (number1 > 7 && number1 < 12)
+	ElseIf (mod1 > 7 && mod1 < 12)
 		speed = RandomInt(speed_eye_move_min, speed_eye_move_max)
 	Else
 		speed = 3
@@ -169,12 +173,12 @@ Function SmoothSetModifier(Actor act, Int number1, Int number2, Int str_dest) gl
 		If ((str_dest - t1) / t2 < 0)
 			t1 = str_dest
 		EndIf
-		If (!(number2 < 0 || number2 > 13))
+		If (!(mod2 < 0 || mod2 > 13))
 			t3 = RandomInt(0, 1)
-			SetModifier(act, number1 * t3 + number2 * (1 - t3), t1)
-			SetModifier(act, number2 * t3 + number1 * (1 - t3), t1)
+			SetModifier(act, mod1 * t3 + mod2 * (1 - t3), t1)
+			SetModifier(act, mod2 * t3 + mod1 * (1 - t3), t1)
 		Else
-			SetModifier(act, number1, t1)
+			SetModifier(act, mod1, t1)
 		EndIf
 	EndWhile
 EndFunction
@@ -188,7 +192,7 @@ EndFunction
 ;puzzled 5
 ;disgust 6
 ;neutral 7
-Int Function SmoothSetExpression(Actor act, Int number, Int exp_dest, int exp_value) global
+Int Function SmoothSetExpression(Actor act, Int number, Int exp_dest, int exp_value, float modifier = 1.0) global
 	int safeguard = 0
 	While (!SetModifier(act, 14, 0) && safeguard <= 5)
 		Wait(5.0)
@@ -196,6 +200,7 @@ Int Function SmoothSetExpression(Actor act, Int number, Int exp_dest, int exp_va
 	EndWhile
 	Int t2
 	Int speed = 2
+	exp_dest = (exp_dest * modifier) as Int
 	While (exp_value != exp_dest)
 		t2 = (exp_dest - exp_value) / Abs(exp_dest - exp_value) as Int
 		exp_value = exp_value + t2 * speed

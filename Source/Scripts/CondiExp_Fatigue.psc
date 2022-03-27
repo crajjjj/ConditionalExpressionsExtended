@@ -12,9 +12,11 @@ sound property CondiExp_BreathingFemale auto
 sound property CondiExp_BreathingfemaleORC auto
 sound property CondiExp_BreathingfemaleKhajiit auto
 bool property Breathing Auto
+condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusy.SetValue(1)
+    config.currentExpression = "Fatigue"
     If Breathing == False
         Breathe()
         Breathing = True

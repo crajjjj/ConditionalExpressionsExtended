@@ -37,8 +37,6 @@ Sample: set Condiexp_MinAroused 30
 - Condiexp_MinTrauma range 1-10 default 1
 - Condiexp_MinAroused range 0-100 default 30
 - Condiexp_MinDirty range 0-4 default 1
-- Condiexp_UpdateInterval seconds default 5
-- Condiexp_FollowersUpdateInterval seconds default 3
 
 (range values not inclusive - e.g. setting Condiexp_MinDirty to 4 will disable feature)
 

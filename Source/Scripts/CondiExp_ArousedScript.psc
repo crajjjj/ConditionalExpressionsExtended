@@ -12,6 +12,8 @@ GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_Sounds Auto
 GlobalVariable Property Condiexp_Verbose Auto
 
+condiexp_MCM Property config auto
+
 bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
@@ -22,7 +24,8 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Utility.Wait(Seconds)
 	;either 0 or aroused level > Condiexp_MinAroused
 	Int arousal = Condiexp_CurrentlyAroused.GetValue() as Int
-	PlayArousedExpression( PlayerRef, arousal, Condiexp_Verbose.GetValue() as Int)
+	config.currentExpression = "Aroused"
+	PlayArousedExpression( PlayerRef, arousal, config)
 	playing = false
 	Utility.Wait(1)
 EndEvent

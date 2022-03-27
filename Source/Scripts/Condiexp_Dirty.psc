@@ -8,6 +8,7 @@ GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_CurrentlyDirty Auto
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_Verbose Auto
+condiexp_MCM Property config auto
 
 bool playing = false
 
@@ -18,7 +19,8 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Int Seconds = Utility.RandomInt(2, 4)
 	Utility.Wait(Seconds)
 	trace("Condiexp_Dirty OnEffectStart")
-	PlayDirtyExpression(PlayerRef, Condiexp_CurrentlyDirty.GetValue() as Int, Condiexp_Verbose.GetValue() as Int)
+	config.currentExpression = "Dirty"
+	PlayDirtyExpression(PlayerRef,  Condiexp_CurrentlyDirty.GetValue() as Int, config)
 	playing = false
 EndEvent
 

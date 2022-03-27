@@ -16,6 +16,8 @@ GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_GlobalRandom Auto
 GlobalVariable Property Condiexp_Verbose Auto
 bool playing = false
+condiexp_MCM Property config auto
+
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValue() as Int)
 	ShowExpression()
@@ -39,7 +41,9 @@ endfunction
 
 Function ShowExpression() 
 	Utility.Wait(1)
-	RandomEmotion(PlayerRef, Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef,"Random emotion", config.Condiexp_Verbose.GetValue() as Int)
+	config.currentExpression = "Random"
+	RandomEmotion(PlayerRef, config)
 EndFunction
 
 Event OnUpdate()

@@ -2,6 +2,7 @@ Scriptname CondiExp_Followers extends ReferenceAlias
 
 Quest Property this_quest Auto
 CondiExp_StartMod Property sm Auto
+condiexp_MCM Property config auto
 
 Import Utility
 Import CondiExp_Expression_Util
@@ -72,13 +73,14 @@ Event OnUpdate()
 	EndIf
 
 	If (act.GetActorValuePercentage("Health") < 0.40)
-		PlayPainExpression(act, verboseInt)
+		PlayPainExpression(act, config)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
 	
 	;Combat Anger
 	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40)
+		verbose(act, "Anger", verboseInt)
 		SmoothSetExpression(act, 15, RandomInt(50, 100), 0)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
@@ -93,7 +95,7 @@ Event OnUpdate()
 
 	int trauma = sm.getTraumaStatus(act)
 	If (trauma > 0)
-		PlayTraumaExpression( act, trauma, verboseInt)
+		PlayTraumaExpression( act, trauma, config)
 		resetMFGSmooth(act)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
@@ -101,7 +103,7 @@ Event OnUpdate()
 
 	int dirty = sm.getDirtyStatus(act)
 	If (dirty > 0)
-		PlayDirtyExpression( act, dirty, verboseInt)
+		PlayDirtyExpression( act, dirty, config)
 		resetMFGSmooth(act)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
@@ -109,13 +111,13 @@ Event OnUpdate()
 
 	int aroused = sm.getArousalStatus(act)
 	If (aroused > 0)
-		PlayArousedExpression( act, aroused, verboseInt)
+		PlayArousedExpression( act, aroused, config)
 		resetMFGSmooth(act)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
 
-	RandomEmotion(act, verboseInt)
+	RandomEmotion(act, config)
 	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 EndEvent
 

@@ -2,6 +2,7 @@ Scriptname CondiExp_Drunk_Script extends activemagiceffect
 Actor Property PlayerRef Auto
 GlobalVariable Property CondiExp_PlayerIsDrunk Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
+condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 Drunk()
@@ -10,6 +11,7 @@ EndEvent
 Function Drunk()
 
 Condiexp_CurrentlyBusy.SetValue(1)
+config.currentExpression = "Drunk"
 PlayerRef.SetExpressionOverride(2,80)
 
 RegisterForSingleUpdateGameTime(0.5)

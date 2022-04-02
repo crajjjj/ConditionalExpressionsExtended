@@ -25,18 +25,19 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	playing = true
 EndEvent
 
-Function doRegister() 
-	If  Condiexp_GlobalRandom.GetValue() == 0 || Condiexp_ModSuspended.GetValue() == 1 || Condiexp_CurrentlyBusy.GetValue() == 1
-		playing = false
-		return
-	endif
+bool function isRandomEnabled()
+	return  Condiexp_GlobalRandom.GetValue() == 1 && Condiexp_ModSuspended.GetValue() == 0 && Condiexp_CurrentlyBusy.GetValue() == 0 && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning()
+endfunction
 
-	If !PlayerRef.IsRunning() && !PlayerRef.GetAnimationVariableInt("i1stPerson")
+Function doRegister() 
+	If  isRandomEnabled()
 		Int Seconds = Utility.RandomInt(2, 5)
 		RegisterForSingleUpdate(Seconds)
 	else
 		playing = false
+		return	
 	endif
+
 endfunction
 
 Function ShowExpression() 
@@ -44,17 +45,16 @@ Function ShowExpression()
 	verbose(PlayerRef,"Random emotion", config.Condiexp_Verbose.GetValue() as Int)
 	config.currentExpression = "Random"
 	RandomEmotion(PlayerRef, config)
+	Utility.Wait(1)
 EndFunction
 
 Event OnUpdate()
-	If !PlayerRef.GetAnimationVariableInt("i1stPerson")
-		If Condiexp_CurrentlyBusy.GetValue() == 0
-				ShowExpression()
-				doRegister()
-			Else
-				playing = false
-		EndIf
-	endif
+	If isRandomEnabled()
+		ShowExpression()
+		doRegister()
+	Else
+		playing = false
+	EndIf
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)

@@ -33,12 +33,10 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Int Seconds = Utility.RandomInt(2, 4)
 	Utility.Wait(Seconds)
 	Int trauma = Condiexp_CurrentlyTrauma.GetValue() as Int
-	Utility.Wait(1)
 	config.currentExpression = "Trauma"
 	PlayTraumaExpression(PlayerRef, trauma, config)
-	Utility.Wait(1)
 	BreatheAndSob(trauma)
-	Utility.Wait(6)
+	Utility.Wait(1)
 	playing = false
 EndEvent
 

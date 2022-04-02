@@ -14,9 +14,14 @@ Import mfgconsolefunc
 Actor act
 
 Event OnPlayerLoadGame()
-	ResetQuest(this_quest)
 	log("CondiExp_Followers OnPlayerLoadGame.Actor: " + act.GetLeveledActorBase().GetName())
+	ResetQuest(this_quest)
 EndEvent
+
+Event OnCellLoad()
+	log("CondiExp_Followers OnCellLoad.Actor: " + act.GetLeveledActorBase().GetName())
+	ResetQuest(this_quest)
+endEvent
 
 Event OnInit()
 	act = self.GetActorReference()
@@ -26,8 +31,9 @@ Event OnInit()
 	if (!ResetPhonemeModifier(act))
 		Wait(10.0)
 	endif
-	If act == Game.GetPlayer()
-		Notification("FollowersQuest: started")
+	If act == sm.PlayerRef
+		int verboseInt = sm.Condiexp_Verbose.GetValue() as Int
+		verbose(act, "FollowersQuest: started" , verboseInt)
 		Return
 	EndIf
 	log("CondiExp_Followers OnInit. Actor: " + act.GetLeveledActorBase().GetName())
@@ -35,19 +41,31 @@ Event OnInit()
 EndEvent
 
 Event OnUpdate()
+	int verboseInt = sm.Condiexp_Verbose.GetValue() as Int
+	
 	if (!ResetPhonemeModifier(act))
+		log("CondiExp_Followers OnUpdate. ResetPhonemeModifier failed")
 		If (!act)
+			verbose(act, "Actor was removed" , verboseInt)
 			Return
 		EndIf
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 	Endif
 
+	float dist = act.GetDistance(sm.PlayerRef)
+
+	If (dist > 2000)
+		verbose(act, "Actor is too far - skipping" , verboseInt)
+		Wait(10)
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		return
+	EndIf
+
 	If (sm.checkIfModShouldBeSuspended(act))
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		return
 	endif
-
-	int verboseInt = sm.Condiexp_Verbose.GetValue() as Int
+	
 	resetMFGSmooth(act)
 
 	If (act.IsDead())
@@ -61,6 +79,9 @@ Event OnUpdate()
 			SmoothSetModifier(act,4, 5, RandomInt(0, 100))
 			SmoothSetModifier(act, 0, 1, 90)
 		EndIf
+		verbose(act, "Dead", verboseInt)
+		act.Delete()
+		act = None
 		Return
 	EndIf
 
@@ -117,7 +138,9 @@ Event OnUpdate()
 		Return
 	EndIf
 
+	verbose(act, "Random", verboseInt)
 	RandomEmotion(act, config)
+	Wait(3.0)
 	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 EndEvent
 

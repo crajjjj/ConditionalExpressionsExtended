@@ -33,6 +33,6 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	EndWhile
 	resetMFGSmooth(PlayerRef)
 	verbose(akTarget, "Dirty: OnEffectFinish.Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
-	Utility.Wait(3)
+	Utility.Wait(1)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent

@@ -72,6 +72,7 @@ Function PlayTraumaExpression(Actor act, int trauma, condiexp_MCM config) global
 	ElseIf randomLook == 8
 		LookDown(50, act)
 	endif 
+	Utility.Wait(5)
 EndFunction
 
 Function PlayDirtyExpression(Actor act, int dirty, condiexp_MCM config) global
@@ -93,7 +94,7 @@ Function PlayDirtyExpression(Actor act, int dirty, condiexp_MCM config) global
 	ElseIf randomLook == 8
 		LookDown(50, act)
 	endif
-	Utility.Wait(7)
+	Utility.Wait(5)
 EndFunction
 
 Function Breathe(Actor act ) global
@@ -136,7 +137,7 @@ Function PlayPainExpression(Actor act, condiexp_MCM config) global
         MfgConsoleFunc.SetModifier(act,1,70)
         MfgConsoleFunc.SetPhoneMe(act,4,30)
     Endif
-	Utility.Wait(1)
+	Utility.Wait(3)
 EndFunction
 
 ; Sets an expression to override any other expression other systems may give this actor.

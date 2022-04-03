@@ -3,6 +3,8 @@ import CondiExp_util
 import CondiExp_Expression_Util
 
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
+GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
+
 GlobalVariable Property Condiexp_Sounds Auto
 Actor Property PlayerRef Auto
 sound property CondiExp_BreathingMale auto
@@ -14,7 +16,9 @@ sound property CondiExp_BreathingfemaleKhajiit auto
 bool property Breathing Auto
 condiexp_MCM Property config auto
 
+;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+    Condiexp_CurrentlyBusyImmediate.SetValue(1)
     Condiexp_CurrentlyBusy.SetValue(1)
     config.currentExpression = "Fatigue"
     If Breathing == False
@@ -65,6 +69,7 @@ EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 Utility.Wait(1)
+Condiexp_CurrentlyBusyImmediate.SetValue(0)
 Condiexp_CurrentlyBusy.SetValue(0)
 Breathing = False
 EndEvent

@@ -3,13 +3,17 @@ Actor Property PlayerRef Auto
 bool property OpenMouth Auto
 keyword property vampire auto
 condiexp_MCM Property config auto
-
+GlobalVariable Property Condiexp_CurrentlyBusy Auto
+GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
+;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-If PlayerRef.HasKeyword(Vampire)
-; use vanilla
-else
-Angry()
-endif
+    Condiexp_CurrentlyBusyImmediate.SetValue(1)
+    Condiexp_CurrentlyBusy.SetValue(1)
+    If PlayerRef.HasKeyword(Vampire)
+        ; use vanilla
+    else
+        Angry()
+    endif
 EndEvent
 
 Function Angry()
@@ -46,6 +50,8 @@ EndEvent
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 Utility.Wait(0.5)
 MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+Condiexp_CurrentlyBusyImmediate.SetValue(0)
+Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent
 
 

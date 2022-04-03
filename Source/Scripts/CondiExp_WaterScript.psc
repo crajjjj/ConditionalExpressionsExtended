@@ -1,10 +1,12 @@
 Scriptname CondiExp_WaterScript extends activemagiceffect  
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
+GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 Condiexp_CurrentlyBusy.SetValue(1)
+Condiexp_CurrentlyBusyImmediate.SetValue(1)
 config.currentExpression = "Water squint"
 Squint()
 EndEvent
@@ -43,5 +45,5 @@ endwhile
 MfgConsoleFunc.SetModifier(PlayerRef,12,0)
 MfgConsoleFunc.SetModifier(PlayerRef,13,0) 
 Condiexp_CurrentlyBusy.SetValue(0)
-
+Condiexp_CurrentlyBusyImmediate.SetValue(0)
 EndEvent

@@ -10,6 +10,7 @@ Import CondiExp_util
 Import CondiExp_log
 Import mfgconsolefunc
 
+int additionalLag = 10
 
 Actor act
 
@@ -49,20 +50,19 @@ Event OnUpdate()
 			verbose(act, "Actor was removed" , verboseInt)
 			Return
 		EndIf
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + additionalLag)
 	Endif
 
 	float dist = act.GetDistance(sm.PlayerRef)
 
 	If (dist > 2000)
 		verbose(act, "Actor is too far - skipping" , verboseInt)
-		Wait(10)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + additionalLag)
 		return
 	EndIf
 
 	If (sm.checkIfModShouldBeSuspended(act))
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + additionalLag)
 		return
 	endif
 	
@@ -140,8 +140,7 @@ Event OnUpdate()
 
 	verbose(act, "Random", verboseInt)
 	RandomEmotion(act, config)
-	Wait(3.0)
-	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + 3)
 EndEvent
 
 

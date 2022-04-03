@@ -1,9 +1,13 @@
 Scriptname Condiexp_Headache extends activemagiceffect  
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
+GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
+
 Actor Property PlayerRef Auto
 condiexp_MCM Property config auto
 
+;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+    Condiexp_CurrentlyBusyImmediate.SetValue(1)
     Condiexp_CurrentlyBusy.SetValue(1)
     config.currentExpression = "Headache"
     Headache()
@@ -33,6 +37,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
      Utility.Wait(0.1)
     endwhile
     Utility.Wait(1)
+    Condiexp_CurrentlyBusyImmediate.SetValue(0)
     Condiexp_CurrentlyBusy.SetValue(0)
     PlayerRef.ClearExpressionOverride()
 EndEvent

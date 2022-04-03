@@ -11,6 +11,7 @@ Formlist property CondiExp_Drugs Auto
 Formlist property CondiExp_Drinks Auto
 Keyword Property VendorItemFood Auto
 GlobalVariable Property CondiExp_CurrentlyBusy Auto
+GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 GlobalVariable Property CondiExp_PlayerIsHigh Auto
 GlobalVariable Property CondiExp_PlayerIsDrunk Auto
 GlobalVariable Property CondiExp_PlayerJustAte Auto
@@ -381,7 +382,7 @@ endfunction
 
 Function StartMod()
 	log("Started")
-	CondiExp_CurrentlyBusy.SetValue(0)
+	resetConditions()
 
 	Utility.Wait(0.5)
 	PlayerRef.AddSpell(CondiExp_Fatigue1, false)
@@ -444,6 +445,7 @@ Function resetConditions()
 	Condiexp_CurrentlyTrauma.SetValue(0)
 	Condiexp_CurrentlyAroused.SetValue(0)
 	Condiexp_CurrentlyBusy.SetValue(0)
+	Condiexp_CurrentlyBusyImmediate.SetValue(0)
 endfunction
 
 Bool function isModEnabled()

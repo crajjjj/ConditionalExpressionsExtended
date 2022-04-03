@@ -93,21 +93,21 @@ Event OnUpdate()
 		Return
 	EndIf
 
-	If (act.GetActorValuePercentage("Health") < 0.40)
+	If (act.GetActorValuePercentage("Health") < 0.40 && config.Condiexp_GlobalPain.GetValue() == 1)
 		PlayPainExpression(act, config)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
 	
 	;Combat Anger
-	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40)
+	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalCombat.GetValue() == 1)
 		verbose(act, "Anger", verboseInt)
 		SmoothSetExpression(act, 15, RandomInt(50, 100), 0)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
 	
-	If (!act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40)
+	If (!act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalStamina.GetValue() == 1)
 		verbose(act, "Fatigue: Effect: Breathing", verboseInt)
 		Breathe(act)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
@@ -137,9 +137,12 @@ Event OnUpdate()
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
-
-	verbose(act, "Random", verboseInt)
-	RandomEmotion(act, config)
+	
+	If (config.Condiexp_GlobalRandom.GetValue() == 1)
+		verbose(act, "Random", verboseInt)
+		RandomEmotion(act, config)
+	EndIf
+	
 	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + 3)
 EndEvent
 

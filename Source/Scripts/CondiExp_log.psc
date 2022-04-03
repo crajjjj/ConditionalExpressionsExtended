@@ -7,8 +7,8 @@ Function log(String asMessage, Int aiPriority = 0) Global
 	String asModName = "ConditionalExpressionsExtended"
 	Utility.SetINIBool("bEnableTrace:Papyrus", true)
 	if OpenUserLog(asModName)
-		Trace(asModName + " Debugging Started.")
-		TraceUser(asModName,"[---"+ asModName +" DEBUG LOG STARTED---]")
+		Debug.Trace(asModName + " Debugging Started.")
+		Debug.TraceUser(asModName,"[---"+ asModName +" DEBUG LOG STARTED---]")
 	endif
 	String sPrefix
 	if aiPriority == 2
@@ -21,7 +21,7 @@ Function log(String asMessage, Int aiPriority = 0) Global
 
 	asMessage = sPrefix + asMessage
 	
-	TraceUser(asModName, asMessage, aiPriority)
+	Debug.TraceUser(asModName, asMessage, aiPriority)
 EndFunction
 
 Function trace(String msg, Int aiPriority = 0) Global 

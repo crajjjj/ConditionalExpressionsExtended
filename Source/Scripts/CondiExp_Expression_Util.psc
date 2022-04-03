@@ -99,16 +99,15 @@ EndFunction
 
 Function Breathe(Actor act ) global
 	If act.IsDead()
-		;nothing happens
+		return
+	Endif
+	Inhale(33,73, act)
+	Exhale(73,33, act)
+	If !act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.3 && act.GetActorValuePercentage("Health") > 0.5 && !act.isSwimming()
+		Breathe(act)
 	else
-		Inhale(33,73, act)
-		Exhale(73,33, act)
-		If !act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.3 && act.GetActorValuePercentage("Health") > 0.5
-			Breathe(act)
-		else
-			Exhale(33,0,act)
-			Utility.Wait(1)
-		Endif
+		Exhale(33,0,act)
+		Utility.Wait(1)
 	Endif
 EndFunction
 
@@ -138,6 +137,13 @@ Function PlayPainExpression(Actor act, condiexp_MCM config) global
         MfgConsoleFunc.SetPhoneMe(act,4,30)
     Endif
 	Utility.Wait(3)
+EndFunction
+
+Function PlayRandomExpression(Actor act, condiexp_MCM config) global
+	verbose(act,"Random emotion", config.Condiexp_Verbose.GetValue() as Int)
+	RandomEmotion(act, config)
+	Int Seconds = Utility.RandomInt(1, 3)
+	Utility.Wait(Seconds)
 EndFunction
 
 ; Sets an expression to override any other expression other systems may give this actor.

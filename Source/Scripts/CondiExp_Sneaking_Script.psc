@@ -14,6 +14,7 @@ EndEvent
 
 Function KhajiitLikestoSneak()
     config.currentExpression = "Sneaking"
+    verbose(PlayerRef, "Sneaking", config.Condiexp_Verbose.GetValue() as Int)
     MfgConsoleFunc.SetModifier(PlayerRef,12,45)
     MfgConsoleFunc.SetModifier(PlayerRef,13,45)
     MfgConsoleFunc.SetModifier(PlayerRef,2,20)

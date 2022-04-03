@@ -139,8 +139,9 @@ Event OnUpdate()
 	EndIf
 	
 	If (config.Condiexp_GlobalRandom.GetValue() == 1)
-		verbose(act, "Random", verboseInt)
-		RandomEmotion(act, config)
+		PlayRandomExpression(act, config)
+		PlayRandomExpression(act, config)
+		PlayRandomExpression(act, config)
 	EndIf
 	
 	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + 3)

@@ -29,7 +29,6 @@ bool playing = false
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
 	playing = true
-	trace("CondiExp_TraumaScript OnEffectStart")
 	Int Seconds = Utility.RandomInt(2, 4)
 	Utility.Wait(Seconds)
 	Int trauma = Condiexp_CurrentlyTrauma.GetValue() as Int

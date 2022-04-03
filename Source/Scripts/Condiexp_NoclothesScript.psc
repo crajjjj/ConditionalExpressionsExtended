@@ -1,4 +1,6 @@
 Scriptname Condiexp_NoclothesScript extends activemagiceffect  
+import CondiExp_log
+
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 condiexp_MCM Property config auto
@@ -11,8 +13,8 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function Blush()
-    
     config.currentExpression = "No Clothes"
+    verbose(PlayerRef, "No Clothes", config.Condiexp_Verbose.GetValue() as Int)
     PlayerRef.SetExpressionOverride(4,90)
 EndFunction
 

@@ -13,8 +13,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValue(1)
     Condiexp_CurrentlyBusy.SetValue(1)
     config.currentExpression = "Pain"
-    PlayerRef.ClearExpressionOverride()
-    MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+    resetMFG(PlayerRef)
     Utility.Wait(0.9)
     PlayPainExpression(PlayerRef, config)
 EndEvent

@@ -1,4 +1,6 @@
 Scriptname CondiExp_AngryScript extends ActiveMagicEffect  
+import CondiExp_log
+
 Actor Property PlayerRef Auto
 bool property OpenMouth Auto
 keyword property vampire auto
@@ -20,6 +22,7 @@ Function Angry()
 
 while PlayerRef.IsinCombat() && OpenMouth == False
 config.currentExpression = "Angry"
+verbose(PlayerRef, "Angry", config.Condiexp_Verbose.GetValue() as Int)
 PlayerRef.SetExpressionOverride(15,70)
 MfgConsoleFunc.SetPhoneMe(PlayerRef, 4, 20)
 Utility.Wait(1)

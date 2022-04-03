@@ -1,4 +1,6 @@
 Scriptname CondiExp_Drunk_Script extends activemagiceffect  
+import CondiExp_log
+
 Actor Property PlayerRef Auto
 GlobalVariable Property CondiExp_PlayerIsDrunk Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
@@ -14,6 +16,7 @@ EndEvent
 Function Drunk()
 
 Condiexp_CurrentlyBusy.SetValue(1)
+verbose(PlayerRef, "Drunk", config.Condiexp_Verbose.GetValue() as Int)
 config.currentExpression = "Drunk"
 PlayerRef.SetExpressionOverride(2,80)
 

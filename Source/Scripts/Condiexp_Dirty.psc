@@ -18,7 +18,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	playing = true
 	Int Seconds = Utility.RandomInt(2, 4)
 	Utility.Wait(Seconds)
-	trace("Condiexp_Dirty OnEffectStart")
+	verbose(PlayerRef, "Dirty: OnEffectStart.Time: ", Condiexp_Verbose.GetValue() as Int)
 	config.currentExpression = "Dirty"
 	PlayDirtyExpression(PlayerRef,  Condiexp_CurrentlyDirty.GetValue() as Int, config)
 	playing = false
@@ -32,7 +32,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		safeguard = safeguard + 1
 	EndWhile
 	resetMFGSmooth(PlayerRef)
-	verbose(akTarget, "Dirty: OnEffectFinish.Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef, "Dirty: OnEffectFinish.Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
 	Utility.Wait(1)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent

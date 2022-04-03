@@ -13,7 +13,7 @@ int coldExpression = 0
  
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
-	trace("CondiExp_Cold_Script OnEffectStart")
+	verbose(akTarget, "Cold: OnEffectstart", config.Condiexp_Verbose.GetValue() as Int)
 	Int Seconds = Utility.RandomInt(1, 3)
 	Utility.Wait(Seconds)
 	ShowExpression()
@@ -70,7 +70,7 @@ Function ShowExpression()
 	endwhile
 	
 	; if the outro is done we clean up and stop
-	resetMFG(PlayerRef)
+	resetMFGSmooth(PlayerRef)
 endFunction
 
 bool Function isCold() 
@@ -107,6 +107,6 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	endwhile
 	Utility.Wait(1)
 	verbose(PlayerRef, "Cold: OnEffectFinish", config.Condiexp_Verbose.GetValue() as Int)
-	resetMFG(PlayerRef)
+	resetMFGSmooth(PlayerRef)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent

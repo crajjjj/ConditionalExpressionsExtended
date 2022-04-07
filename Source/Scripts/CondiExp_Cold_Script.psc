@@ -4,6 +4,7 @@ import CondiExp_util
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyCold Auto 
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
+GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 GlobalVariable Property Condiexp_ColdMethod Auto
 GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_GlobalCold Auto
@@ -78,11 +79,13 @@ bool Function isCold()
 
 	bool isSuspended =  Condiexp_ModSuspended.GetValue() == 1
 	bool isDisabled = Condiexp_GlobalCold.GetValue() == 0
+	bool isImmediateEffect = Condiexp_CurrentlyBusyImmediate.GetValue() != 0 
 	bool lowStamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5
 	bool lowHealth = PlayerRef.GetActorValuePercentage("Health") < 0.5
+	
 	bool isSwimming = PlayerRef.IsSwimming()
 
-	If isSuspended || isDisabled || lowStamina || lowHealth || isSwimming 
+	If isSuspended || isDisabled || lowStamina || lowHealth || isSwimming || isImmediateEffect
 		return false
 	endif
 

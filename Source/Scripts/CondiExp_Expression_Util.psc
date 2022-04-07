@@ -21,7 +21,7 @@ Function PlayArousedExpression(Actor act, int aroused, condiexp_MCM config) glob
 		if aroused > 50 &&  aroused <= 80
 			topMargin = 5
 		else
-			topMargin = 6
+			topMargin = 7
 		endif 
 		Int randomEffect = Utility.RandomInt(1, topMargin)
 		verbose(act, "Aroused: Arousal: " + aroused + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValue() as Int)
@@ -97,18 +97,15 @@ Function PlayDirtyExpression(Actor act, int dirty, condiexp_MCM config) global
 	Utility.Wait(5)
 EndFunction
 
-Function Breathe(Actor act ) global
-	If act.IsDead()
+Function Breathe(Actor act, bool final = true) global
+	If act.IsDead() && act.IsSwimming()
 		return
 	Endif
 	Inhale(33,73, act)
 	Exhale(73,33, act)
-	If !act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.3 && act.GetActorValuePercentage("Health") > 0.5 && !act.isSwimming()
-		Breathe(act)
-	else
+	if final
 		Exhale(33,0,act)
-		Utility.Wait(1)
-	Endif
+	endif
 EndFunction
 
 Function PlayPainExpression(Actor act, condiexp_MCM config) global
@@ -199,6 +196,10 @@ Function _arousedVariants(Int index, Actor act, int Power, condiexp_MCM config) 
 		SmoothSetModifier(act,4,5,100, modStr)
 		SmoothSetModifier(act,12,13,30, modStr)
 	elseIf index == 5
+		SmoothSetExpression(act, 5, Power, 0, exprStr)
+		SmoothSetPhoneme(act, 8, 25, phStr)
+		SmoothSetModifier(act,2,3,20, modStr)
+	elseIf index == 6
 		SmoothSetExpression(act, 10, Power, 0, exprStr)
 		SmoothSetPhoneme(act, 0, 60, phStr)
 		SmoothSetPhoneme(act, 6, 50, phStr)

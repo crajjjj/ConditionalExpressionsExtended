@@ -20,16 +20,19 @@ condiexp_MCM Property config auto
 
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    Condiexp_CurrentlyBusyImmediate.SetValue(1)
+    int current = Condiexp_CurrentlyBusyImmediate.GetValue() as int
+    Condiexp_CurrentlyBusyImmediate.SetValue(current + 1)
     Condiexp_CurrentlyBusy.SetValue(1)
     resetMFGSmooth(akTarget)
     config.currentExpression = "Fatigue"
     verbose(PlayerRef, "Fatigue: OnEffectStart", config.Condiexp_Verbose.GetValue() as Int)
-    Breathe()
 EndEvent
 
 bool function isFatigueActive()
-	return  config.Condiexp_GlobalStamina.GetValue() == 1 && PlayerRef.GetActorValuePercentage("Stamina") < 0.5 && PlayerRef.GetActorValuePercentage("Health") > 0.5 && !PlayerRef.IsDead() && !PlayerRef.isSwimming()
+    bool active = config.Condiexp_GlobalStamina.GetValue() == 1
+    active = active && PlayerRef.GetActorValuePercentage("Stamina") < 0.5 && PlayerRef.GetActorValuePercentage("Health") > 0.5 
+    active = active && !PlayerRef.IsDead() && !PlayerRef.isSwimming() 
+	return  active && Condiexp_CurrentlyBusyImmediate.GetValue() == 1
 endfunction
 
 Function Breathe()
@@ -37,7 +40,7 @@ Function Breathe()
         return
     endif
 
-
+    Inhale(33,73, PlayerRef)
     ;;;;;;;;;;; SOUNDS ;;;;;;;;;;;;
     If Condiexp_Sounds.GetValue() == 1
          int Breathe = CondiExp_BreathingMaleKhajiit.play(PlayerRef)     
@@ -57,11 +60,8 @@ Function Breathe()
     elseif Condiexp_Sounds.GetValue() == 6
         int Breathe = CondiExp_BreathingfeMale.play(PlayerRef)     
     endif 
-;;;;;;;;;
-
- 
-Inhale(33,73, PlayerRef)
-Exhale(73,33, PlayerRef)
+    ;;;;;;;;;
+    Exhale(73,33, PlayerRef)
 
 EndFunction
 
@@ -75,5 +75,5 @@ EndWhile
 Exhale(33, 0, PlayerRef)
 Condiexp_CurrentlyBusyImmediate.SetValue(0)
 Condiexp_CurrentlyBusy.SetValue(0)
-verbose(PlayerRef, "Fatigue: OnEffectFinish", config.Condiexp_Verbose.GetValue() as Int)
+verbose(PlayerRef, "Fatigue: OnEffectFinish. Times:" + safeguard, config.Condiexp_Verbose.GetValue() as Int)
 EndEvent

@@ -19,7 +19,7 @@ Function Blush()
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    Utility.Wait(1)
+    Utility.Wait(3)
     PlayerRef.ClearExpressionOverride()
     Condiexp_CurrentlyBusyImmediate.SetValue(0)
     Condiexp_CurrentlyBusy.SetValue(0)

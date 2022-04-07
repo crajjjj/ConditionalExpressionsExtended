@@ -109,7 +109,11 @@ Event OnUpdate()
 	
 	If (!act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalStamina.GetValue() == 1)
 		verbose(act, "Fatigue: Effect: Breathing", verboseInt)
-		Breathe(act)
+		Breathe(act, false)
+		Utility.Wait(1)
+		Breathe(act, false)
+		Utility.Wait(1)
+		Breathe(act, true)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 		Return
 	EndIf
@@ -139,7 +143,6 @@ Event OnUpdate()
 	EndIf
 	
 	If (config.Condiexp_GlobalRandom.GetValue() == 1)
-		PlayRandomExpression(act, config)
 		PlayRandomExpression(act, config)
 		PlayRandomExpression(act, config)
 	EndIf

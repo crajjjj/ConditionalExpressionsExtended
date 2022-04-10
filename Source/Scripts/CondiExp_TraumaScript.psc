@@ -19,8 +19,8 @@ sound property CondiExp_SobbingFemale4 auto
 sound property CondiExp_SobbingFemale5 auto
 
 condiexp_MCM Property config auto
-;todelete
-Faction Property SexLabAnimatingFaction Auto
+;empty - to delete
+Faction Property SexLabAnimatingFaction Auto 
 GlobalVariable Property Condiexp_Verbose Auto
 
 

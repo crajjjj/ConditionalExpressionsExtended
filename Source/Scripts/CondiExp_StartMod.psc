@@ -45,7 +45,8 @@ Race Property KhajiitRaceVampire Auto
 Race Property OrcRace Auto
 Race Property OrcRaceVampire Auto
 Keyword property Vampire Auto
-Faction Property SexLabAnimatingFaction Auto
+Faction Property SexLabAnimatingFaction Auto ;empty - to delete
+
 
 
 String Property LoadedBathMod Auto Hidden
@@ -131,7 +132,7 @@ function init()
 
 	; checking what bath mod is loaded
 	LoadedBathMod = "None Found"
-	if GetDABDirtinessStage2Effect() != none ; if Dirt and Blood is loaded
+	if (isDependencyReady("Dirt and Blood - Dynamic Visuals.esp") && GetDABDirtinessStage2Effect() != none) ; if Dirt and Blood is loaded
 		LoadedBathMod = "Dirt And Blood"
 		DirtinessStage2Effect = GetDABDirtinessStage2Effect()
 		DirtinessStage3Effect = GetDABDirtinessStage3Effect()
@@ -141,23 +142,18 @@ function init()
 		BloodinessStage3Effect = GetDABBloodinessStage3Effect()
 		BloodinessStage4Effect = GetDABBloodinessStage4Effect()
 		BloodinessStage5Effect = GetDABBloodinessStage5Effect()
-	elseif GetBISDirtinessStage2Effect() != none ; if Bathing In Skyrim is loaded
+	elseif (isDependencyReady("Bathing in Skyrim - Main.esp") && GetBISDirtinessStage2Effect() != none) ; if Bathing In Skyrim is loaded
 		LoadedBathMod = "Bathing In Skyrim"
 		DirtinessStage2Effect = GetBISDirtinessStage2Effect()
 		DirtinessStage3Effect = GetBISDirtinessStage3Effect()
 		DirtinessStage4Effect = GetBISDirtinessStage4Effect()
-	elseif (GetKICDirtinessStage2Effect() != none) ; if Keep it clean is loaded
+	elseif (isDependencyReady("Keep It Clean.esp") && GetKICDirtinessStage2Effect() != none) ; if Keep it clean is loaded
 		LoadedBathMod = "Keep It Clean"
 		DirtinessStage2Effect = GetKICDirtinessStage2Effect()
 		DirtinessStage3Effect = GetKICDirtinessStage3Effect()
 		DirtinessStage4Effect = GetKICDirtinessStage4Effect()
 	endif
 	log("CondiExp_StartMod: Bathing mod: " + LoadedBathMod)
-	;for compatibility with other mods
-	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
-	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
-
-	StartMod()
 endfunction
 
 Event OnUpdate()
@@ -166,7 +162,7 @@ Event OnUpdate()
 		_checkPlugins += 1
 		If _checkPlugins >= 2
 			log("WidgetController: moduleSetup")
-			init()
+			StartMod()
 			_checkPlugins = 0
 		EndIf
 	EndIf
@@ -207,22 +203,21 @@ Bool function checkIfModShouldBeSuspended(Actor act)
 		return true
 	endif
 
-	if vZadGagEffect && act.HasMagicEffect(vZadGagEffect)
+	if (vZadGagEffect && act.HasMagicEffect(vZadGagEffect))
 		log("CondiExp_StartMod: dd gag effect was detected. Will suspend for actor:" + act.GetName() )
 		return true
 	endif
 
-	if ToysEffectMouthOpen && act.WornHasKeyword(ToysEffectMouthOpen)
+	if (ToysEffectMouthOpen && act.WornHasKeyword(ToysEffectMouthOpen))
 		log("CondiExp_StartMod: ToysEffectMouthOpen effect was detected. Will suspend for actor:" + act.GetName())
 		return true
 	endif
 
-	if (act.IsInFaction(SexLabAnimatingFaction))
-		;check is implemented in ck as well
+	if (sexlab && IsActorActive(sexlab, act))
 		log("CondiExp_StartMod: actor is in sl faction. Will suspend for actor:" + act.GetName())
 		return true
 	endif
-
+	
 	return false
 endfunction
 
@@ -276,16 +271,16 @@ int function getDirtyStatus(Actor act)
 	if sexlab && dirty < 3
 		if IsPlayerCumsoakedOral(sexlab, act)
 			dirty = 3
-			trace("CondiExp_StartMod: updateDirtyStatus(): cumsoaked 3")
+			log("CondiExp_StartMod: updateDirtyStatus(): cumsoaked 3")
 		endif
 	endif
 
 	;check cum else
 	if sexlab && dirty < 2
-			if IsPlayerCumsoakedVagOrAnal(sexlab, act)
-				dirty = 2
-				trace("CondiExp_StartMod: updateDirtyStatus(): cumsoaked 2")
-			endif
+		if IsPlayerCumsoakedVagOrAnal(sexlab, act)
+			dirty = 2
+			log("CondiExp_StartMod: updateDirtyStatus(): cumsoaked 2")
+		endif
 	endif
 
 	If dirty > 0 && dirty > Condiexp_MinDirty.GetValue()
@@ -375,17 +370,27 @@ Function StopMod()
 	Condiexp_ModSuspended.SetValue(1)
 	utility.wait(3)
 	resetConditions()
+
 	PlayerRef.RemoveSpell(CondiExp_Fatigue1)
 	resetMFG(PlayerRef)
+
+	UnregisterForModEvent("dhlp-Suspend")
+	UnregisterForModEvent("dhlp-Resume")
+
 	log("Stopped")
 endfunction
 
 Function StartMod()
-	log("Started")
 	resetConditions()
-
+	init()
 	Utility.Wait(0.5)
+	PlayerRef.RemoveSpell(CondiExp_Fatigue1)
 	PlayerRef.AddSpell(CondiExp_Fatigue1, false)
+	;for compatibility with other mods
+	UnregisterForModEvent("dhlp-Suspend")
+	UnregisterForModEvent("dhlp-Resume")
+	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
+	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
 
 	If CondiExp_Sounds.GetValue() > 0
 		NewRace()
@@ -405,6 +410,7 @@ Function StartMod()
 	endif
 	Condiexp_ModSuspended.SetValue(0)
 	RegisterForSingleUpdate(5)
+	log("Started")
 Endfunction
 
 

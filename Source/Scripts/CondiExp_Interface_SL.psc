@@ -17,3 +17,11 @@ Bool Function IsPlayerCumsoakedVagOrAnal(Quest sexlab, Actor targetActor) global
 		return false
 	EndIf
 EndFunction
+
+Bool Function IsActorActive(Quest sexlab, Actor targetActor) global 
+	If (sexlab && (sexlab as SexLabFramework).Enabled)
+		return (sexlab as SexLabFramework).IsActorActive(targetActor)
+	else
+		return false
+	EndIf
+EndFunction

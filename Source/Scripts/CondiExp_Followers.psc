@@ -61,7 +61,7 @@ Event OnUpdate()
 		return
 	EndIf
 
-	If (sm.checkIfModShouldBeSuspended(act))
+	If (sm.checkIfModShouldBeSuspended(act) || act.IsInDialogueWithPlayer())
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + additionalLag)
 		return
 	endif

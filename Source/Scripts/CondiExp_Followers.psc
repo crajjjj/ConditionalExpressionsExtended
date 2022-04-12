@@ -10,7 +10,9 @@ Import CondiExp_util
 Import CondiExp_log
 Import mfgconsolefunc
 
+int additionalLagSmall = 3
 int additionalLag = 10
+int additionalLagBig = 30
 
 Actor act
 
@@ -43,25 +45,21 @@ EndEvent
 
 Event OnUpdate()
 	int verboseInt = sm.Condiexp_Verbose.GetValue() as Int
+	If (!act)
+		verbose(act, "Actor was removed" , verboseInt)
+		Return
+	EndIf
 	
-	if (!ResetPhonemeModifier(act))
-		log("CondiExp_Followers OnUpdate. ResetPhonemeModifier failed")
-		If (!act)
-			verbose(act, "Actor was removed" , verboseInt)
-			Return
-		EndIf
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + additionalLag)
-	Endif
-
 	float dist = act.GetDistance(sm.PlayerRef)
 
 	If (dist > 2000)
 		verbose(act, "Actor is too far - skipping" , verboseInt)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + additionalLag)
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + additionalLagBig)
 		return
 	EndIf
 
 	If (sm.checkIfModShouldBeSuspended(act) || act.IsInDialogueWithPlayer())
+		verbose(act, "Suspending on condition" , verboseInt)
 		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + additionalLag)
 		return
 	endif
@@ -144,10 +142,9 @@ Event OnUpdate()
 	
 	If (config.Condiexp_GlobalRandom.GetValue() == 1)
 		PlayRandomExpression(act, config)
-		PlayRandomExpression(act, config)
 	EndIf
 	
-	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + 3)
+	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
 EndEvent
 
 

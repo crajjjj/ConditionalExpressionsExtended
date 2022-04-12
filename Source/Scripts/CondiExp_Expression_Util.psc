@@ -139,7 +139,7 @@ EndFunction
 Function PlayRandomExpression(Actor act, condiexp_MCM config) global
 	verbose(act,"Random emotion", config.Condiexp_Verbose.GetValue() as Int)
 	RandomEmotion(act, config)
-	Int Seconds = Utility.RandomInt(1, 3)
+	Int Seconds = Utility.RandomInt(2, 5)
 	Utility.Wait(Seconds)
 EndFunction
 

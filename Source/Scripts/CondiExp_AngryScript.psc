@@ -20,7 +20,7 @@ EndEvent
 
 Function Angry()
 
-while PlayerRef.IsinCombat() && OpenMouth == False
+while PlayerRef.IsinCombat() && OpenMouth == False && config.Go.Condiexp_ModSuspended.getValue() == 0
 config.currentExpression = "Angry"
 verbose(PlayerRef, "Angry", config.Condiexp_Verbose.GetValue() as Int)
 PlayerRef.SetExpressionOverride(15,70)

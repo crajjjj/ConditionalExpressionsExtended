@@ -389,8 +389,12 @@ Function StartMod()
 	;for compatibility with other mods
 	UnregisterForModEvent("dhlp-Suspend")
 	UnregisterForModEvent("dhlp-Resume")
+	UnregisterForModEvent("ostim_end")
+	UnregisterForModEvent("ostim_start")
 	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
 	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
+	RegisterForModEvent("ostim_start", "OnDhlpSuspend")
+	RegisterForModEvent("ostim_end", "OnDhlpResume")
 
 	If CondiExp_Sounds.GetValue() > 0
 		NewRace()

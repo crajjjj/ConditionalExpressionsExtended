@@ -29,7 +29,7 @@ endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	int safeguard = 1
-	While (isRandomEnabled() && safeguard <= 3)
+	While (isRandomEnabled() && safeguard <= 5)
 		PlayRandomExpression(PlayerRef, config)
 		safeguard = safeguard + 1
 	EndWhile

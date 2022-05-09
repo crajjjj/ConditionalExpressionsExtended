@@ -50,6 +50,11 @@ Event OnUpdate()
 		Return
 	EndIf
 	
+	If (config.CondiExpFollowerQuest.IsStopped())
+		verbose(act, "Followers quest was stopped" , verboseInt)
+		Return
+	EndIf
+	
 	float dist = act.GetDistance(sm.PlayerRef)
 
 	If (dist > 2000)

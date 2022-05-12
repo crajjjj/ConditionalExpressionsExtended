@@ -862,3 +862,57 @@ Function Puzzled(int n, Actor act) Global
 	act.ClearExpressionOverride()
 endfunction
 
+Function HumanOuch(Actor act) global 
+
+	int i = 0
+	
+	while i < 100
+		MfgConsoleFunc.SetPhoneMe(act, 10,i)
+		i = i + 12
+		if (i > 100)
+			i = 100
+		Endif
+		Utility.Wait(0.0001)
+	endwhile
+	
+	Utility.Wait(0.2)
+	
+	while i > 0
+		MfgConsoleFunc.SetPhoneMe(act, 10,i)
+		i = i - 15
+		if (i < 0)
+			i = 0
+		Endif
+		Utility.Wait(0.0001)
+	endwhile
+EndFunction
+	
+	
+Function VampireOuch(Actor act) global
+	
+	int i = 0
+	
+	while i < 60
+		MfgConsoleFunc.SetPhoneMe(act, 10,i)
+		MfgConsoleFunc.SetPhoneMe(act, 9,i)
+		MfgConsoleFunc.SetPhoneMe(act, 5,i)
+	i = i + 12
+		if (i > 60)
+			i = 60
+		Endif
+		Utility.Wait(0.0001)
+	endwhile
+	
+	Utility.Wait(4)
+	
+	while i > 0
+		MfgConsoleFunc.SetPhoneMe(act, 10,i)
+		MfgConsoleFunc.SetPhoneMe(act, 9,i)
+		MfgConsoleFunc.SetPhoneMe(act, 5,i)
+		i = i - 15
+		if (i < 0)
+			i = 0
+		Endif
+		Utility.Wait(0.0001)
+	endwhile
+EndFunction

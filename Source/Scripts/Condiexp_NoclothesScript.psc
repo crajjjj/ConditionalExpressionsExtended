@@ -22,7 +22,7 @@ EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     Blush()
-    Utility.Wait(10)
+    Utility.Wait(5)
     verbose(PlayerRef, "No Clothes: OnEffectFinish.  " , Condiexp_Verbose.GetValue() as Int )
     resetMFGSmooth(PlayerRef)
     Condiexp_CurrentlyBusyImmediate.SetValue(0)

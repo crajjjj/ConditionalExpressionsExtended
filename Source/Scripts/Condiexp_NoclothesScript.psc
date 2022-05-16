@@ -1,10 +1,13 @@
 Scriptname Condiexp_NoclothesScript extends activemagiceffect  
 import CondiExp_log
+import CondiExp_Expression_Util
+import CondiExp_util
 
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 condiexp_MCM Property config auto
 GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
+GlobalVariable Property Condiexp_Verbose Auto
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValue(1)
@@ -13,14 +16,15 @@ EndEvent
 
 Function Blush()
     config.currentExpression = "No Clothes"
-    verbose(PlayerRef, "No Clothes", config.Condiexp_Verbose.GetValue() as Int)
+    verbose(PlayerRef, "No Clothes", Condiexp_Verbose.GetValue() as Int)
     PlayerRef.SetExpressionOverride(4,90)
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     Blush()
     Utility.Wait(10)
-    PlayerRef.ClearExpressionOverride()
+    verbose(PlayerRef, "No Clothes: OnEffectFinish.  " , Condiexp_Verbose.GetValue() as Int )
+    resetMFGSmooth(PlayerRef)
     Condiexp_CurrentlyBusyImmediate.SetValue(0)
     Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent

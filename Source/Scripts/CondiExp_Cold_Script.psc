@@ -9,12 +9,13 @@ GlobalVariable Property Condiexp_ColdMethod Auto
 GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_GlobalCold Auto
 condiexp_MCM Property config auto
+GlobalVariable Property Condiexp_Verbose Auto
 
 int coldExpression = 0 
  
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValue(1)
-	verbose(akTarget, "Cold: OnEffectstart", config.Condiexp_Verbose.GetValue() as Int)
+	verbose(akTarget, "Cold: OnEffectstart", Condiexp_Verbose.GetValue() as Int)
 	Int Seconds = Utility.RandomInt(1, 3)
 	Utility.Wait(Seconds)
 	ShowExpression()
@@ -22,7 +23,7 @@ EndEvent
 
 Function ShowExpression()
 	config.currentExpression="Cold"
-	verbose(PlayerRef, "Cold", config.Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef, "Cold", Condiexp_Verbose.GetValue() as Int)
 	while isCold()
 		Utility.Wait(0.5)
 		PlayerRef.SetExpressionOverride(1,50)
@@ -109,7 +110,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		Utility.Wait(0.5) ; !!!
 	endwhile
 	Utility.Wait(1)
-	verbose(PlayerRef, "Cold: OnEffectFinish", config.Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef, "Cold: OnEffectFinish", Condiexp_Verbose.GetValue() as Int)
 	resetMFGSmooth(PlayerRef)
 	Condiexp_CurrentlyBusy.SetValue(0)
 EndEvent

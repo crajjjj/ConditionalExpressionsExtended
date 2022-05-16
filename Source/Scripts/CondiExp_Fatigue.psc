@@ -16,6 +16,7 @@ sound property CondiExp_BreathingfemaleORC auto
 sound property CondiExp_BreathingfemaleKhajiit auto
 bool property Breathing Auto
 condiexp_MCM Property config auto
+GlobalVariable Property Condiexp_Verbose Auto
 
 
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
@@ -25,7 +26,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusy.SetValue(1)
     resetMFGSmooth(akTarget)
     config.currentExpression = "Fatigue"
-    verbose(PlayerRef, "Fatigue: OnEffectStart", config.Condiexp_Verbose.GetValue() as Int)
+    verbose(PlayerRef, "Fatigue: OnEffectStart", Condiexp_Verbose.GetValue() as Int)
 EndEvent
 
 bool function isFatigueActive()
@@ -75,5 +76,5 @@ EndWhile
 Exhale(33, 0, PlayerRef)
 Condiexp_CurrentlyBusyImmediate.SetValue(0)
 Condiexp_CurrentlyBusy.SetValue(0)
-verbose(PlayerRef, "Fatigue: OnEffectFinish. Times:" + safeguard, config.Condiexp_Verbose.GetValue() as Int)
+verbose(PlayerRef, "Fatigue: OnEffectFinish. Times:" + safeguard, Condiexp_Verbose.GetValue() as Int)
 EndEvent

@@ -8,6 +8,8 @@ keyword property vampire auto
 condiexp_MCM Property config auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
+GlobalVariable Property Condiexp_ModSuspended Auto
+GlobalVariable Property Condiexp_Verbose Auto
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValue(1)
@@ -15,9 +17,9 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function Angry()
-    while PlayerRef.IsinCombat() && OpenMouth == False && config.Go.Condiexp_ModSuspended.getValue() == 0
+    while PlayerRef.IsinCombat() && OpenMouth == False && Condiexp_ModSuspended.getValue() == 0
         config.currentExpression = "Angry"
-        verbose(PlayerRef, "Angry", config.Condiexp_Verbose.GetValue() as Int)
+        verbose(PlayerRef, "Angry", Condiexp_Verbose.GetValue() as Int)
         PlayerRef.SetExpressionOverride(15,70)
         MfgConsoleFunc.SetPhoneMe(PlayerRef, 4, 20)
         Utility.Wait(1)
@@ -40,10 +42,8 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    If PlayerRef.HasKeyword(Vampire)
-        ; use vanilla
-    else
-        Angry()
+    If !PlayerRef.HasKeyword(Vampire)
+        Angry()  
     endif
     Utility.Wait(0.5)
     MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)

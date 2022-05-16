@@ -3,6 +3,7 @@ import CondiExp_log
 
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
+GlobalVariable Property Condiexp_Verbose Auto
 
 Actor Property PlayerRef Auto
 condiexp_MCM Property config auto
@@ -12,7 +13,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValue(1)
     Condiexp_CurrentlyBusy.SetValue(1)
     config.currentExpression = "Headache"
-    verbose(PlayerRef, "Headache", config.Condiexp_Verbose.GetValue() as Int)
+    verbose(PlayerRef, "Headache", Condiexp_Verbose.GetValue() as Int)
     Headache()
 EndEvent
 

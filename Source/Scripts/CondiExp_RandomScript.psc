@@ -15,6 +15,7 @@ GlobalVariable Property Condiexp_CurrentlyDirty Auto
 GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_GlobalRandom Auto
 GlobalVariable Property Condiexp_Verbose Auto
+GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 bool playing = false
 condiexp_MCM Property config auto
 
@@ -24,7 +25,10 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 bool function isRandomEnabled()
-	return  Condiexp_GlobalRandom.GetValue() == 1 && Condiexp_ModSuspended.GetValue() == 0 && Condiexp_CurrentlyBusy.GetValue() == 0 && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning()
+	bool enabled = Condiexp_GlobalRandom.GetValue() == 1
+	enabled = enabled && Condiexp_ModSuspended.GetValue() == 0 && Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyBusyImmediate.getValue() == 0
+	enabled = enabled && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning() 
+	return enabled 
 endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
@@ -34,7 +38,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		safeguard = safeguard + 1
 	EndWhile
 	verbose(PlayerRef, "Random: OnEffectFinish. Showed times: " + safeguard, Condiexp_Verbose.GetValue() as Int )
-	If Condiexp_CurrentlyBusy.GetValue() == 0
+	If Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyBusyImmediate.getValue() == 0
 		resetMFGSmooth(PlayerRef)
 	EndIf
 	

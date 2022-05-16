@@ -9,7 +9,6 @@ GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValue(1)
     Condiexp_CurrentlyBusy.SetValue(1)
-    KhajiitLikestoSneak()
 EndEvent
 
 Function KhajiitLikestoSneak()
@@ -35,6 +34,7 @@ EndFunction
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+    KhajiitLikestoSneak()
     MfgConsoleFunc.SetModifier(PlayerRef,12,0)
     MfgConsoleFunc.SetModifier(PlayerRef,13,0)
     MfgConsoleFunc.SetModifier(PlayerRef,2,0)

@@ -15,10 +15,10 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     config.currentExpression = "Pain"
     resetMFG(PlayerRef)
     Utility.Wait(0.9)
-    PlayPainExpression(PlayerRef, config)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+    PlayPainExpression(PlayerRef, config)
     Utility.Wait(1)
     PlayerRef.ClearExpressionOverride()
     MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)

@@ -12,11 +12,6 @@ GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValue(1)
     Condiexp_CurrentlyBusy.SetValue(1)
-    If PlayerRef.HasKeyword(Vampire)
-        ; use vanilla
-    else
-        Angry()
-    endif
 EndEvent
 
 Function Angry()
@@ -45,6 +40,11 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+    If PlayerRef.HasKeyword(Vampire)
+        ; use vanilla
+    else
+        Angry()
+    endif
     Utility.Wait(0.5)
     MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
     Condiexp_CurrentlyBusyImmediate.SetValue(0)

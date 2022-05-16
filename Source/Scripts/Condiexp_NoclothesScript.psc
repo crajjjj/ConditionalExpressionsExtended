@@ -9,7 +9,6 @@ GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValue(1)
     Condiexp_CurrentlyBusy.SetValue(1)
-    Blush()
 EndEvent
 
 Function Blush()
@@ -19,7 +18,8 @@ Function Blush()
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    Utility.Wait(3)
+    Blush()
+    Utility.Wait(10)
     PlayerRef.ClearExpressionOverride()
     Condiexp_CurrentlyBusyImmediate.SetValue(0)
     Condiexp_CurrentlyBusy.SetValue(0)

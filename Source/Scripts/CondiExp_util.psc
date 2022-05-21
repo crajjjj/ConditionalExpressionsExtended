@@ -13,7 +13,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 10308
+    Return 10309
     ; 1.0.0   -> 10000
     ; 1.1.0   -> 10100
     ; 1.1.1  -> 10101
@@ -22,7 +22,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.3.8"
+    Return "1.3.9"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global

@@ -7,13 +7,13 @@ GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    Condiexp_CurrentlyBusyImmediate.SetValue(1)
-    Condiexp_CurrentlyBusy.SetValue(1)
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
+    Condiexp_CurrentlyBusy.SetValueInt(1)
 EndEvent
 
 Function KhajiitLikestoSneak()
     config.currentExpression = "Sneaking"
-    verbose(PlayerRef, "Sneaking", config.Condiexp_Verbose.GetValue() as Int)
+    verbose(PlayerRef, "Sneaking", config.Condiexp_Verbose.GetValueInt())
     MfgConsoleFunc.SetModifier(PlayerRef,12,45)
     MfgConsoleFunc.SetModifier(PlayerRef,13,45)
     MfgConsoleFunc.SetModifier(PlayerRef,2,20)
@@ -38,8 +38,8 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     MfgConsoleFunc.SetModifier(PlayerRef,12,0)
     MfgConsoleFunc.SetModifier(PlayerRef,13,0)
     MfgConsoleFunc.SetModifier(PlayerRef,2,0)
-    Condiexp_CurrentlyBusyImmediate.SetValue(0)
-    Condiexp_CurrentlyBusy.SetValue(0)
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
+    Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent
 
 

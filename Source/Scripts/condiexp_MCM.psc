@@ -180,13 +180,13 @@ Function Settings()
 	AddHeaderOption("Settings")
 	AddEmptyOption()
 	Sounds_B = AddToggleOption("Breathing Sounds", SoundsToggle)
-	_update_interval_slider = AddSliderOption("Update interval", Condiexp_UpdateInterval.GetValue(), "{0}", OPTION_FLAG_NONE)
+	_update_interval_slider = AddSliderOption("Update interval", Condiexp_UpdateInterval.GetValueInt(), "{0}", OPTION_FLAG_NONE)
 	_expression_strength_slider = AddSliderOption("Expression Strength", Condiexp_ExpressionStr.GetValue(), "{2}", OPTION_FLAG_NONE)
 	_modifier_strength_slider = AddSliderOption("Modifier Strength", Condiexp_ModifierStr.GetValue(), "{2}", OPTION_FLAG_NONE)
 	_phoneme_strength_slider = AddSliderOption("Phoneme Strength", Condiexp_PhonemeStr.GetValue(), "{2}", OPTION_FLAG_NONE)
 	AddHeaderOption("Followers")
 	Followers_B =  AddToggleOption("Followers Support", CondiExpFollowerQuest.IsRunning())
-	_update_interval_followers_slider = AddSliderOption("Update interval Followers", Condiexp_FollowersUpdateInterval.GetValue(), "{0}", _getFlag(FollowersToggle))
+	_update_interval_followers_slider = AddSliderOption("Update interval Followers", Condiexp_FollowersUpdateInterval.GetValueInt(), "{0}", _getFlag(FollowersToggle))
 	registerFollowers = AddTextOption("Register Followers", "")
 EndFunction
 
@@ -202,12 +202,12 @@ EndFunction
 
 Event OnOptionSliderOpen(Int mcm_option)
 	If (mcm_option == _update_interval_slider)
-		SetSliderDialogStartValue(Condiexp_UpdateInterval.GetValue())
+		SetSliderDialogStartValue(Condiexp_UpdateInterval.GetValueInt())
 		SetSliderDialogRange(1, 60)
 		SetSliderDialogInterval(1.00)
 		SetSliderDialogDefaultValue(5)
 	elseif (mcm_option == _update_interval_followers_slider)
-		SetSliderDialogStartValue(Condiexp_FollowersUpdateInterval.GetValue())
+		SetSliderDialogStartValue(Condiexp_FollowersUpdateInterval.GetValueInt())
 		SetSliderDialogRange(1, 60)
 		SetSliderDialogInterval(1.00)
 		SetSliderDialogDefaultValue(3)	
@@ -267,11 +267,11 @@ event OnOptionMenuAccept(int option, int index)
 		EatingFastSlowIndex = index
 		SetMenuOptionValue(EatingFastSlow_M, EatingFastSlowList[EatingFastSlowIndex])
 	if index == 0
-Condiexp_GlobalEating.SetValue(2)
+Condiexp_GlobalEating.SetValueInt(2)
 	elseif index == 1
-Condiexp_GlobalEating.SetValue(1)
+Condiexp_GlobalEating.SetValueInt(1)
 	elseif index == 2
-Condiexp_GlobalEating.SetValue(0)
+Condiexp_GlobalEating.SetValueInt(0)
 	endif
 	endif
 
@@ -279,11 +279,11 @@ If (option == ColdMethod_M)
 		ColdMethodindex = index
 		SetMenuOptionValue(coldmethod_M, coldmethodList[coldmethodindex])
 	if index == 0
-Condiexp_ColdMethod.SetValue(3)
+Condiexp_ColdMethod.SetValueInt(3)
 	elseif index == 1
-Condiexp_ColdMethod.SetValue(1)
+Condiexp_ColdMethod.SetValueInt(1)
 	elseif index == 2
-Condiexp_ColdMethod.SetValue(2)
+Condiexp_ColdMethod.SetValueInt(2)
 	elseif index == 3
 ;nothing happens, automatic
 	endif
@@ -296,136 +296,136 @@ event OnOptionSelect(int option)
 if (option == Combat_B) && CombatToggle == True
 		CombatToggle = False
 		SetToggleOptionValue(Combat_B, CombatToggle)
-		Condiexp_GlobalCombat.SetValue(0)
+		Condiexp_GlobalCombat.SetValueInt(0)
 	elseif (option == Combat_B) && CombatToggle == False
 		CombatToggle = True
 		SetToggleOptionValue(Combat_B, CombatToggle)
-		Condiexp_GlobalCombat.SetValue(1)
+		Condiexp_GlobalCombat.SetValueInt(1)
 
 	elseif (option == Random_B) && RandomToggle == True
 		RandomToggle = False
 		SetToggleOptionValue(Random_B, RandomToggle)
-		Condiexp_GlobalRandom.SetValue(0)
+		Condiexp_GlobalRandom.SetValueInt(0)
 	elseif (option == Random_B) && RandomToggle == False
 		RandomToggle = True
 		SetToggleOptionValue(Random_B, RandomToggle)
-		Condiexp_GlobalRandom.SetValue(1)
+		Condiexp_GlobalRandom.SetValueInt(1)
 	elseif (option == Cold_B) && ColdToggle == True
 		ColdToggle = False
 		SetToggleOptionValue(Cold_B, ColdToggle)
-		Condiexp_GlobalCold.SetValue(0)
+		Condiexp_GlobalCold.SetValueInt(0)
 	elseif (option == Cold_B) && ColdToggle == False
 		ColdToggle = True
 		SetToggleOptionValue(Cold_B, ColdToggle)
-		Condiexp_GlobalCold.SetValue(1)
+		Condiexp_GlobalCold.SetValueInt(1)
 
 	elseif (option == Stamina_B) && StaminaToggle == True
 		StaminaToggle = False
 		SetToggleOptionValue(Stamina_B, StaminaToggle)
-		Condiexp_GlobalStamina.SetValue(0)
+		Condiexp_GlobalStamina.SetValueInt(0)
 	elseif (option == Stamina_B) && StaminaToggle == False
 		StaminaToggle = True
 		SetToggleOptionValue(Stamina_B, StaminaToggle)
-		Condiexp_GlobalStamina.SetValue(1)
+		Condiexp_GlobalStamina.SetValueInt(1)
 
 	elseif (option == Pain_B) && PainToggle == True
 		PainToggle = False
 		SetToggleOptionValue(Pain_B, PainToggle)
-		Condiexp_GlobalPain.SetValue(0)
+		Condiexp_GlobalPain.SetValueInt(0)
 	elseif (option == Pain_B) && PainToggle == False
 		PainToggle = True
 		SetToggleOptionValue(Pain_B, PainToggle)
-		Condiexp_GlobalPain.SetValue(1)
+		Condiexp_GlobalPain.SetValueInt(1)
 
 	elseif (option == Drunk_B) && DrunkToggle == True
 		DrunkToggle = False
 		SetToggleOptionValue(Drunk_B, DrunkToggle)
-		Condiexp_GlobalDrunk.SetValue(0)
+		Condiexp_GlobalDrunk.SetValueInt(0)
 	elseif (option == Drunk_B) && DrunkToggle == False
 		DrunkToggle = True
 		SetToggleOptionValue(Drunk_B, DrunkToggle)
-		Condiexp_GlobalDrunk.SetValue(1)
+		Condiexp_GlobalDrunk.SetValueInt(1)
 
 	elseif (option == Skooma_B) && SkoomaToggle == True
 		SkoomaToggle = False
 		SetToggleOptionValue(Skooma_B, SkoomaToggle)
-		Condiexp_GlobalSkooma.SetValue(0)
+		Condiexp_GlobalSkooma.SetValueInt(0)
 	elseif (option == Skooma_B) && SkoomaToggle == False
 		SkoomaToggle = True
 		SetToggleOptionValue(Skooma_B, SkoomaToggle)
-		Condiexp_GlobalSkooma.SetValue(1)
+		Condiexp_GlobalSkooma.SetValueInt(1)
 
 	elseif (option == Clothes_B) && ClothesToggle == True
 		ClothesToggle = False
 		SetToggleOptionValue(Clothes_B, ClothesToggle )
-		Condiexp_GlobalNoClothes.SetValue(0)
+		Condiexp_GlobalNoClothes.SetValueInt(0)
 	elseif (option == Clothes_B) && ClothesToggle == False
 		ClothesToggle = True
 		SetToggleOptionValue(Clothes_B, ClothesToggle )
-		Condiexp_GlobalNoClothes.SetValue(1)
+		Condiexp_GlobalNoClothes.SetValueInt(1)
 
 	elseif (option == Sneaking_B) && SneakingToggle == True
 		SneakingToggle = False
 		SetToggleOptionValue(Sneaking_B, SneakingToggle)
-		Condiexp_GlobalSneaking.SetValue(0)
+		Condiexp_GlobalSneaking.SetValueInt(0)
 	elseif (option == Sneaking_B) && SneakingToggle == False
 		SneakingToggle = True
 		SetToggleOptionValue(Sneaking_B, SneakingToggle)
-		Condiexp_GlobalSneaking.SetValue(1)
+		Condiexp_GlobalSneaking.SetValueInt(1)
 
 	elseif (option == Water_B) && WaterToggle == True
 		WaterToggle = False
 		SetToggleOptionValue(Water_B, WaterToggle)
-		Condiexp_GlobalWater.SetValue(0)
+		Condiexp_GlobalWater.SetValueInt(0)
 	elseif (option == Water_B) && WaterToggle == False
 		WaterToggle = True
 		SetToggleOptionValue(Water_B, WaterToggle)
-		Condiexp_GlobalWater.SetValue(1)
+		Condiexp_GlobalWater.SetValueInt(1)
 
 	elseif (option == Headache_B) && HeadacheToggle == True
 		HeadacheToggle = False
 		SetToggleOptionValue(Headache_B, HeadacheToggle)
-		Condiexp_GlobalMana.SetValue(0)
+		Condiexp_GlobalMana.SetValueInt(0)
 	elseif (option == Headache_B) && HeadacheToggle == False
 		HeadacheToggle = True
 		SetToggleOptionValue(Headache_B, HeadacheToggle)
-		Condiexp_GlobalMana.SetValue(1)
+		Condiexp_GlobalMana.SetValueInt(1)
 
 	elseif (option == Trauma_B) && TraumaToggle == True
 		TraumaToggle = False
 		SetToggleOptionValue(Trauma_B, TraumaToggle)
-		Condiexp_GlobalTrauma.SetValue(0)
+		Condiexp_GlobalTrauma.SetValueInt(0)
 	elseif (option == Trauma_B) && TraumaToggle == False
 		TraumaToggle = True
 		SetToggleOptionValue(Trauma_B, TraumaToggle)
-		Condiexp_GlobalTrauma.SetValue(1)
+		Condiexp_GlobalTrauma.SetValueInt(1)
 
 	elseif (option == Dirty_B) && DirtyToggle == True
 		DirtyToggle = False
 		SetToggleOptionValue(Dirty_B, DirtyToggle)
-		Condiexp_GlobalDirty.SetValue(0)
+		Condiexp_GlobalDirty.SetValueInt(0)
 	elseif (option == Dirty_B) && DirtyToggle == False
 		DirtyToggle = True
 		SetToggleOptionValue(Dirty_B, DirtyToggle)
-		Condiexp_GlobalDirty.SetValue(1)
+		Condiexp_GlobalDirty.SetValueInt(1)
 
 	elseif (option == Aroused_B) && ArousedToggle == True
 		ArousedToggle = False
 		SetToggleOptionValue(Aroused_B, ArousedToggle)
-		Condiexp_GlobalAroused.SetValue(0)
+		Condiexp_GlobalAroused.SetValueInt(0)
 	elseif (option == Aroused_B) && ArousedToggle == False
 		ArousedToggle = True
 		SetToggleOptionValue(Aroused_B, ArousedToggle)
-		Condiexp_GlobalAroused.SetValue(1)
+		Condiexp_GlobalAroused.SetValueInt(1)
 
 	elseif (option == Verbose_B) && VerboseToggle == True
 		VerboseToggle = False
 		SetToggleOptionValue(Verbose_B, VerboseToggle)
-		Condiexp_Verbose.SetValue(0)
+		Condiexp_Verbose.SetValueInt(0)
 	elseif (option == Verbose_B) && VerboseToggle == False
 		VerboseToggle = True
 		SetToggleOptionValue(Verbose_B, VerboseToggle)
-		Condiexp_Verbose.SetValue(1)
+		Condiexp_Verbose.SetValueInt(1)
 
 	elseif (option == Followers_B) && FollowersToggle == True
 		FollowersToggle = False
@@ -440,7 +440,7 @@ if (option == Combat_B) && CombatToggle == True
 	elseif (option == Sounds_B) && SoundsToggle == True
 		SoundsToggle = False
 		SetToggleOptionValue(Sounds_B, SoundsToggle)
-		Condiexp_Sounds.SetValue(0)
+		Condiexp_Sounds.SetValueInt(0)
 	elseif (option == Sounds_B) && SoundsToggle == False
 		SoundsToggle = True
 		SetToggleOptionValue(Sounds_B, SoundsToggle)
@@ -546,22 +546,22 @@ ActorBase PlayerBase = PlayerRef.GetActorBase()
 If PlayerBase.GetSex() == 0
 
 	if PlayerRef.GetRace() == KhajiitRace || PlayerRef.GetRace() == KhajiitRaceVampire
-		Condiexp_Sounds.SetValue(1)
+		Condiexp_Sounds.SetValueInt(1)
 
 	elseif PlayerRef.GetRace() == OrcRace || PlayerRef.GetRace() == OrcRaceVampire
-		Condiexp_Sounds.SetValue(2)
+		Condiexp_Sounds.SetValueInt(2)
 	else
-		Condiexp_Sounds.SetValue(3)
+		Condiexp_Sounds.SetValueInt(3)
 	endif
 else
 
 	if PlayerRef.GetRace() == KhajiitRace || PlayerRef.GetRace() == KhajiitRaceVampire
-		Condiexp_Sounds.SetValue(4)
+		Condiexp_Sounds.SetValueInt(4)
 
 	elseif PlayerRef.GetRace() == OrcRace || PlayerRef.GetRace() == OrcRaceVampire
-		Condiexp_Sounds.SetValue(5)
+		Condiexp_Sounds.SetValueInt(5)
 	else
-		Condiexp_Sounds.SetValue(6)
+		Condiexp_Sounds.SetValueInt(6)
 	endif
 endif
 endfunction

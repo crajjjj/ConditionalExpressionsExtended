@@ -27,11 +27,11 @@ GlobalVariable Property Condiexp_Verbose Auto
 bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	Condiexp_CurrentlyBusy.SetValue(1)
+	Condiexp_CurrentlyBusy.SetValueInt(1)
 	playing = true
 	Int Seconds = Utility.RandomInt(2, 4)
 	Utility.Wait(Seconds)
-	Int trauma = Condiexp_CurrentlyTrauma.GetValue() as Int
+	Int trauma = Condiexp_CurrentlyTrauma.GetValueInt() as Int
 	config.currentExpression = "Trauma"
 	PlayTraumaExpression(PlayerRef, trauma, config)
 	BreatheAndSob(trauma)
@@ -47,9 +47,9 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		safeguard = safeguard + 1
 	EndWhile
 	resetMFGSmooth(PlayerRef)
-	verbose(akTarget, "Trauma: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
+	verbose(akTarget, "Trauma: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValueInt())
 	Utility.Wait(3)
-	Condiexp_CurrentlyBusy.SetValue(0)
+	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent
 
 Function BreatheAndSob(int trauma)
@@ -59,7 +59,7 @@ Function BreatheAndSob(int trauma)
 	;;;;;;;;;;; SOUNDS ;;;;;;;;;;;;
 	Int sobchance = Utility.RandomInt(1, 5)
 	 
-	If Condiexp_Sounds.GetValue() > 0 && sobchance == 3
+	If Condiexp_Sounds.GetValueInt() > 0 && sobchance == 3
 		playBreathOrRandomSob(trauma)  
 	endif
 	;;;;;;;;;
@@ -75,7 +75,7 @@ Function playBreathOrRandomSob(int trauma)
 	endIf
 
 	Int randomSob = Utility.RandomInt(1, 5)
-	verbose(PlayerRef, "Trauma: sobbing: " + randomSob, Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef, "Trauma: sobbing: " + randomSob, Condiexp_Verbose.GetValueInt())
 	if randomSob == 1
 		CondiExp_SobbingFemale1.play(PlayerRef)
 	elseIf randomSob == 2

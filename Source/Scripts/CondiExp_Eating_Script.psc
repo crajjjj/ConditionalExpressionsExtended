@@ -9,9 +9,9 @@ condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 config.currentExpression = "Eating"
-If Condiexp_GlobalEating.GetValue() == 1
+If Condiexp_GlobalEating.GetValueInt() == 1
 Utility.Wait(3.8)
-elseif Condiexp_GlobalEating.GetValue() == 2
+elseif Condiexp_GlobalEating.GetValueInt() == 2
 Utility.Wait(0.8)
 endif
 
@@ -24,7 +24,7 @@ YumYum()
 YumYum()
 YumYum()
 TeethOut()
-CondiExp_PlayerJustAte.SetValue(0)
+CondiExp_PlayerJustAte.SetValueInt(0)
 ImEatingHere = False
 endif
 EndEvent

@@ -12,17 +12,19 @@ GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_Verbose Auto
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    Condiexp_CurrentlyBusyImmediate.SetValue(1)
-    Condiexp_CurrentlyBusy.SetValue(1)
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
+    Condiexp_CurrentlyBusy.SetValueInt(1)
 EndEvent
 
 Function Angry()
-    while PlayerRef.IsinCombat() && OpenMouth == False && Condiexp_ModSuspended.getValue() == 0
+    int safeguard = 0
+    while PlayerRef.IsinCombat() && OpenMouth == False && Condiexp_ModSuspended.getValue() == 0  && safeguard <= 10
         config.currentExpression = "Angry"
         verbose(PlayerRef, "Angry", Condiexp_Verbose.GetValue() as Int)
         PlayerRef.SetExpressionOverride(15,70)
         MfgConsoleFunc.SetPhoneMe(PlayerRef, 4, 20)
-        Utility.Wait(1)
+        Utility.Wait(3)
+        safeguard = safeguard + 1 
     EndWhile
 EndFunction
 
@@ -43,10 +45,10 @@ EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     If !PlayerRef.HasKeyword(Vampire)
-        Angry()  
+        Angry()
     endif
     Utility.Wait(0.5)
     MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
-    Condiexp_CurrentlyBusyImmediate.SetValue(0)
-    Condiexp_CurrentlyBusy.SetValue(0)
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
+    Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

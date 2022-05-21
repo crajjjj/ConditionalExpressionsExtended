@@ -10,8 +10,8 @@ condiexp_MCM Property config auto
 
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana.. expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    Condiexp_CurrentlyBusyImmediate.SetValue(1)
-    Condiexp_CurrentlyBusy.SetValue(1)
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
+    Condiexp_CurrentlyBusy.SetValueInt(1)
     config.currentExpression = "Pain"
     resetMFG(PlayerRef)
     Utility.Wait(0.9)
@@ -19,9 +19,9 @@ EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     PlayPainExpression(PlayerRef, config)
-    Utility.Wait(1)
+    Utility.Wait(3)
     PlayerRef.ClearExpressionOverride()
     MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
-    Condiexp_CurrentlyBusyImmediate.SetValue(0)
-    Condiexp_CurrentlyBusy.SetValue(0)
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
+    Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

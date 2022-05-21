@@ -35,16 +35,16 @@ Event OnInit()
 		Wait(10.0)
 	endif
 	If act == sm.PlayerRef
-		int verboseInt = sm.Condiexp_Verbose.GetValue() as Int
+		int verboseInt = sm.Condiexp_Verbose.GetValueInt()
 		verbose(act, "FollowersQuest: started" , verboseInt)
 		Return
 	EndIf
 	log("CondiExp_Followers OnInit. Actor: " + act.GetLeveledActorBase().GetName())
-	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt())
 EndEvent
 
 Event OnUpdate()
-	int verboseInt = sm.Condiexp_Verbose.GetValue() as Int
+	int verboseInt = sm.Condiexp_Verbose.GetValueInt()
 	If (!act)
 		verbose(act, "Actor was removed" , verboseInt)
 		Return
@@ -59,13 +59,13 @@ Event OnUpdate()
 
 	If (dist > 2000)
 		verbose(act, "Actor is too far - skipping" , verboseInt)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + additionalLagBig)
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
 		return
 	EndIf
 
 	If (sm.checkIfModShouldBeSuspended(act) || act.IsInDialogueWithPlayer())
 		verbose(act, "Suspending on condition" , verboseInt)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue() + additionalLag)
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLag)
 		return
 	endif
 	
@@ -92,32 +92,32 @@ Event OnUpdate()
 		If (GetModifier(act, 0) != 90)
 			SmoothSetModifier(act, 0, 1, 90)
 		EndIf
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf
 
-	If (act.GetActorValuePercentage("Health") < 0.40 && config.Condiexp_GlobalPain.GetValue() == 1)
+	If (act.GetActorValuePercentage("Health") < 0.40 && config.Condiexp_GlobalPain.GetValueInt() == 1)
 		PlayPainExpression(act, config)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt() + 3)
 		Return
 	EndIf
 	
 	;Combat Anger
-	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalCombat.GetValue() == 1)
+	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalCombat.GetValueInt() == 1)
 		verbose(act, "Anger", verboseInt)
 		SmoothSetExpression(act, 15, RandomInt(50, 100), 0)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf
 	
-	If (!act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalStamina.GetValue() == 1)
+	If (!act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalStamina.GetValueInt() == 1)
 		verbose(act, "Fatigue: Effect: Breathing", verboseInt)
 		Breathe(act, false)
 		Utility.Wait(1)
 		Breathe(act, false)
 		Utility.Wait(1)
 		Breathe(act, true)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf
 
@@ -125,31 +125,34 @@ Event OnUpdate()
 	If (trauma > 0)
 		PlayTraumaExpression( act, trauma, config)
 		resetMFGSmooth(act)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf
 
 	int dirty = sm.getDirtyStatus(act)
 	If (dirty > 0)
 		PlayDirtyExpression( act, dirty, config)
+		Utility.Wait(5)
 		resetMFGSmooth(act)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf
 
 	int aroused = sm.getArousalStatus(act)
 	If (aroused > 0)
 		PlayArousedExpression( act, aroused, config)
+		Utility.Wait(5)
 		resetMFGSmooth(act)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf
 	
-	If (config.Condiexp_GlobalRandom.GetValue() == 1)
+	If (config.Condiexp_GlobalRandom.GetValueInt() == 1)
 		PlayRandomExpression(act, config)
+		Int Seconds = Utility.RandomInt(2, 5)
+		Utility.Wait(Seconds)
 	EndIf
-	
-	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValue())
+	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt())
 EndEvent
 
 

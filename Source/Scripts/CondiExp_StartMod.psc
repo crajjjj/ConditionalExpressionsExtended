@@ -167,33 +167,33 @@ Event OnUpdate()
 		EndIf
 	EndIf
 
-	Condiexp_CurrentlyCold.SetValue(getColdStatus(PlayerRef))
-	trace("CondiExp_StartMod: getColdStatus() " + Condiexp_CurrentlyCold.getValue())
+	Condiexp_CurrentlyCold.SetValueInt(getColdStatus(PlayerRef))
+	trace("CondiExp_StartMod: getColdStatus() " + Condiexp_CurrentlyCold.GetValueInt())
 	
-	Condiexp_CurrentlyTrauma.SetValue(getTraumaStatus(PlayerRef))
-	trace("CondiExp_StartMod: getTraumaStatus() " + Condiexp_CurrentlyTrauma.getValue())
+	Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(PlayerRef))
+	trace("CondiExp_StartMod: getTraumaStatus() " + Condiexp_CurrentlyTrauma.GetValueInt())
 
-	Condiexp_CurrentlyDirty.SetValue(getDirtyStatus(PlayerRef))
-	trace("CondiExp_StartMod: getDirtyStatus() " + Condiexp_CurrentlyDirty.getValue())
+	Condiexp_CurrentlyDirty.SetValueInt(getDirtyStatus(PlayerRef))
+	trace("CondiExp_StartMod: getDirtyStatus() " + Condiexp_CurrentlyDirty.GetValueInt())
 
-	Condiexp_CurrentlyAroused.SetValue(getArousalStatus(PlayerRef))
-	trace("CondiExp_StartMod: getArousalStatus() " + Condiexp_CurrentlyAroused.getValue())
+	Condiexp_CurrentlyAroused.SetValueInt(getArousalStatus(PlayerRef))
+	trace("CondiExp_StartMod: getArousalStatus() " + Condiexp_CurrentlyAroused.GetValueInt())
 
 	;check if there's a conflicting mod based on custom conditions
 	if checkIfModShouldBeSuspended(PlayerRef)
 		if isModEnabled()
 			log("CondiExp_StartMod: suspended according to conditions check")
-			Condiexp_ModSuspended.SetValue(1)
+			Condiexp_ModSuspended.SetValueInt(1)
 		endif	
 	else
 		if !isModEnabled()
 			log("CondiExp_StartMod: resumed according to conditions check")
-			Condiexp_ModSuspended.SetValue(0)
+			Condiexp_ModSuspended.SetValueInt(0)
 		endif
  	endif
 
 	if PlayerRef.HasSpell(CondiExp_Fatigue1)
-		RegisterForSingleUpdate(Condiexp_UpdateInterval.GetValue())
+		RegisterForSingleUpdate(Condiexp_UpdateInterval.GetValueInt())
 	endif
 	
 EndEvent
@@ -222,17 +222,17 @@ Bool function checkIfModShouldBeSuspended(Actor act)
 endfunction
 
 int function getColdStatus(Actor act )
-	if Condiexp_GlobalCold.GetValue() == 0
+	if Condiexp_GlobalCold.GetValueInt() == 0
 		return 0
 	endif
-	If Condiexp_ColdMethod.GetValue() == 1
+	If Condiexp_ColdMethod.GetValueInt() == 1
 		GlobalVariable Temp = Game.GetFormFromFile(0x00068119, "Frostfall.esp") as GlobalVariable
-		If Temp.GetValue() > 2 
+		If Temp.GetValueInt() > 2 
 			return 1
 			else
 			return 0
 		endif
-	elseIf Condiexp_ColdMethod.GetValue() == 2
+	elseIf Condiexp_ColdMethod.GetValueInt() == 2
 		Spell Cold1 = Game.GetFormFromFile(0x00029028, "Frostbite.esp") as Spell
 		Spell Cold2 = Game.GetFormFromFile(0x00029029, "Frostbite.esp") as Spell
 		Spell Cold3 = Game.GetFormFromFile(0x0002902C, "Frostbite.esp") as Spell
@@ -241,7 +241,7 @@ int function getColdStatus(Actor act )
 			else
 			return 0
 		endif
-	elseIf Condiexp_ColdMethod.GetValue() == 3
+	elseIf Condiexp_ColdMethod.GetValueInt() == 3
 		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
 			return 1
 		else
@@ -252,7 +252,7 @@ int function getColdStatus(Actor act )
 endfunction
 
 int function getDirtyStatus(Actor act)
-	If (Condiexp_GlobalDirty.GetValue() == 0 || LoadedBathMod == "None Found")
+	If (Condiexp_GlobalDirty.GetValueInt() == 0 || LoadedBathMod == "None Found")
 		return 0
 	EndIf
 
@@ -283,7 +283,7 @@ int function getDirtyStatus(Actor act)
 		endif
 	endif
 
-	If dirty > 0 && dirty > Condiexp_MinDirty.GetValue()
+	If dirty > 0 && dirty > Condiexp_MinDirty.GetValueInt()
 		return dirty
 	else
 		return 0
@@ -291,14 +291,14 @@ int function getDirtyStatus(Actor act)
 endfunction
 
 int function getTraumaStatus(Actor act)
-	if Condiexp_GlobalTrauma.GetValue() == 0
+	if Condiexp_GlobalTrauma.GetValueInt() == 0
 		return 0
 	endif
 	int trauma = 0
 	;check apropos
 	if ActorsQuest
 		trauma = GetWearState0to10(act, ActorsQuest)
-		if trauma > 1 && trauma > Condiexp_MinTrauma.GetValue()
+		if trauma > 1 && trauma > Condiexp_MinTrauma.GetValueInt()
 			trace("CondiExp_StartMod: updateTraumaStatus - GetWearState(): " + trauma)
 			return trauma
 		endif
@@ -318,15 +318,15 @@ int function getTraumaStatus(Actor act)
 endfunction
 
 int function getArousalStatus(Actor act)
-	if Condiexp_GlobalAroused.GetValue() == 0
+	if Condiexp_GlobalAroused.GetValueInt() == 0
 		return 0
 	endif
 	int aroused = 0
 	;check sla
 	if sla
 		aroused = getArousal0To100(act, sla, slaArousalFaction)
-		if aroused > 0 && aroused > Condiexp_MinAroused.GetValue()
-			trace("CondiExp_StartMod: updateArousalStatus(): " + Condiexp_CurrentlyAroused.getValue())
+		if aroused > 0 && aroused > Condiexp_MinAroused.GetValueInt()
+			trace("CondiExp_StartMod: updateArousalStatus(): " + Condiexp_CurrentlyAroused.GetValueInt())
 			return aroused
 		endif
 	endif
@@ -340,7 +340,7 @@ Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 	log("CondiExp_StartMod: suspended by: " + sender.GetName())
 	isSuspendedByDhlpEvent = true
 	If (isModEnabled())
-		Condiexp_ModSuspended.SetValue(1)
+		Condiexp_ModSuspended.SetValueInt(1)
 	EndIf
  EndEvent
  
@@ -348,26 +348,26 @@ Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 	log("CondiExp_StartMod: resumed by: " + sender.GetName())
 	isSuspendedByDhlpEvent = false
 	If (!isModEnabled())
-		Condiexp_ModSuspended.SetValue(0)
+		Condiexp_ModSuspended.SetValueInt(0)
 	EndIf
  EndEvent
 
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 	If CondiExp_Drugs.HasForm(akBaseObject)
-		CondiExp_PlayerIsHigh.SetValue(1)
+		CondiExp_PlayerIsHigh.SetValueInt(1)
 
 	elseif  CondiExp_Drinks.HasForm(akBaseObject)
-		CondiExp_PlayerIsDrunk.SetValue(1)
+		CondiExp_PlayerIsDrunk.SetValueInt(1)
 
 	elseif akBaseObject.HasKeyWord(VendorItemFood)
-		CondiExp_PlayerJustAte.SetValue(1)
+		CondiExp_PlayerJustAte.SetValueInt(1)
 		utility.wait(5)
-		CondiExp_PlayerJustAte.SetValue(0)
+		CondiExp_PlayerJustAte.SetValueInt(0)
 	Endif
 EndEvent
 
 Function StopMod()
-	Condiexp_ModSuspended.SetValue(1)
+	Condiexp_ModSuspended.SetValueInt(1)
 	utility.wait(3)
 	resetConditions()
 
@@ -396,30 +396,30 @@ Function StartMod()
 	RegisterForModEvent("ostim_start", "OnDhlpSuspend")
 	RegisterForModEvent("ostim_end", "OnDhlpResume")
 
-	If CondiExp_Sounds.GetValue() > 0
+	If CondiExp_Sounds.GetValueInt() > 0
 		NewRace()
 	Endif
 
-	If Condiexp_GlobalCold.GetValue() == 1
+	If Condiexp_GlobalCold.GetValueInt() == 1
 		If Game.GetModByName("Frostfall.esp") != 255
 		;Frostfall Installed
-			Condiexp_ColdMethod.SetValue(1)
+			Condiexp_ColdMethod.SetValueInt(1)
 		elseif Game.GetModByName("Frostbite.esp") != 255
 		;Frostbite Installed
-			Condiexp_ColdMethod.SetValue(2)
+			Condiexp_ColdMethod.SetValueInt(2)
 		else
 		; vanilla cold weathers
-			Condiexp_ColdMethod.SetValue(3)
+			Condiexp_ColdMethod.SetValueInt(3)
 		endif
 	endif
-	Condiexp_ModSuspended.SetValue(0)
+	Condiexp_ModSuspended.SetValueInt(0)
 	RegisterForSingleUpdate(5)
 	log("Started")
 Endfunction
 
 
 Event OnRaceSwitchComplete()
-If CondiExp_Sounds.GetValue() > 0
+If CondiExp_Sounds.GetValueInt() > 0
 	NewRace()
 Endif
 EndEvent
@@ -430,34 +430,34 @@ Function NewRace()
 
 	If PlayerBase.GetSex() == 0
 		if PlayerRef.GetRace() == KhajiitRace || PlayerRef.GetRace() == KhajiitRaceVampire
-			Condiexp_Sounds.SetValue(1)
+			Condiexp_Sounds.SetValueInt(1)
 
 		elseif PlayerRef.GetRace() == OrcRace || PlayerRef.GetRace() == OrcRaceVampire
-			Condiexp_Sounds.SetValue(2)
+			Condiexp_Sounds.SetValueInt(2)
 		else
-			Condiexp_Sounds.SetValue(3)
+			Condiexp_Sounds.SetValueInt(3)
 		endif
 	else
 		if PlayerRef.GetRace() == KhajiitRace || PlayerRef.GetRace() == KhajiitRaceVampire
-			Condiexp_Sounds.SetValue(4)
+			Condiexp_Sounds.SetValueInt(4)
 
 		elseif PlayerRef.GetRace() == OrcRace || PlayerRef.GetRace() == OrcRaceVampire
-			Condiexp_Sounds.SetValue(5)
+			Condiexp_Sounds.SetValueInt(5)
 		else
-			Condiexp_Sounds.SetValue(6)
+			Condiexp_Sounds.SetValueInt(6)
 		endif
 	endif
 endfunction
 
 Function resetConditions()
-	Condiexp_CurrentlyCold.SetValue(0)
-	Condiexp_CurrentlyDirty.SetValue(0)
-	Condiexp_CurrentlyTrauma.SetValue(0)
-	Condiexp_CurrentlyAroused.SetValue(0)
-	Condiexp_CurrentlyBusy.SetValue(0)
-	Condiexp_CurrentlyBusyImmediate.SetValue(0)
+	Condiexp_CurrentlyCold.SetValueInt(0)
+	Condiexp_CurrentlyDirty.SetValueInt(0)
+	Condiexp_CurrentlyTrauma.SetValueInt(0)
+	Condiexp_CurrentlyAroused.SetValueInt(0)
+	Condiexp_CurrentlyBusy.SetValueInt(0)
+	Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 endfunction
 
 Bool function isModEnabled()
-	return Condiexp_ModSuspended.getValue() == 0
+	return Condiexp_ModSuspended.GetValueInt() == 0
 endfunction

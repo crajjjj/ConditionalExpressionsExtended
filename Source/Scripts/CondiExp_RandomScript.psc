@@ -20,25 +20,32 @@ bool playing = false
 condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValue() as Int)
+	verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValueInt())
 	config.currentExpression = "Random"
+	RegisterForSingleUpdate(1)  
+	playing = true
+EndEvent
+
+Event OnUpdate()
+	If isRandomEnabled()
+   		PlayRandomExpression(PlayerRef, config)
+        RegisterForSingleUpdate(Utility.RandomInt(2, 5))
+    EndIf
 EndEvent
 
 bool function isRandomEnabled()
-	bool enabled = Condiexp_GlobalRandom.GetValue() == 1
-	enabled = enabled && Condiexp_ModSuspended.GetValue() == 0 && Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyBusyImmediate.getValue() == 0
+	bool enabled = Condiexp_GlobalRandom.GetValueInt() == 1
+	enabled = enabled && Condiexp_ModSuspended.GetValueInt() == 0 && Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
 	enabled = enabled && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning() 
+	enabled = enabled && playing
 	return enabled 
 endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	int safeguard = 1
-	While (isRandomEnabled() && safeguard <= 5)
-		PlayRandomExpression(PlayerRef, config)
-		safeguard = safeguard + 1
-	EndWhile
-	verbose(PlayerRef, "Random: OnEffectFinish. Showed times: " + safeguard, Condiexp_Verbose.GetValue() as Int )
-	If Condiexp_CurrentlyBusy.GetValue() == 0 && Condiexp_CurrentlyBusyImmediate.getValue() == 0
+	playing = false
+	Utility.Wait(1)
+	verbose(PlayerRef, "Random: OnEffectFinish", Condiexp_Verbose.GetValueInt() )
+	If Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
 		resetMFGSmooth(PlayerRef)
 	EndIf
 	

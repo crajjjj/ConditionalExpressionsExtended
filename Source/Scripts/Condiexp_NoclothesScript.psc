@@ -10,21 +10,21 @@ GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 GlobalVariable Property Condiexp_Verbose Auto
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    Condiexp_CurrentlyBusyImmediate.SetValue(1)
-    Condiexp_CurrentlyBusy.SetValue(1)
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
+    Condiexp_CurrentlyBusy.SetValueInt(1)
+    config.currentExpression = "No Clothes"
+    verbose(PlayerRef, "No Clothes", Condiexp_Verbose.GetValueInt())
 EndEvent
 
 Function Blush()
-    config.currentExpression = "No Clothes"
-    verbose(PlayerRef, "No Clothes", Condiexp_Verbose.GetValue() as Int)
     PlayerRef.SetExpressionOverride(4,90)
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     Blush()
     Utility.Wait(5)
-    verbose(PlayerRef, "No Clothes: OnEffectFinish.  " , Condiexp_Verbose.GetValue() as Int )
+    verbose(PlayerRef, "No Clothes: OnEffectFinish.  " , Condiexp_Verbose.GetValueInt() )
     resetMFGSmooth(PlayerRef)
-    Condiexp_CurrentlyBusyImmediate.SetValue(0)
-    Condiexp_CurrentlyBusy.SetValue(0)
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
+    Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

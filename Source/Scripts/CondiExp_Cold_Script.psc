@@ -14,8 +14,8 @@ GlobalVariable Property Condiexp_Verbose Auto
 int coldExpression = 0 
  
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	Condiexp_CurrentlyBusy.SetValue(1)
-	verbose(akTarget, "Cold: OnEffectstart", Condiexp_Verbose.GetValue() as Int)
+	Condiexp_CurrentlyBusy.SetValueInt(1)
+	verbose(akTarget, "Cold: OnEffectstart", Condiexp_Verbose.GetValueInt())
 	Int Seconds = Utility.RandomInt(1, 3)
 	Utility.Wait(Seconds)
 	ShowExpression()
@@ -23,7 +23,7 @@ EndEvent
 
 Function ShowExpression()
 	config.currentExpression="Cold"
-	verbose(PlayerRef, "Cold", Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef, "Cold", Condiexp_Verbose.GetValueInt())
 	while isCold()
 		Utility.Wait(0.5)
 		PlayerRef.SetExpressionOverride(1,50)
@@ -76,11 +76,11 @@ Function ShowExpression()
 endFunction
 
 bool Function isCold() 
-	bool isCold = Condiexp_CurrentlyCold.GetValue() == 1
+	bool isCold = Condiexp_CurrentlyCold.GetValueInt() == 1
 
-	bool isSuspended =  Condiexp_ModSuspended.GetValue() == 1
-	bool isDisabled = Condiexp_GlobalCold.GetValue() == 0
-	bool isImmediateEffect = Condiexp_CurrentlyBusyImmediate.GetValue() != 0 
+	bool isSuspended =  Condiexp_ModSuspended.GetValueInt() == 1
+	bool isDisabled = Condiexp_GlobalCold.GetValueInt() == 0
+	bool isImmediateEffect = Condiexp_CurrentlyBusyImmediate.GetValueInt() != 0 
 	bool lowStamina = PlayerRef.GetActorValuePercentage("Stamina") < 0.5
 	bool lowHealth = PlayerRef.GetActorValuePercentage("Health") < 0.5
 	
@@ -110,7 +110,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		Utility.Wait(0.5) ; !!!
 	endwhile
 	Utility.Wait(1)
-	verbose(PlayerRef, "Cold: OnEffectFinish", Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef, "Cold: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	resetMFGSmooth(PlayerRef)
-	Condiexp_CurrentlyBusy.SetValue(0)
+	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

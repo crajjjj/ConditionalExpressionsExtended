@@ -14,7 +14,7 @@ Function High()
     config.currentExpression = "Scooma"
     randomhappy = Utility.RandomInt(30,70)
     randomsmile = Utility.RandomInt(10,50)
-    Condiexp_CurrentlyBusy.SetValue(1)
+    Condiexp_CurrentlyBusy.SetValueInt(1)
     MfgConsoleFunc.SetModifier(PlayerRef,11,55)
     MfgConsoleFunc.SetPhoneme(PlayerRef,4,randomsmile)
     PlayerRef.SetExpressionOverride(2,randomhappy)
@@ -23,12 +23,12 @@ Function High()
 EndFunction
 
 Event OnUpdateGameTime()
-    CondiExp_PlayerIsHigh.SetValue(0)
+    CondiExp_PlayerIsHigh.SetValueInt(0)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 MfgConsoleFunc.SetModifier(PlayerRef,11,0)
 MfgConsoleFunc.SetPhoneme(PlayerRef,4,0)
 PlayerRef.ClearExpressionOverride()
-Condiexp_CurrentlyBusy.SetValue(0)
+Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

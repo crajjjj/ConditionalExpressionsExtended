@@ -6,10 +6,10 @@ GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-Condiexp_CurrentlyBusy.SetValue(1)
-Condiexp_CurrentlyBusyImmediate.SetValue(1)
+Condiexp_CurrentlyBusy.SetValueInt(1)
+Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
 config.currentExpression = "Water squint"
-verbose(PlayerRef, "Water squint", config.Condiexp_Verbose.GetValue() as Int)
+verbose(PlayerRef, "Water squint", config.Condiexp_Verbose.GetValueInt())
 Squint()
 EndEvent
 
@@ -46,6 +46,6 @@ endwhile
 
 MfgConsoleFunc.SetModifier(PlayerRef,12,0)
 MfgConsoleFunc.SetModifier(PlayerRef,13,0) 
-Condiexp_CurrentlyBusy.SetValue(0)
-Condiexp_CurrentlyBusyImmediate.SetValue(0)
+Condiexp_CurrentlyBusy.SetValueInt(0)
+Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 EndEvent

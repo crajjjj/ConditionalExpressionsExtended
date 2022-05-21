@@ -17,17 +17,17 @@ condiexp_MCM Property config auto
 bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	Condiexp_CurrentlyBusy.SetValue(1)
+	Condiexp_CurrentlyBusy.SetValueInt(1)
 	playing = true
 	trace("CondiExp_ArousedScript OnEffectStart")
 	Int Seconds = Utility.RandomInt(2, 4)
 	Utility.Wait(Seconds)
 	;either 0 or aroused level > Condiexp_MinAroused
-	Int arousal = Condiexp_CurrentlyAroused.GetValue() as Int
+	Int arousal = Condiexp_CurrentlyAroused.GetValueInt()
 	config.currentExpression = "Aroused"
 	PlayArousedExpression( PlayerRef, arousal, config)
 	playing = false
-	Utility.Wait(1)
+	Utility.Wait(5)
 EndEvent
 
 
@@ -41,8 +41,8 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	EndWhile
 	resetMFGSmooth(PlayerRef)
 	Utility.Wait(3)
-	verbose(akTarget, "Aroused: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
-	Condiexp_CurrentlyBusy.SetValue(0)
+	verbose(akTarget, "Aroused: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValueInt())
+	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent
 
 

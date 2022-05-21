@@ -24,7 +24,7 @@ Function PlayArousedExpression(Actor act, int aroused, condiexp_MCM config) glob
 			topMargin = 7
 		endif 
 		Int randomEffect = Utility.RandomInt(1, topMargin)
-		verbose(act, "Aroused: Arousal: " + aroused + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValue() as Int)
+		verbose(act, "Aroused: Arousal: " + aroused + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValueInt())
 		_arousedVariants(randomEffect, act, power, config)
 	endif
 
@@ -35,8 +35,7 @@ Function PlayArousedExpression(Actor act, int aroused, condiexp_MCM config) glob
 		LookRight(50, act)
 	ElseIf randomLook == 8
 		LookDown(50, act)
-	endif 
-	Utility.Wait(5)
+	endif
 EndFunction
 
 Function PlayTraumaExpression(Actor act, int trauma, condiexp_MCM config) global
@@ -57,10 +56,10 @@ Function PlayTraumaExpression(Actor act, int trauma, condiexp_MCM config) global
 			topMargin = 10
 		endif 
 		Int randomEffect = Utility.RandomInt(bottomMargin, topMargin)
-		verbose(act,"Trauma: Trauma: " + trauma + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValue() as Int)
+		verbose(act,"Trauma: Trauma: " + trauma + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValueInt())
 		_traumaVariants(randomEffect, act, power, config)
 	else
-		verbose(act,"Trauma: skipping. Trauma: " + trauma, config.Condiexp_Verbose.GetValue() as Int)
+		verbose(act,"Trauma: skipping. Trauma: " + trauma, config.Condiexp_Verbose.GetValueInt())
 	endif
 	Utility.Wait(1)
 
@@ -80,10 +79,10 @@ Function PlayDirtyExpression(Actor act, int dirty, condiexp_MCM config) global
 	;random skip 33%
 	Int randomSkip = Utility.RandomInt(1, 10)
 	if randomSkip > 3
-		verbose(act, "Dirty: playing effect: " + dirty, config.Condiexp_Verbose.GetValue() as Int)
+		verbose(act, "Dirty: playing effect: " + dirty, config.Condiexp_Verbose.GetValueInt())
     	_dirtyVariants(dirty, act, power, config)
 	else
-		verbose(act, "Dirty: skipping effect: " + dirty, config.Condiexp_Verbose.GetValue() as Int)
+		verbose(act, "Dirty: skipping effect: " + dirty, config.Condiexp_Verbose.GetValueInt())
 	endif
 
 	Int randomLook = Utility.RandomInt(1, 10)
@@ -94,7 +93,6 @@ Function PlayDirtyExpression(Actor act, int dirty, condiexp_MCM config) global
 	ElseIf randomLook == 8
 		LookDown(50, act)
 	endif
-	Utility.Wait(5)
 EndFunction
 
 Function Breathe(Actor act, bool final = true) global
@@ -111,7 +109,7 @@ EndFunction
 Function PlayPainExpression(Actor act, condiexp_MCM config) global
     Int Order = Utility.RandomInt(1, 4)
 	
-    verbose(act,"Pain: Effect: " + Order, config.Condiexp_Verbose.GetValue() as Int)
+    verbose(act,"Pain: Effect: " + Order, config.Condiexp_Verbose.GetValueInt())
     If Order == 1
         act.SetExpressionOverride(9,60)
         MfgConsoleFunc.SetModifier(act,2,52)
@@ -133,14 +131,11 @@ Function PlayPainExpression(Actor act, condiexp_MCM config) global
         MfgConsoleFunc.SetModifier(act,1,70)
         MfgConsoleFunc.SetPhoneMe(act,4,30)
     Endif
-	Utility.Wait(3)
 EndFunction
 
 Function PlayRandomExpression(Actor act, condiexp_MCM config) global
-	verbose(act,"Random emotion", config.Condiexp_Verbose.GetValue() as Int)
+	verbose(act,"Random emotion", config.Condiexp_Verbose.GetValueInt())
 	RandomEmotion(act, config)
-	Int Seconds = Utility.RandomInt(2, 5)
-	Utility.Wait(Seconds)
 EndFunction
 
 ; Sets an expression to override any other expression other systems may give this actor.

@@ -14,13 +14,14 @@ bool playing = false
 
 ;dirty is not strong emotion and can be overridden by pain etc
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	Condiexp_CurrentlyBusy.SetValue(1)
+	Condiexp_CurrentlyBusy.SetValueInt(1)
 	playing = true
 	Int Seconds = Utility.RandomInt(2, 4)
 	Utility.Wait(Seconds)
-	verbose(PlayerRef, "Dirty: OnEffectStart.Time: ", Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef, "Dirty: OnEffectStart.Time: ", Condiexp_Verbose.GetValueInt())
 	config.currentExpression = "Dirty"
-	PlayDirtyExpression(PlayerRef,  Condiexp_CurrentlyDirty.GetValue() as Int, config)
+	PlayDirtyExpression(PlayerRef,  Condiexp_CurrentlyDirty.GetValueInt() as Int, config)
+	Utility.Wait(5)
 	playing = false
 EndEvent
 
@@ -32,7 +33,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		safeguard = safeguard + 1
 	EndWhile
 	resetMFGSmooth(PlayerRef)
-	verbose(PlayerRef, "Dirty: OnEffectFinish.Time: " + safeguard, Condiexp_Verbose.GetValue() as Int)
+	verbose(PlayerRef, "Dirty: OnEffectFinish.Time: " + safeguard, Condiexp_Verbose.GetValueInt())
 	Utility.Wait(1)
-	Condiexp_CurrentlyBusy.SetValue(0)
+	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

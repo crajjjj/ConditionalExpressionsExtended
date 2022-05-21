@@ -26,7 +26,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusy.SetValueInt(1)
     resetMFGSmooth(akTarget)
     config.currentExpression = "Fatigue"
-    verbose(PlayerRef, "Fatigue: OnEffectStart", Condiexp_Verbose.GetValue() as Int)
+    verbose(PlayerRef, "Fatigue: OnEffectStart", Condiexp_Verbose.GetValueInt())
 EndEvent
 
 bool function isFatigueActive()
@@ -76,5 +76,5 @@ EndWhile
 Exhale(33, 0, PlayerRef)
 Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 Condiexp_CurrentlyBusy.SetValueInt(0)
-verbose(PlayerRef, "Fatigue: OnEffectFinish. Times:" + safeguard, Condiexp_Verbose.GetValue() as Int)
+verbose(PlayerRef, "Fatigue: OnEffectFinish. Times:" + safeguard, Condiexp_Verbose.GetValueInt())
 EndEvent

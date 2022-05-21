@@ -18,30 +18,32 @@ bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
-	playing = true
+	
 	trace("CondiExp_ArousedScript OnEffectStart")
-	Int Seconds = Utility.RandomInt(2, 4)
+	Int Seconds =
 	Utility.Wait(Seconds)
-	;either 0 or aroused level > Condiexp_MinAroused
-	Int arousal = Condiexp_CurrentlyAroused.GetValueInt()
+	
 	config.currentExpression = "Aroused"
-	PlayArousedExpression( PlayerRef, arousal, config)
-	playing = false
-	Utility.Wait(5)
 EndEvent
 
+Function aroused()
+    If PlayerRef.IsDead()
+        return
+    endif
+	Int arousal = Condiexp_CurrentlyAroused.GetValueInt()
+	PlayArousedExpression(PlayerRef, arousal, config)
+	Utility.Wait(Utility.RandomInt(4, 6))
+EndFunction
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	; keep script running
-	int safeguard = 0
-	While (playing && safeguard <= 30)
-		Utility.Wait(1)
-		safeguard = safeguard + 1
-	EndWhile
+
+	;either 0 or aroused level > Condiexp_MinAroused
+	aroused()
 	resetMFGSmooth(PlayerRef)
-	Utility.Wait(3)
 	verbose(akTarget, "Aroused: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValueInt())
+	Utility.Wait(2)
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent
 

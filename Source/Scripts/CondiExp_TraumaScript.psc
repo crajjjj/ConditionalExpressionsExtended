@@ -28,27 +28,26 @@ bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
-	playing = true
-	Int Seconds = Utility.RandomInt(2, 4)
-	Utility.Wait(Seconds)
-	Int trauma = Condiexp_CurrentlyTrauma.GetValueInt() as Int
 	config.currentExpression = "Trauma"
+	verbose(PlayerRef, "Trauma: OnEffectStart", Condiexp_Verbose.GetValueInt())
+EndEvent
+
+Function trauma()
+    If PlayerRef.IsDead()
+        return
+    endif
+	Int trauma = Condiexp_CurrentlyTrauma.GetValueInt() as Int
 	PlayTraumaExpression(PlayerRef, trauma, config)
 	BreatheAndSob(trauma)
-	Utility.Wait(1)
-	playing = false
-EndEvent
+	Utility.Wait(Utility.RandomInt(4, 6))
+EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	; keep script running
-	int safeguard = 0
-	While (playing && safeguard <= 30)
-		Utility.Wait(1)
-		safeguard = safeguard + 1
-	EndWhile
+	trauma()
 	resetMFGSmooth(PlayerRef)
-	verbose(akTarget, "Trauma: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValueInt())
-	Utility.Wait(3)
+	verbose(akTarget, "Trauma: OnEffectFinish", Condiexp_Verbose.GetValueInt())
+	Utility.Wait(2)
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent
 

@@ -10,7 +10,6 @@ Int Function GetWearState0to10(Actor akTarget, Quest apropos2Quest) Global
 	ReferenceAlias aproposTwoAlias = GetAproposAlias(akTarget, apropos2Quest)
 	if aproposTwoAlias != None
 		Int damage = (aproposTwoAlias as Apropos2ActorAlias).AverageAbuseState
-		trace("WT Damage" + damage)
 		If damage <= 10
 			return damage
 		Else

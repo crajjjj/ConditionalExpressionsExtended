@@ -93,8 +93,7 @@ bool Function isCold()
 	return isCold
 endfunction
 
-Event OnEffectFinish(Actor akTarget, Actor akCaster)			
-	trace("CondiExp_Cold_Script OnEffectFinish")
+Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	;OnEffectFinish is called, this script instance will only remain existing so long this function hasn't ended
 	;a function might be still going so we first wait for it
 

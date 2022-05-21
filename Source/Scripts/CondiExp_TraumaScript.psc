@@ -28,7 +28,6 @@ bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
-	config.currentExpression = "Trauma"
 	verbose(PlayerRef, "Trauma: OnEffectStart", Condiexp_Verbose.GetValueInt())
 EndEvent
 
@@ -43,6 +42,7 @@ Function trauma()
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+	config.currentExpression = "Trauma"
 	; keep script running
 	trauma()
 	resetMFGSmooth(PlayerRef)

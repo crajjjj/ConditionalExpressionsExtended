@@ -12,12 +12,12 @@ condiexp_MCM Property config auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
-    config.currentExpression = "Pain"
     resetMFG(PlayerRef)
-    Utility.Wait(0.9)
+    Utility.Wait(1)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+    config.currentExpression = "Pain"
     PlayPainExpression(PlayerRef, config)
     Utility.Wait(3)
     PlayerRef.ClearExpressionOverride()

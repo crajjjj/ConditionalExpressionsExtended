@@ -19,7 +19,6 @@ EndEvent
 Function Angry()
     int safeguard = 0
     while PlayerRef.IsinCombat() && OpenMouth == False && Condiexp_ModSuspended.getValue() == 0  && safeguard <= 10
-        config.currentExpression = "Angry"
         verbose(PlayerRef, "Angry", Condiexp_Verbose.GetValue() as Int)
         PlayerRef.SetExpressionOverride(15,70)
         MfgConsoleFunc.SetPhoneMe(PlayerRef, 4, 20)
@@ -44,6 +43,7 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+    config.currentExpression = "Angry"
     If !PlayerRef.HasKeyword(Vampire)
         Angry()
     endif

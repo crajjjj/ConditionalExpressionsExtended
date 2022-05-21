@@ -8,28 +8,23 @@ GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 condiexp_MCM Property config auto
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
-Condiexp_CurrentlyBusy.SetValueInt(1)
-Drunk()
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
+    Condiexp_CurrentlyBusy.SetValueInt(1)
 EndEvent
 
 Function Drunk()
-
-Condiexp_CurrentlyBusy.SetValueInt(1)
-verbose(PlayerRef, "Drunk", config.Condiexp_Verbose.GetValueInt())
-config.currentExpression = "Drunk"
-PlayerRef.SetExpressionOverride(2,80)
-
-RegisterForSingleUpdateGameTime(0.5)
+    Condiexp_CurrentlyBusy.SetValueInt(1)
+    verbose(PlayerRef, "Drunk", config.Condiexp_Verbose.GetValueInt())
+    PlayerRef.SetExpressionOverride(2,80)
 EndFunction
 
-Event OnUpdateGameTime()
-CondiExp_PlayerIsDrunk.SetValueInt(0)
-EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-Utility.Wait(1)
-PlayerRef.ClearExpressionOverride()
-Condiexp_CurrentlyBusy.SetValueInt(0)
-Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
+    config.currentExpression = "Drunk"
+    Drunk()
+    Utility.Wait(5)
+    CondiExp_PlayerIsDrunk.SetValueInt(0)
+    PlayerRef.ClearExpressionOverride()
+    Condiexp_CurrentlyBusy.SetValueInt(0)
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 EndEvent

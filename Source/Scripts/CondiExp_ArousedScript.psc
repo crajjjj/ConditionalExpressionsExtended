@@ -18,12 +18,7 @@ bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
-	
-	trace("CondiExp_ArousedScript OnEffectStart")
-	Int Seconds =
-	Utility.Wait(Seconds)
-	
-	config.currentExpression = "Aroused"
+	verbose(akTarget, "Aroused: OnEffectStart", Condiexp_Verbose.GetValueInt())
 EndEvent
 
 Function aroused()
@@ -38,11 +33,11 @@ EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	; keep script running
-
+	config.currentExpression = "Aroused"
 	;either 0 or aroused level > Condiexp_MinAroused
 	aroused()
 	resetMFGSmooth(PlayerRef)
-	verbose(akTarget, "Aroused: OnEffectFinish. Time: " + safeguard, Condiexp_Verbose.GetValueInt())
+	verbose(akTarget, "Aroused: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	Utility.Wait(2)
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

@@ -16,7 +16,6 @@ bool playing = false
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
 	verbose(PlayerRef, "Dirty: OnEffectStart", Condiexp_Verbose.GetValueInt())
-	config.currentExpression = "Dirty"
 EndEvent
 
 Function dirty()
@@ -28,6 +27,7 @@ Function dirty()
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+	config.currentExpression = "Dirty"
 	dirty()
 	resetMFGSmooth(PlayerRef)
 	verbose(PlayerRef, "Dirty: OnEffectFinish", Condiexp_Verbose.GetValueInt())

@@ -521,7 +521,7 @@ SetInfoText("Your character will react to dirt (disgusted subtle expressions).\n
 elseif (option == Aroused_B)
 	SetInfoText("Your character will react to arousal (pleasure subtle expressions).\n Integrated with SexLab Aroused")
 elseif (option == Verbose_B)
-	SetInfoText("Verbose debug notifications")
+	SetInfoText("Verbose debug notifications. Shows what emotion is playing")
 elseif (option == Followers_B)
 	SetInfoText("Toggle  followers support")
 elseif (option == registerFollowers)

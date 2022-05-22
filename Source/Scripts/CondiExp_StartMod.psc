@@ -10,6 +10,7 @@ Actor Property PlayerRef Auto
 Formlist property CondiExp_Drugs Auto
 Formlist property CondiExp_Drinks Auto
 Keyword Property VendorItemFood Auto
+Keyword Property VendorItemIngredient Auto
 GlobalVariable Property CondiExp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 GlobalVariable Property CondiExp_PlayerIsHigh Auto
@@ -19,6 +20,7 @@ GlobalVariable Property CondiExp_PlayerJustAte Auto
 GlobalVariable Property Condiexp_GlobalTrauma Auto
 GlobalVariable Property Condiexp_CurrentlyTrauma Auto
 GlobalVariable Property Condiexp_MinTrauma Auto
+GlobalVariable Property Condiexp_TraumaZBFFactionEnabled Auto
 
 GlobalVariable Property Condiexp_GlobalDirty Auto
 GlobalVariable Property Condiexp_CurrentlyDirty Auto
@@ -39,6 +41,8 @@ GlobalVariable Property Condiexp_Sounds Auto
 GlobalVariable Property Condiexp_UpdateInterval Auto
 GlobalVariable Property Condiexp_FollowersUpdateInterval Auto
 GlobalVariable Property Condiexp_Verbose Auto
+
+GlobalVariable Property Condiexp_GlobalEating Auto
 
 Race Property KhajiitRace Auto
 Race Property KhajiitRaceVampire Auto
@@ -305,7 +309,7 @@ int function getTraumaStatus(Actor act)
 	endif
 		
 	;check zap slave
-	if zbfFactionSlave
+	if zbfFactionSlave && Condiexp_TraumaZBFFactionEnabled.GetValueInt() == 1
 		if (act.IsInFaction(zbfFactionSlave))
 			trauma = 10
 			trace("CondiExp_StartMod: updateTraumaStatus - zbfFactionSlave:  " + trauma)
@@ -352,19 +356,38 @@ Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 	EndIf
  EndEvent
 
-Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
+ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
+	If (!isModEnabled())
+		return
+	EndIf
 	If CondiExp_Drugs.HasForm(akBaseObject)
 		CondiExp_PlayerIsHigh.SetValueInt(1)
-
-	elseif  CondiExp_Drinks.HasForm(akBaseObject)
-		CondiExp_PlayerIsDrunk.SetValueInt(1)
-
-	elseif akBaseObject.HasKeyWord(VendorItemFood)
-		CondiExp_PlayerJustAte.SetValueInt(1)
-		utility.wait(5)
-		CondiExp_PlayerJustAte.SetValueInt(0)
+	
+		elseif  CondiExp_Drinks.HasForm(akBaseObject)
+			CondiExp_PlayerIsDrunk.SetValueInt(1)
+	
+		elseif akBaseObject.HasKeyWord(VendorItemFood)
+			CondiExp_PlayerJustAte.SetValueInt(1)
+			utility.wait(5)
+			CondiExp_PlayerJustAte.SetValueInt(0)
+	
+		elseif akBaseObject.HasKeyword(VendorItemIngredient)
+	
+			If  Condiexp_GlobalEating.GetValueInt() == 2
+				CondiExp_PlayerJustAte.SetValueInt(1)
+				utility.wait(5)
+				CondiExp_PlayerJustAte.SetValueInt(0)
+	
+			elseif Condiexp_GlobalEating.GetValueInt() == 1
+	
+				Condiexp_GlobalEating.SetValueInt(2)
+				CondiExp_PlayerJustAte.SetValueInt(1)
+				utility.wait(5)
+				CondiExp_PlayerJustAte.SetValueInt(0)
+				Condiexp_GlobalEating.SetValueInt(1)
+			endif
 	Endif
-EndEvent
+	EndEvent
 
 Function StopMod()
 	Condiexp_ModSuspended.SetValueInt(1)

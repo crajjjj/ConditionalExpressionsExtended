@@ -5,6 +5,7 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
 ## What was changed?
 - Followers support (Up to 10 followers)
 - SL compatibility is built-in via sl factions (osmelmc patch).
+- Ostim compatibility via events
 - Compatibility with DD and Toys wearables.
 - Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching. (e.g. compatible with Naked Defeat)
 
@@ -24,7 +25,7 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
  
 ## Installation
 
-- Override original mod (Conditional Expressions - Subtle Face Animations mod (v 1.2.0)) with this one
+- Override original mod (Conditional Expressions - Subtle Face Animations mod (v 1.2.1)) with this one
 - Mod requires a new save (without Conditional Expressions installed before). (UPDATE:. you can update but be cautious - go inside and disable cold expressions before update) 
 
 
@@ -37,6 +38,8 @@ Sample: set Condiexp_MinAroused 30
 - Condiexp_MinTrauma range 1-10 default 1
 - Condiexp_MinAroused range 0-100 default 30
 - Condiexp_MinDirty range 0-4 default 1
+
+- Condiexp_TraumaZBFFactionEnabled default 1 - to disable trauma on slave faction set to 0
 
 (range values not inclusive - e.g. setting Condiexp_MinDirty to 4 will disable feature)
 
@@ -53,12 +56,16 @@ Move Conditional Expressions.esp higher in the load order. You can also try usin
 
 All animation mods should be compatible. Only mods that might cause issues are those that change the players facial expressions, which there shouldn't be many.
 
-- Random Emotions - (incompatible) similar feature with random expressions is included
-- Death Expressions (compatible)
-- PC Head Tracking (compatible - disable expressions in mcm)
-- Blush When Aroused (compatible - disable expressions in mcm) similar feature with arousal expressions is included
-- Devious Devices - (compatible) - gags are compatible
-- Sexlab animations (compatible) - sl faction check (osmel patch + additional checks) 
-- Expressive Facegen Morphs   (compatible)
-- Expressive Facial Animation (Male/Female)  (compatible)
-- Mods that use dhlp events (compatible)
+Details:  
+Random Emotions - (incompatible) similar feature with random expressions is included
+Sexlab Emotions - compatible
+Ostim - compatible
+Death Expressions (compatible)
+PC Head Tracking (compatible - better to disable expressions in mcm)
+Blush When Aroused - (compatible - patched version in downloads section) -  CEExtended has built in aroused expressions support.
+Devious Devices - (compatible) - gags are compatible
+Toys framework - (compatible) - gags are compatible
+Sexlab animations (compatible) - sl faction check (osmel patch + additional checks) 
+Expressive Facegen Morphs   (compatible)
+Expressive Facial Animation (Male/Female)  (compatible)
+Mods that use dhlp events (compatible) 

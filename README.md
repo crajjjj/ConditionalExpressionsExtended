@@ -16,7 +16,6 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
  
 ## Hard dependencies
 - Mfg Fix
-- Sexlab
  
 ## Soft dependencies
 - Apropos 2 or slavery mods that support zbfFactionSlave from ZaZAnimationPack.esm

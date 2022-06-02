@@ -29,6 +29,8 @@ endEvent
 Event OnInit()
 	act = self.GetActorReference()
 	If (!act)
+		self.Clear()
+		act = None
 		Return
 	EndIf
 	if (!ResetPhonemeModifier(act))
@@ -45,21 +47,27 @@ EndEvent
 
 Event OnUpdate()
 	int verboseInt = sm.Condiexp_Verbose.GetValueInt()
+	act = self.GetActorReference()
 	If (!act)
 		verbose(act, "Actor was removed" , verboseInt)
+		self.Clear()
+		act = None
 		Return
 	EndIf
 	
 	If (config.CondiExpFollowerQuest.IsStopped())
 		verbose(act, "Followers quest was stopped" , verboseInt)
+		self.Clear()
+		act = None
 		Return
 	EndIf
 	
 	float dist = act.GetDistance(sm.PlayerRef)
 
 	If (dist > 2000)
-		verbose(act, "Actor is too far - skipping" , verboseInt)
-		RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
+		verbose(act, "Actor is too far - removing" , verboseInt)
+		self.Clear()
+		act = None
 		return
 	EndIf
 
@@ -83,7 +91,7 @@ Event OnUpdate()
 			SmoothSetModifier(act, 0, 1, 90)
 		EndIf
 		verbose(act, "Dead", verboseInt)
-		act.Delete()
+		self.Clear()
 		act = None
 		Return
 	EndIf

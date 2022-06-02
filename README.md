@@ -1,6 +1,6 @@
 # ConditionalExpressionsExtended
 
-This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.2.0)
+This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.21)
  
 ## What was changed?
 - Followers support (Up to 10 followers)
@@ -16,7 +16,6 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
  
 ## Hard dependencies
 - Mfg Fix
-- Sexlab
  
 ## Soft dependencies
 - Apropos 2 or slavery mods that support zbfFactionSlave from ZaZAnimationPack.esm
@@ -25,7 +24,7 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
  
 ## Installation
 
-- Override original mod (Conditional Expressions - Subtle Face Animations mod (v 1.2.1)) with this one
+- Override original mod (Conditional Expressions - Subtle Face Animations mod (v 1.21)) with this one
 - Mod requires a new save (without Conditional Expressions installed before). (UPDATE:. you can update but be cautious - go inside and disable cold expressions before update) 
 
 

@@ -28,17 +28,18 @@ endEvent
 
 Event OnInit()
 	act = self.GetActorReference()
+	int verboseInt = sm.Condiexp_Verbose.GetValueInt()
 	If (!act)
 		self.Clear()
 		act = None
 		Return
 	EndIf
 	If act == sm.PlayerRef
-		int verboseInt = sm.Condiexp_Verbose.GetValueInt()
 		verbose(act, "FollowersQuest: started" , verboseInt)
 		Return
 	EndIf
 	if (!ResetPhonemeModifier(act))
+		verbose(act, "FollowersQuest: can't reset phoneme modifier - stopping", verboseInt)
 		return
 	endif
 	log("CondiExp_Followers OnInit. Actor: " + act.GetLeveledActorBase().GetName())

@@ -33,14 +33,14 @@ Event OnInit()
 		act = None
 		Return
 	EndIf
-	if (!ResetPhonemeModifier(act))
-		Wait(10.0)
-	endif
 	If act == sm.PlayerRef
 		int verboseInt = sm.Condiexp_Verbose.GetValueInt()
 		verbose(act, "FollowersQuest: started" , verboseInt)
 		Return
 	EndIf
+	if (!ResetPhonemeModifier(act))
+		return
+	endif
 	log("CondiExp_Followers OnInit. Actor: " + act.GetLeveledActorBase().GetName())
 	RegisterForSingleUpdate(sm.Condiexp_FollowersUpdateInterval.GetValueInt())
 EndEvent
@@ -64,7 +64,7 @@ Event OnUpdate()
 	
 	float dist = act.GetDistance(sm.PlayerRef)
 
-	If (dist > 2000)
+	If (dist > 1000)
 		verbose(act, "Actor is too far - removing" , verboseInt)
 		self.Clear()
 		act = None

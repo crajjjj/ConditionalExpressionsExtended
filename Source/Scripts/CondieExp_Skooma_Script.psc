@@ -1,4 +1,5 @@
 Scriptname CondieExp_Skooma_Script extends activemagiceffect  
+import CondiExp_util
 Actor Property PlayerRef Auto
 GlobalVariable Property CondiExp_PlayerIsHigh Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
@@ -12,8 +13,8 @@ Function High()
     int randomhappy
     int randomsmile 
     config.currentExpression = "Scooma"
-    randomhappy = Utility.RandomInt(30,70)
-    randomsmile = Utility.RandomInt(10,50)
+    randomhappy = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 30, 70)
+    randomsmile =  RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 10, 50)
     Condiexp_CurrentlyBusy.SetValueInt(1)
     MfgConsoleFunc.SetModifier(PlayerRef,11,55)
     MfgConsoleFunc.SetPhoneme(PlayerRef,4,randomsmile)

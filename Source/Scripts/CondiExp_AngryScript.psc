@@ -1,5 +1,6 @@
 Scriptname CondiExp_AngryScript extends ActiveMagicEffect  
 import CondiExp_log
+import CondiExp_util
 import CondiExp_Expression_Util
 
 Actor Property PlayerRef Auto
@@ -10,45 +11,61 @@ GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_Verbose Auto
-;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
+GlobalVariable Property Condiexp_PO3ExtenderInstalled Auto
+
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
-    Condiexp_CurrentlyBusy.SetValueInt(1)
+  If PlayerRef.HasKeyword(Vampire)
+   ; use vanilla
+  else
+    Angry()
+  endif
+ 
 EndEvent
 
 Function Angry()
-    int safeguard = 0
-    while PlayerRef.IsinCombat() && OpenMouth == False && Condiexp_ModSuspended.getValue() == 0  && safeguard <= 10
-        verbose(PlayerRef, "Angry", Condiexp_Verbose.GetValue() as Int)
-        PlayerRef.SetExpressionOverride(15,70)
-        MfgConsoleFunc.SetPhoneMe(PlayerRef, 4, 20)
-        Utility.Wait(3)
-        safeguard = safeguard + 1 
-    EndWhile
+    config.currentExpression = "Angry"
+    RegisterForSingleUpdate(1)
 EndFunction
 
-Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
-    if (OpenMouth == False  && abHitBlocked == False && akSource as weapon && (Utility.RandomInt(1,100) < 40))
-		OpenMouth = True
-        PlayerRef.SetExpressionOverride(15,100)
-        If PlayerRef.HasKeyword(Vampire)
-             VampireOuch(PlayerRef)
-        else
-             HumanOuch(PlayerRef)
-             PlayerRef.SetExpressionOverride(15,75)
-        endif
-        Utility.Wait(2)
-        OpenMouth = False
-	endif
+Event OnUpdate()
+    if OpenMouth == False && PlayerRef.IsinCombat() && Condiexp_ModSuspended.getValue() == 0
+      verbose(PlayerRef, "Angry", Condiexp_Verbose.GetValue() as Int)
+      PlayerRef.SetExpressionOverride(15,70)
+      MfgConsoleFunc.SetPhoneMe(PlayerRef, 4, 20)
+      RegisterForSingleUpdate(1)
+    EndIf
 EndEvent
 
-Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    config.currentExpression = "Angry"
-    If !PlayerRef.HasKeyword(Vampire)
-        Angry()
+auto State NotReacting
+  Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
+    GoToState("Reacting")
+    if abHitBlocked == False && akSource as weapon && OpenMouth == False && RandomNumber( Condiexp_PO3ExtenderInstalled.GetValueInt() == 1, 1, 100) < 40
+      OpenMouth = True
+      PlayerRef.SetExpressionOverride(15,100)
+
+      If PlayerRef.HasKeyword(Vampire)
+        VampireOuch(PlayerRef)
+      else
+        HumanOuch(PlayerRef)
+        PlayerRef.SetExpressionOverride(15,75)
+      endif
+      Utility.Wait(2)
+      OpenMouth = False
     endif
-    Utility.Wait(0.5)
-    MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
-    Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
-    Condiexp_CurrentlyBusy.SetValueInt(0)
+    GoToState("NotReacting")
+  EndEvent
+
+EndState
+
+State Reacting
+  Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
+    ; Do nothing
+  EndEvent
+EndState
+
+
+
+Event OnEffectFinish(Actor akTarget, Actor akCaster)
+  Utility.Wait(0.5)
+  MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
 EndEvent

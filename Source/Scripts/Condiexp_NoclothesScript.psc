@@ -12,10 +12,10 @@ GlobalVariable Property Condiexp_Verbose Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
-    verbose(PlayerRef, "No Clothes", Condiexp_Verbose.GetValueInt())
 EndEvent
 
 Function Blush()
+    verbose(PlayerRef, "No Clothes", Condiexp_Verbose.GetValueInt())
     PlayerRef.SetExpressionOverride(4,90)
 EndFunction
 
@@ -23,7 +23,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     config.currentExpression = "No Clothes"
     Blush()
     Utility.Wait(5)
-    verbose(PlayerRef, "No Clothes: OnEffectFinish.  " , Condiexp_Verbose.GetValueInt() )
+  ;  verbose(PlayerRef, "No Clothes: OnEffectFinish.  " , Condiexp_Verbose.GetValueInt() )
     resetMFGSmooth(PlayerRef)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)

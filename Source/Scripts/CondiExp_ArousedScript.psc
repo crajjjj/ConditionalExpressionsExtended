@@ -18,7 +18,7 @@ bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
-	verbose(akTarget, "Aroused: OnEffectStart", Condiexp_Verbose.GetValueInt())
+	;verbose(akTarget, "Aroused: OnEffectStart", Condiexp_Verbose.GetValueInt())
 EndEvent
 
 Function aroused()
@@ -27,7 +27,7 @@ Function aroused()
     endif
 	Int arousal = Condiexp_CurrentlyAroused.GetValueInt()
 	PlayArousedExpression(PlayerRef, arousal, config)
-	Utility.Wait(Utility.RandomInt(4, 6))
+	Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
 EndFunction
 
 
@@ -37,7 +37,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	;either 0 or aroused level > Condiexp_MinAroused
 	aroused()
 	resetMFGSmooth(PlayerRef)
-	verbose(akTarget, "Aroused: OnEffectFinish", Condiexp_Verbose.GetValueInt())
+	;verbose(akTarget, "Aroused: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	Utility.Wait(2)
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

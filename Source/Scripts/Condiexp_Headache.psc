@@ -12,11 +12,12 @@ condiexp_MCM Property config auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
-    verbose(PlayerRef, "Headache", Condiexp_Verbose.GetValueInt())
+   
 EndEvent
 
 
 Function Headache()
+    verbose(PlayerRef, "Headache", Condiexp_Verbose.GetValueInt())
     int i = 0
     while i < 95
         PlayerRef.SetExpressionOverride(3,i)

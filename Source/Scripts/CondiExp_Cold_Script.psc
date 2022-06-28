@@ -15,8 +15,8 @@ int coldExpression = 0
  
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
-	verbose(akTarget, "Cold: OnEffectstart", Condiexp_Verbose.GetValueInt())
-	Int Seconds = Utility.RandomInt(1, 3)
+	;verbose(akTarget, "Cold: OnEffectstart", Condiexp_Verbose.GetValueInt())
+	Int Seconds =  RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1, 3)
 	Utility.Wait(Seconds)
 	ShowExpression()
 EndEvent
@@ -109,7 +109,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		Utility.Wait(0.5) ; !!!
 	endwhile
 	Utility.Wait(1)
-	verbose(PlayerRef, "Cold: OnEffectFinish", Condiexp_Verbose.GetValueInt())
+	;verbose(PlayerRef, "Cold: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	resetMFGSmooth(PlayerRef)
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

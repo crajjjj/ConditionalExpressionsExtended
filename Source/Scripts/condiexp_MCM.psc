@@ -23,6 +23,7 @@ GlobalVariable Property Condiexp_GlobalAroused Auto
 GlobalVariable Property Condiexp_Verbose Auto
 GlobalVariable Property Condiexp_UpdateInterval Auto
 GlobalVariable Property Condiexp_FollowersUpdateInterval Auto
+GlobalVariable Property Condiexp_PO3ExtenderInstalled Auto
 
 GlobalVariable Property Condiexp_ExpressionStr Auto
 GlobalVariable Property Condiexp_ModifierStr Auto

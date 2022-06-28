@@ -20,7 +20,7 @@ bool playing = false
 condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValueInt())
+	;verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValueInt())
 	config.currentExpression = "Random"
 	RegisterForSingleUpdate(1)  
 	playing = true
@@ -29,7 +29,7 @@ EndEvent
 Event OnUpdate()
 	If isRandomEnabled()
    		PlayRandomExpression(PlayerRef, config)
-        RegisterForSingleUpdate(Utility.RandomInt(2, 5))
+        RegisterForSingleUpdate( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 5))
     EndIf
 EndEvent
 
@@ -44,7 +44,7 @@ endfunction
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	playing = false
 	Utility.Wait(1)
-	verbose(PlayerRef, "Random: OnEffectFinish", Condiexp_Verbose.GetValueInt() )
+	;verbose(PlayerRef, "Random: OnEffectFinish", Condiexp_Verbose.GetValueInt() )
 	If Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
 		resetMFGSmooth(PlayerRef)
 	EndIf

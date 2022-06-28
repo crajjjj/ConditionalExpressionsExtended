@@ -1,6 +1,6 @@
 Scriptname CondiExp_Sneaking_Script extends ActiveMagicEffect  
 import  CondiExp_log
-
+import CondiExp_util
 Actor Property PlayerRef Auto
 condiexp_MCM Property config auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
@@ -18,7 +18,7 @@ Function KhajiitLikestoSneak()
     MfgConsoleFunc.SetModifier(PlayerRef,13,45)
     MfgConsoleFunc.SetModifier(PlayerRef,2,20)
 
-Int Order = Utility.RandomInt(1,12)
+Int Order =  RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1,12)
 If Order < 3
 LookLeft()
 LookRight()

@@ -36,6 +36,7 @@ GlobalVariable Property Condiexp_CurrentlyAroused Auto
 GlobalVariable Property Condiexp_MinAroused Auto
 
 GlobalVariable Property Condiexp_ModSuspended Auto
+
 GlobalVariable Property Condiexp_Sounds Auto
 
 GlobalVariable Property Condiexp_UpdateInterval Auto
@@ -44,6 +45,9 @@ GlobalVariable Property Condiexp_Verbose Auto
 
 GlobalVariable Property Condiexp_GlobalEating Auto
 
+GlobalVariable Property Condiexp_SuspendedByDhlpEvent Auto
+GlobalVariable Property Condiexp_PO3ExtenderInstalled Auto
+
 Race Property KhajiitRace Auto
 Race Property KhajiitRaceVampire Auto
 Race Property OrcRace Auto
@@ -51,10 +55,8 @@ Race Property OrcRaceVampire Auto
 Keyword property Vampire Auto
 Faction Property SexLabAnimatingFaction Auto ;empty - to delete
 
-
-
 String Property LoadedBathMod Auto Hidden
-Bool Property isSuspendedByDhlpEvent Auto Hidden
+Bool Property isSuspendedByDhlpEvent Auto Hidden  ;to delete
 
 ;Bathing mod
 MagicEffect DirtinessStage2Effect 
@@ -133,6 +135,10 @@ function init()
 	if ToysEffectMouthOpen
 		log("CondiExp_StartMod: Found Toys: " + ToysEffectMouthOpen.GetName())
 	endif
+	if skse.GetPluginVersion("powerofthree's Papyrus Extender") > -1    ;Papyrus Extender is installed
+		log("CondiExp_StartMod: Found Papyrus Extender")
+		Condiexp_PO3ExtenderInstalled.SetValue(1)
+	endif
 
 	; checking what bath mod is loaded
 	LoadedBathMod = "None Found"
@@ -203,7 +209,7 @@ Event OnUpdate()
 EndEvent
 
 Bool function checkIfModShouldBeSuspended(Actor act)
-	if isSuspendedByDhlpEvent
+	if isSuspendedByDhlpEvent()
 		return true
 	endif
 
@@ -342,7 +348,7 @@ endfunction
 
 Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 	log("CondiExp_StartMod: suspended by: " + sender.GetName())
-	isSuspendedByDhlpEvent = true
+	Condiexp_SuspendedByDhlpEvent.SetValueInt(1)
 	If (isModEnabled())
 		Condiexp_ModSuspended.SetValueInt(1)
 	EndIf
@@ -350,7 +356,7 @@ Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
  
  Event OnDhlpResume(string eventName, string strArg, float numArg, Form sender)
 	log("CondiExp_StartMod: resumed by: " + sender.GetName())
-	isSuspendedByDhlpEvent = false
+	Condiexp_SuspendedByDhlpEvent.SetValueInt(0)
 	If (!isModEnabled())
 		Condiexp_ModSuspended.SetValueInt(0)
 	EndIf
@@ -424,10 +430,10 @@ Function StartMod()
 	Endif
 
 	If Condiexp_GlobalCold.GetValueInt() == 1
-		If Game.GetModByName("Frostfall.esp") != 255
+		If Game.IsPluginInstalled("Frostfall.esp")
 		;Frostfall Installed
 			Condiexp_ColdMethod.SetValueInt(1)
-		elseif Game.GetModByName("Frostbite.esp") != 255
+		elseif Game.IsPluginInstalled("Frostbite.esp")
 		;Frostbite Installed
 			Condiexp_ColdMethod.SetValueInt(2)
 		else
@@ -479,8 +485,13 @@ Function resetConditions()
 	Condiexp_CurrentlyAroused.SetValueInt(0)
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 	Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
+	Condiexp_SuspendedByDhlpEvent.SetValueInt(0)
 endfunction
 
 Bool function isModEnabled()
 	return Condiexp_ModSuspended.GetValueInt() == 0
+endfunction
+
+Bool function isSuspendedByDhlpEvent()
+	return Condiexp_SuspendedByDhlpEvent.GetValueInt() == 0
 endfunction

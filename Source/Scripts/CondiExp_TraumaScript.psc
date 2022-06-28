@@ -19,8 +19,8 @@ sound property CondiExp_SobbingFemale4 auto
 sound property CondiExp_SobbingFemale5 auto
 
 condiexp_MCM Property config auto
-;empty - to delete
-Faction Property SexLabAnimatingFaction Auto 
+
+Faction Property SexLabAnimatingFaction Auto ;empty - to delete
 GlobalVariable Property Condiexp_Verbose Auto
 
 
@@ -28,7 +28,7 @@ bool playing = false
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
-	verbose(PlayerRef, "Trauma: OnEffectStart", Condiexp_Verbose.GetValueInt())
+	;verbose(PlayerRef, "Trauma: OnEffectStart", Condiexp_Verbose.GetValueInt())
 EndEvent
 
 Function trauma()
@@ -38,7 +38,7 @@ Function trauma()
 	Int trauma = Condiexp_CurrentlyTrauma.GetValueInt() as Int
 	PlayTraumaExpression(PlayerRef, trauma, config)
 	BreatheAndSob(trauma)
-	Utility.Wait(Utility.RandomInt(4, 6))
+	Utility.Wait( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
@@ -46,7 +46,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	; keep script running
 	trauma()
 	resetMFGSmooth(PlayerRef)
-	verbose(akTarget, "Trauma: OnEffectFinish", Condiexp_Verbose.GetValueInt())
+	;verbose(akTarget, "Trauma: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	Utility.Wait(2)
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent
@@ -56,7 +56,7 @@ Function BreatheAndSob(int trauma)
 		return
 	endif
 	;;;;;;;;;;; SOUNDS ;;;;;;;;;;;;
-	Int sobchance = Utility.RandomInt(1, 5)
+	Int sobchance = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1, 5)
 	 
 	If Condiexp_Sounds.GetValueInt() > 0 && sobchance == 3
 		playBreathOrRandomSob(trauma)  
@@ -73,7 +73,7 @@ Function playBreathOrRandomSob(int trauma)
 		return
 	endIf
 
-	Int randomSob = Utility.RandomInt(1, 5)
+	Int randomSob = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1, 5)
 	verbose(PlayerRef, "Trauma: sobbing: " + randomSob, Condiexp_Verbose.GetValueInt())
 	if randomSob == 1
 		CondiExp_SobbingFemale1.play(PlayerRef)

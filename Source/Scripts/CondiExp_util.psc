@@ -84,7 +84,7 @@ Bool Function isToysReady() Global
 EndFunction
 
 Bool Function isDependencyReady(String modname) Global
-	Return Game.GetModbyName(modname) != 255
+	Return Game.IsPluginInstalled(modname)
 EndFunction
 
 
@@ -307,3 +307,11 @@ Function resetMFGSmooth(Actor ac) global
 	;expressions
 	SmoothSetExpression(ac, GetExpressionID(ac), 0, GetExpressionValue(ac))
 endfunction
+
+Int Function RandomNumber(bool isPO3ExtenderInstalled, int a, int b) global
+	if isPO3ExtenderInstalled
+	  return PO3_SKSEFunctions.GenerateRandomInt(a, b)
+	else
+	  Utility.RandomInt(a,b)
+	endif
+  EndFunction

@@ -1,6 +1,6 @@
 # ConditionalExpressionsExtended
 
-This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.21)
+This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.26)
  
 ## What was changed?
 - Followers support (Up to 10 followers)

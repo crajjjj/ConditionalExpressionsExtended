@@ -210,6 +210,7 @@ EndEvent
 
 Bool function checkIfModShouldBeSuspended(Actor act)
 	if isSuspendedByDhlpEvent()
+		log("CondiExp_StartMod: dhlp event. Will suspend for actor:" + act.GetName() )
 		return true
 	endif
 
@@ -493,5 +494,5 @@ Bool function isModEnabled()
 endfunction
 
 Bool function isSuspendedByDhlpEvent()
-	return Condiexp_SuspendedByDhlpEvent.GetValueInt() == 0
+	return Condiexp_SuspendedByDhlpEvent.GetValueInt() == 1
 endfunction

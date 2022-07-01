@@ -86,7 +86,7 @@ bool TraumaToggle = true
 bool DirtyToggle = true
 bool ArousedToggle = true
 bool VerboseToggle = false 
-bool FollowersToggle = true 
+bool FollowersToggle = false 
 
 int EatingFastSlow_M
 string EatingFastSlow

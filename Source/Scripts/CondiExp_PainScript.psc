@@ -12,16 +12,13 @@ condiexp_MCM Property config auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
-    resetMFG(PlayerRef)
-    Utility.Wait(1)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     config.currentExpression = "Pain"
     PlayPainExpression(PlayerRef, config)
     Utility.Wait(3)
-    PlayerRef.ClearExpressionOverride()
-    MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+    resetMFGSmooth(PlayerRef)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

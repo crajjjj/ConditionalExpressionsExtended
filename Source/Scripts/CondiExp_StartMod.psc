@@ -202,7 +202,7 @@ Event OnUpdate()
 		endif
  	endif
 
-	if PlayerRef.HasSpell(CondiExp_Fatigue1)
+	if PlayerRef.HasSpell(CondiExp_Fatigue1) && Condiexp_UpdateInterval.GetValueInt() > 0
 		RegisterForSingleUpdate(Condiexp_UpdateInterval.GetValueInt())
 	endif
 	

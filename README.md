@@ -7,11 +7,11 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
 - SL compatibility is built-in via sl factions (osmelmc patch).
 - Ostim compatibility via events
 - Compatibility with DD and Toys wearables.
-- Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching. (e.g. compatible with Naked Defeat)
+- Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching. (e.g. compatible with ND)
 
 - Added abuse (pain) expressions based on apropos2 w&t or ZAP slave faction condition. Expression is different depending on abuse stage. There's a chance also for a sobbing sound. (can be disabled in mcm)
 - Added sad expressions based on dirtiness level (Dirt&Blood || Keep it clean || Bathing in Skyrim are supported)
-- Added aroused expressions based on arousal level (SexLab Aroused)
+- Added aroused expressions based on arousal level (SL Aroused)
 - Code refactored - random script is no longer used for condition checking.
  
 ## Hard dependencies

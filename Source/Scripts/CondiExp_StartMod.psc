@@ -171,7 +171,7 @@ Event OnUpdate()
 	If _checkPlugins > 0
 		_checkPlugins += 1
 		If _checkPlugins >= 2
-			log("WidgetController: moduleSetup")
+			log("CondiExp_StartMod: setup")
 			StartMod()
 			_checkPlugins = 0
 		EndIf
@@ -210,22 +210,22 @@ EndEvent
 
 Bool function checkIfModShouldBeSuspended(Actor act)
 	if isSuspendedByDhlpEvent()
-		log("CondiExp_StartMod: dhlp event. Will suspend for actor:" + act.GetName() )
+		log("CondiExp_StartMod: dhlp event. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
 		return true
 	endif
 
 	if (vZadGagEffect && act.HasMagicEffect(vZadGagEffect))
-		log("CondiExp_StartMod: dd gag effect was detected. Will suspend for actor:" + act.GetName() )
+		log("CondiExp_StartMod: dd gag effect was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
 		return true
 	endif
 
 	if (ToysEffectMouthOpen && act.WornHasKeyword(ToysEffectMouthOpen))
-		log("CondiExp_StartMod: ToysEffectMouthOpen effect was detected. Will suspend for actor:" + act.GetName())
+		log("CondiExp_StartMod: ToysEffectMouthOpen effect was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
 		return true
 	endif
 
 	if (sexlab && IsActorActive(sexlab, act))
-		log("CondiExp_StartMod: actor is in sl faction. Will suspend for actor:" + act.GetName())
+		log("CondiExp_StartMod: actor is in sl faction. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
 		return true
 	endif
 	

@@ -451,7 +451,7 @@ if (option == Combat_B) && CombatToggle == True
 		ShowMessage("Default expression restored - If in the middle of a face animation, expression will be restored once animation is finished.")
 		Go.resetConditions()
 		resetMFG(PlayerRef)
-		if (FollowersToggle)
+		if (CondiExpFollowerQuest.IsRunning())
 			ResetQuest(CondiExpFollowerQuest)
 		endIf
 
@@ -467,14 +467,19 @@ if (option == Combat_B) && CombatToggle == True
 		Utility.Wait(0.5)
 		Go.StopMod()
 		Go.StartMod()
-		if (FollowersToggle)
+		if (CondiExpFollowerQuest.IsRunning())
 			ResetQuest(CondiExpFollowerQuest)
 		endIf
 		Notification("Restarted correctly!")
 	
 	elseif option == registerFollowers
-		ResetQuest(CondiExpFollowerQuest)
-		ShowMessage("Please, exit menu. Followers were registered")
+		if (CondiExpFollowerQuest.IsRunning())
+			ResetQuest(CondiExpFollowerQuest)
+			ShowMessage("Please, exit menu. Followers were registered")
+		else
+			ShowMessage("Followers support is disabled")
+		endIf
+		
 endif
 
 endevent

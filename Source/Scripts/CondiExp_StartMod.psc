@@ -362,9 +362,10 @@ Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 		Condiexp_ModSuspended.SetValueInt(0)
 	EndIf
  EndEvent
+ 
 
  Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
-	If (!isModEnabled())
+	If (!isModEnabled() || _checkPlugins != 0)
 		return
 	EndIf
 	If CondiExp_Drugs.HasForm(akBaseObject)
@@ -394,7 +395,8 @@ Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 				Condiexp_GlobalEating.SetValueInt(1)
 			endif
 	Endif
-	EndEvent
+EndEvent
+
 
 Function StopMod()
 	Condiexp_ModSuspended.SetValueInt(1)

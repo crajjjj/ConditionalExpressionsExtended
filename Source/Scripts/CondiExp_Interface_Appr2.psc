@@ -29,8 +29,8 @@ ReferenceAlias Function GetAproposAlias(Actor akTarget, Quest apropos2Quest ) Gl
 		AliasSelect = apropos2Quest.GetNthAlias(i) as ReferenceAlias
 		If AliasSelect.GetReference() as Actor == akTarget
 			AproposTwoAlias = AliasSelect
+			Return AproposTwoAlias
 		EndIf
-		Return AproposTwoAlias
 		i += 1
 	EndWhile
 	Return AproposTwoAlias

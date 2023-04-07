@@ -22,7 +22,7 @@ condiexp_MCM Property config auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	;verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValueInt())
 	config.currentExpression = "Random"
-	RegisterForSingleUpdate(1)  
+	RegisterForSingleUpdate(1)
 	playing = true
 EndEvent
 

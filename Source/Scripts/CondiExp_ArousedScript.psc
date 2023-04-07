@@ -34,6 +34,7 @@ EndFunction
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	; keep script running
 	config.currentExpression = "Aroused"
+	Utility.Wait(1)
 	;either 0 or aroused level > Condiexp_MinAroused
 	aroused()
 	resetMFGSmooth(PlayerRef)

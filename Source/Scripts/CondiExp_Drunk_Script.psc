@@ -1,5 +1,7 @@
 Scriptname CondiExp_Drunk_Script extends activemagiceffect  
 import CondiExp_log
+import CondiExp_util
+import CondiExp_Expression_Util
 
 Actor Property PlayerRef Auto
 GlobalVariable Property CondiExp_PlayerIsDrunk Auto
@@ -21,6 +23,7 @@ EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     config.currentExpression = "Drunk"
+    Utility.Wait(1)
     Drunk()
     Utility.Wait(5)
     CondiExp_PlayerIsDrunk.SetValueInt(0)

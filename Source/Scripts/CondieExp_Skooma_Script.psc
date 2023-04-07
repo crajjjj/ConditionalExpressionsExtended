@@ -20,10 +20,10 @@ Function High()
     MfgConsoleFunc.SetPhoneme(PlayerRef,4,randomsmile)
     PlayerRef.SetExpressionOverride(2,randomhappy)
 
-    RegisterForSingleUpdateGameTime(0.5)
+    RegisterForSingleUpdate(60.0)
 EndFunction
 
-Event OnUpdateGameTime()
+Event OnUpdate()
     CondiExp_PlayerIsHigh.SetValueInt(0)
 EndEvent
 

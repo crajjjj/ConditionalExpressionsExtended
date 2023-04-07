@@ -43,7 +43,7 @@ EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	config.currentExpression = "Trauma"
-	; keep script running
+	Utility.Wait(1)
 	trauma()
 	resetMFGSmooth(PlayerRef)
 	;verbose(akTarget, "Trauma: OnEffectFinish", Condiexp_Verbose.GetValueInt())
@@ -67,7 +67,6 @@ Function BreatheAndSob(int trauma)
 EndFunction
 
 Function playBreathOrRandomSob(int trauma)
-	
 	if trauma <= 3
 		CondiExp_BreathingFemale.play(PlayerRef) 
 		return

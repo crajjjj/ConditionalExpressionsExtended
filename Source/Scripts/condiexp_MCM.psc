@@ -95,7 +95,7 @@ string[] EatingFastSlowList
 
 int ColdMethod_M
 string ColdMethod
-int ColdMethodIndex = 3
+int ColdMethodIndex = 4
 string[] ColdMethodList
 
 int function GetVersion()
@@ -123,11 +123,12 @@ Event OnConfigOpen()
 	EatingFastSlowList[1] = "Slow Eating"
 	EatingFastSlowList[2] = "Disabled"
 
-	ColdMethodList = new string[4]
+	ColdMethodList = new string[5]
 	ColdMethodList[0] = "Vanilla - Snowing"
 	ColdMethodList[1] = "Frostfall"
 	ColdMethodList[2] = "Frostbite"
-	ColdMethodList[3] = "Automatic"
+	ColdMethodList[3] = "Sunhelm Survival"
+	ColdMethodList[4] = "Automatic"
 EndEvent
 
 Event OnPageReset(string page)
@@ -258,7 +259,7 @@ event OnOptionMenuOpen(int option)
 	elseif (option == ColdMethod_M)
 		SetMenuDialogOptions(ColdMethodList)
 		SetMenuDialogStartIndex(ColdMethodIndex)
-		SetMenuDialogDefaultIndex(3)
+		SetMenuDialogDefaultIndex(4)
 	endIf
 endEvent
 
@@ -268,11 +269,11 @@ event OnOptionMenuAccept(int option, int index)
 		EatingFastSlowIndex = index
 		SetMenuOptionValue(EatingFastSlow_M, EatingFastSlowList[EatingFastSlowIndex])
 	if index == 0
-Condiexp_GlobalEating.SetValueInt(2)
+		Condiexp_GlobalEating.SetValueInt(2)
 	elseif index == 1
-Condiexp_GlobalEating.SetValueInt(1)
+		Condiexp_GlobalEating.SetValueInt(1)
 	elseif index == 2
-Condiexp_GlobalEating.SetValueInt(0)
+		Condiexp_GlobalEating.SetValueInt(0)
 	endif
 	endif
 
@@ -280,15 +281,18 @@ If (option == ColdMethod_M)
 		ColdMethodindex = index
 		SetMenuOptionValue(coldmethod_M, coldmethodList[coldmethodindex])
 	if index == 0
-Condiexp_ColdMethod.SetValueInt(3)
+		Condiexp_ColdMethod.SetValueInt(4)
 	elseif index == 1
-Condiexp_ColdMethod.SetValueInt(1)
+		Condiexp_ColdMethod.SetValueInt(1)
 	elseif index == 2
-Condiexp_ColdMethod.SetValueInt(2)
+		Condiexp_ColdMethod.SetValueInt(2)
 	elseif index == 3
+		Condiexp_ColdMethod.SetValueInt(3)	
+	else
+		Condiexp_ColdMethod.SetValueInt(4)
 ;nothing happens, automatic
 	endif
-	endif
+endif
 EndEvent
 
 
@@ -487,45 +491,45 @@ endevent
 
 event OnOptionHighlight(int option) 
 if (option == EatingFastSlow_M) 
-SetInfoText("Quick and slow refer to how fast your character starts chewing.\nDepending on your eating animation mod, one or the other will fit better.") 
+	SetInfoText("Quick and slow refer to how fast your character starts chewing.\nDepending on your eating animation mod, one or the other will fit better.") 
 elseif (option == Combat_B)
-SetInfoText("This enables a more focused combat expression. Disabling this will revert back\n to the vanilla combat expression. Cannot be disabled during combat") 
+	SetInfoText("This enables a more focused combat expression. Disabling this will revert back\n to the vanilla combat expression. Cannot be disabled during combat") 
 elseif (option == Random_B)
-SetInfoText("When your character is idle, they will often have random subtle expressions.\nThis must be enabled for cold animations to work.")
+	SetInfoText("When your character is idle, they will often have random subtle expressions.\nThis must be enabled for cold animations to work.")
 elseif (option == Cold_B)
-SetInfoText("Your character will react to being cold depending on your 'cold-manager' mod.\n") 
+	SetInfoText("Your character will react to being cold depending on your 'cold-manager' mod.\n") 
 elseif (option == Stamina_B)
-SetInfoText("When out of Stamina, your character will be out of breath.") 
+	SetInfoText("When out of Stamina, your character will be out of breath.") 
 elseif (option == Pain_B)
-SetInfoText("During low health, your character will be in pain/scared.") 
+	SetInfoText("During low health, your character will be in pain/scared.") 
 elseif (option == Drunk_B)
-SetInfoText("After drinking alcohol, your character will be 'happy' for 1 to 2 hours.") 
+	SetInfoText("After drinking alcohol, your character will be 'happy' for 1 to 2 hours.") 
 elseif (option == Skooma_B)
-SetInfoText("After taking skooma, your character will have \na random happier-than-usual expression for 1 to 2 hours.") 
+	SetInfoText("After taking skooma, your character will have \na random happier-than-usual expression for 1 to 2 hours.") 
 elseif (option == Clothes_B)
-SetInfoText("When not at home, your character will have \nan embarrassed expression when wearing no clothes.") 
+	SetInfoText("When not at home, your character will have \nan embarrassed expression when wearing no clothes.") 
 elseif (option == Sneaking_B)
-SetInfoText("Your character will squint their eyes \nand look at their surroundings when sneaking.") 
+	SetInfoText("Your character will squint their eyes \nand look at their surroundings when sneaking.") 
 elseif (option == Water_B)
-SetInfoText("Your character will squint their eyes \nwhen swimming or diving underwater.") 
+	SetInfoText("Your character will squint their eyes \nwhen swimming or diving underwater.") 
 elseif (option == restore)
-SetInfoText("If for some reason the face of your character \nis glitched, click here to reset it back to normal.") 
+	SetInfoText("If for some reason the face of your character \nis glitched, click here to reset it back to normal.") 
 elseif (option == uninstall)
-SetInfoText("Clicking here will stop all functionalities of the mod.\nDo this ONLY if you are planning on uninstalling the mod right after.")
+	SetInfoText("Clicking here will stop all functionalities of the mod.\nDo this ONLY if you are planning on uninstalling the mod right after.")
 elseif (option == coldmethod_M)
-SetInfoText("The Automatic option scans your load order for frostfall or frostbite. Change this manually only\nif you have switched from one mod to another or want to use the vanilla detection method.")
+	SetInfoText("The Automatic option scans your load order for frostfall or frostbite. Change this manually only\nif you have switched from one mod to another or want to use the vanilla detection method.")
 elseif (option == Update)
-SetInfoText("Clicking here will stop and restart the mod's functionalities.\nThis is useful if you have updated to a new version.")
+	SetInfoText("Clicking here will stop and restart the mod's functionalities.\nThis is useful if you have updated to a new version.")
 elseif (option == Headache_B)
-SetInfoText("Your character will have a 'headache' look when almost out of mana.\nSame look will be applied when you have a disease.")
+	SetInfoText("Your character will have a 'headache' look when almost out of mana.\nSame look will be applied when you have a disease.")
 elseif (option == Sounds_B)
-SetInfoText("When out of stamina, you can hear your character (quietly) breathing\n heavily until they recover half of their stamina. Enables trauma sounds as well")
+	SetInfoText("When out of stamina, you can hear your character (quietly) breathing\n heavily until they recover half of their stamina. Enables trauma sounds as well")
 elseif (option == Trauma_B)
-SetInfoText("Your character will react to abuse (painful subtle expressions).\n There's also a pain sound once in a while. Integrated with Apropos2 and Zap slave faction based mods")
+	SetInfoText("Your character will react to trauma or disease (painful subtle expressions).\n There's also a pain sound once in a while")
 elseif (option == Dirty_B)
-SetInfoText("Your character will react to dirt (disgusted subtle expressions).\n Integrated with Dirt&Blood,Keep it clean,Bathing in Skyrim")
+	SetInfoText("Your character will react to dirt (disgusted subtle expressions).\n Integrated with Dirt&Blood,Keep it clean,Bathing in Skyrim")
 elseif (option == Aroused_B)
-	SetInfoText("Your character will react to arousal (pleasure subtle expressions).\n Integrated with SexLab Aroused")
+	SetInfoText("Your character will react to arousal (pleasure subtle expressions).\n Integrated with OSL Aroused")
 elseif (option == Verbose_B)
 	SetInfoText("Verbose debug notifications. Shows what emotion is playing")
 elseif (option == Followers_B)

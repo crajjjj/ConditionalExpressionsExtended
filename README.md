@@ -4,23 +4,23 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
  
 ## What was changed?
 - Followers support (Up to 10 followers)
+- Added trauma (pain) expressions based on diseases (also supports apropos2 w&t or ZAP slave faction condition). There's a chance also for a sobbing sound. (can be disabled in mcm)
+- Added sad expressions based on dirtiness level (Dirt&Blood || Keep it clean || Bathing in Skyrim are supported)
+- Added aroused expressions based on arousal level (SL Aroused)
+- Smoother exression changes
+- Code refactored - random script is no longer used for condition checking. Cold scripts simplified. 
 - SL compatibility is built-in via sl factions (osmelmc patch).
 - Ostim compatibility via events
 - Compatibility with DD and Toys wearables.
-- Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching. (e.g. compatible with ND)
-
-- Added abuse (pain) expressions based on apropos2 w&t or ZAP slave faction condition. Expression is different depending on abuse stage. There's a chance also for a sobbing sound. (can be disabled in mcm)
-- Added sad expressions based on dirtiness level (Dirt&Blood || Keep it clean || Bathing in Skyrim are supported)
-- Added aroused expressions based on arousal level (SL Aroused)
-- Code refactored - random script is no longer used for condition checking.
+- Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching.
  
 ## Hard dependencies
 - Mfg Fix
  
 ## Soft dependencies
-- Apropos 2 or slavery mods that support zbfFactionSlave from ZaZAnimationPack.esm
 - Dirt&Blood || Keep it clean || Bathing in Skyrim
 - SL Aroused
+- Apropos 2 or slavery mods that support zbfFactionSlave from ZaZAnimationPack.esm
  
 ## Installation
 

@@ -22,7 +22,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.3.14"
+    Return "1.4.0"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -184,14 +184,15 @@ Function SmoothSetModifier(Actor act, Int mod1, Int mod2, Int str_dest, float st
 EndFunction
 
 ;mfg expression
-;anger 0
-;fear 1
-;happy 2
-;sad 3
-;surprise 4
-;puzzled 5
-;disgust 6
-;neutral 7
+;Sets an expression to override any other expression other systems may give this actor.
+;7 - Mood Neutral
+;0 - Dialogue Anger 8 - Mood Anger 15 - Combat Anger
+;1 - Dialogue Fear 9 - Mood Fear 16 - Combat Shout
+;2 - Dialogue Happy 10 - Mood Happy
+;3 - Dialogue Sad 11 - Mood Sad
+;4 - Dialogue Surprise 12 - Mood Surprise
+;5 - Dialogue Puzzled 13 - Mood Puzzled
+;6 - Dialogue Disgusted 14 - Mood Disgusted
 Int Function SmoothSetExpression(Actor act, Int number, Int exp_dest, int exp_value, float modifier = 1.0) global
 	int safeguard = 0
 	While (!SetModifier(act, 14, 0) && safeguard <= 5)

@@ -8,7 +8,7 @@ import CondiExp_log
 import CondiExp_util
 
 Function PlayArousedExpression(Actor act, int aroused, condiexp_MCM config) global
-	Int power = 20 + aroused
+	Int power = 10 + aroused
 	if power > 100
 		power = 100
 	endif
@@ -39,7 +39,7 @@ Function PlayArousedExpression(Actor act, int aroused, condiexp_MCM config) glob
 EndFunction
 
 Function PlayTraumaExpression(Actor act, int trauma, condiexp_MCM config) global
-	Int power = 20 + trauma * 10
+	Int power = 10 + trauma * 10
 	if power > 100
 		power = 100
 	endif
@@ -78,9 +78,11 @@ Function PlayDirtyExpression(Actor act, int dirty, condiexp_MCM config) global
 	Int power = 100
 	;random skip 33%
 	Int randomSkip = Utility.RandomInt(1, 10)
-	if randomSkip > 3
+	if randomSkip > 5
 		verbose(act, "Dirty: playing effect: " + dirty, config.Condiexp_Verbose.GetValueInt())
     	_dirtyVariants(dirty, act, power, config)
+	elseif randomSkip > 3
+		Disgust(60, act)
 	else
 		verbose(act, "Dirty: skipping effect: " + dirty, config.Condiexp_Verbose.GetValueInt())
 	endif
@@ -185,7 +187,7 @@ Function _arousedVariants(Int index, Actor act, int Power, condiexp_MCM config) 
 		SmoothSetExpression(act, 10, Power, 0, exprStr)
 		SmoothSetPhoneme(act, 0, 30, phStr)
 		SmoothSetPhoneme(act, 7, 60, phStr)
-		SmoothSetPhoneme(act, 12, 60, phStr)
+		SmoothSetPhoneme(act, 12, 40, phStr)
 
 		SmoothSetModifier(act,0,1,30, modStr)
 		SmoothSetModifier(act,4,5,100, modStr)
@@ -241,8 +243,8 @@ Function _traumaVariants(Int index, Actor act, int Power, condiexp_MCM config) g
 		SmoothSetExpression(act,1,Power,0, exprStr)
 		SmoothSetPhoneme(act, 1, 10, phStr)
 		SmoothSetPhoneme(act, 5, 30, phStr)
-		SmoothSetPhoneme(act, 7, 70, phStr)
-		SmoothSetPhoneme(act, 15, 60, phStr)
+		SmoothSetPhoneme(act, 7, 50, phStr)
+		SmoothSetPhoneme(act, 15, 50, phStr)
 	elseIf index == 2
 		
 		SmoothSetExpression(act,3,Power,0, exprStr)
@@ -257,8 +259,8 @@ Function _traumaVariants(Int index, Actor act, int Power, condiexp_MCM config) g
 	
 		SmoothSetExpression(act,3,Power,0, exprStr)
 
-		SmoothSetModifier(act,11,-1,50, modStr)
-		SmoothSetModifier(act,13,-1,14, modStr)
+		SmoothSetModifier(act,11,-1, 40, modStr)
+		SmoothSetModifier(act,13,-1, 14, modStr)
 
 		SmoothSetPhoneme(act, 2, 50, phStr)
 		SmoothSetPhoneme(act, 13, 15, phStr)

@@ -17,6 +17,9 @@ sound property CondiExp_SobbingFemale2 auto
 sound property CondiExp_SobbingFemale3 auto
 sound property CondiExp_SobbingFemale4 auto
 sound property CondiExp_SobbingFemale5 auto
+sound property CondiExp_SobbingMale1 auto
+sound property CondiExp_SobbingMale2 auto
+sound property CondiExp_SobbingMale3 auto
 
 condiexp_MCM Property config auto
 
@@ -74,16 +77,32 @@ Function playBreathOrRandomSob(int trauma)
 
 	Int randomSob = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1, 5)
 	verbose(PlayerRef, "Trauma: sobbing: " + randomSob, Condiexp_Verbose.GetValueInt())
-	if randomSob == 1
-		CondiExp_SobbingFemale1.play(PlayerRef)
-	elseIf randomSob == 2
-		CondiExp_SobbingFemale2.play(PlayerRef)
-	elseIf randomSob == 3
-		CondiExp_SobbingFemale3.play(PlayerRef)
-	elseIf randomSob == 4
-		CondiExp_SobbingFemale4.play(PlayerRef)
-	else 
-		CondiExp_SobbingFemale5.play(PlayerRef)
-	endif
+	int soundType = Condiexp_Sounds.GetValueInt()
+	If soundType == 1 || soundType == 2 || soundType == 3
+		if randomSob == 1
+			CondiExp_SobbingMale1.play(PlayerRef)
+		elseIf randomSob == 2
+			CondiExp_SobbingMale2.play(PlayerRef)
+		else
+			CondiExp_SobbingMale3.play(PlayerRef)
+		endif
+   else 
+		if randomSob == 1
+			CondiExp_SobbingFemale1.play(PlayerRef)
+		elseIf randomSob == 2
+			CondiExp_SobbingFemale2.play(PlayerRef)
+		elseIf randomSob == 3
+			CondiExp_SobbingFemale3.play(PlayerRef)
+		elseIf randomSob == 4
+			CondiExp_SobbingFemale4.play(PlayerRef)
+		else 
+			CondiExp_SobbingFemale5.play(PlayerRef)
+		endif
+	endif 
+
+
+
+	
+	
 endfunction
 

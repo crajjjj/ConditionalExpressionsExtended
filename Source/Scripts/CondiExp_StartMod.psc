@@ -58,6 +58,20 @@ Faction Property SexLabAnimatingFaction Auto ;empty - to delete
 String Property LoadedBathMod Auto Hidden
 Bool Property isSuspendedByDhlpEvent Auto Hidden  ;to delete
 
+Spell Property DiseaseAtaxia Auto
+Spell Property DiseaseBoneBreakFever Auto
+Spell Property DiseaseBrainRot Auto
+Spell Property DiseaseRattles Auto
+Spell Property DiseaseRockjoint Auto
+Spell Property DiseaseSanguinareVampiris Auto
+Spell Property DiseaseWitbane Auto
+Spell Property TrapDiseaseAtaxia Auto
+Spell Property TrapDiseaseBoneBreakFever Auto
+Spell Property TrapDiseaseBrainRot Auto
+Spell Property TrapDiseaseRattles Auto
+Spell Property TrapDiseaseRockjoint Auto
+Spell Property TrapDiseaseWitbane Auto
+
 ;Bathing mod
 MagicEffect DirtinessStage2Effect 
 MagicEffect DirtinessStage3Effect
@@ -67,7 +81,10 @@ MagicEffect BloodinessStage2Effect
 MagicEffect BloodinessStage3Effect
 MagicEffect BloodinessStage4Effect
 MagicEffect BloodinessStage5Effect
-
+Spell Cold1
+Spell Cold2
+Spell Cold3
+GlobalVariable Temp
 ;Apropos2
 Quest ActorsQuest
 ;Sexlab
@@ -121,7 +138,7 @@ function init()
 		endif
 	endif
 	if sla && slaArousalFaction
-		log("CondiExp_StartMod: Found SexLabAroused: " + sla.GetName() )
+		log("CondiExp_StartMod: Found SexLabAroused: " + sla.GetName())
 	endif
 	if !sexlab && isSLReady()
 		sexlab = Game.GetFormFromFile(0x000D62, "SexLab.esm") As Quest
@@ -138,6 +155,19 @@ function init()
 	if skse.GetPluginVersion("powerofthree's Papyrus Extender") > -1    ;Papyrus Extender is installed
 		log("CondiExp_StartMod: Found Papyrus Extender")
 		Condiexp_PO3ExtenderInstalled.SetValue(1)
+	endif
+
+	;check cold mods
+	If Condiexp_ColdMethod.GetValueInt() == 1
+		Temp = Game.GetFormFromFile(0x00068119, "Frostfall.esp") as GlobalVariable
+	elseIf Condiexp_ColdMethod.GetValueInt() == 2
+		Cold1 = Game.GetFormFromFile(0x00029028, "Frostbite.esp") as Spell
+	 	Cold2 = Game.GetFormFromFile(0x00029029, "Frostbite.esp") as Spell
+		Cold3 = Game.GetFormFromFile(0x0002902C, "Frostbite.esp") as Spell
+	elseIf Condiexp_ColdMethod.GetValueInt() == 3
+		Cold1 = Game.GetFormFromFile(0x006E81E0, "SunHelmSurvival.esp") as Spell
+	 	Cold2 = Game.GetFormFromFile(0x006E81E2, "SunHelmSurvival.esp") as Spell
+	 	Cold3 = Game.GetFormFromFile(0x006E81E4, "SunHelmSurvival.esp") as Spell
 	endif
 
 	; checking what bath mod is loaded
@@ -237,22 +267,18 @@ int function getColdStatus(Actor act )
 		return 0
 	endif
 	If Condiexp_ColdMethod.GetValueInt() == 1
-		GlobalVariable Temp = Game.GetFormFromFile(0x00068119, "Frostfall.esp") as GlobalVariable
 		If Temp.GetValueInt() > 2 
 			return 1
 			else
 			return 0
 		endif
-	elseIf Condiexp_ColdMethod.GetValueInt() == 2
-		Spell Cold1 = Game.GetFormFromFile(0x00029028, "Frostbite.esp") as Spell
-		Spell Cold2 = Game.GetFormFromFile(0x00029029, "Frostbite.esp") as Spell
-		Spell Cold3 = Game.GetFormFromFile(0x0002902C, "Frostbite.esp") as Spell
+	elseIf Condiexp_ColdMethod.GetValueInt() == 2 || Condiexp_ColdMethod.GetValueInt() == 3
 		If act.HasSpell(Cold1) || act.HasSpell(Cold2) || act.HasSpell(Cold3)  
 			return 1
 			else
 			return 0
 		endif
-	elseIf Condiexp_ColdMethod.GetValueInt() == 3
+	elseIf Condiexp_ColdMethod.GetValueInt() == 4
 		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
 			return 1
 		else
@@ -306,6 +332,13 @@ int function getTraumaStatus(Actor act)
 		return 0
 	endif
 	int trauma = 0
+
+	if PlayerRef.HasSpell(DiseaseAtaxia) || PlayerRef.HasSpell(DiseaseBoneBreakFever) || PlayerRef.HasSpell(DiseaseBrainRot) || PlayerRef.HasSpell(DiseaseRattles) || PlayerRef.HasSpell(DiseaseRockjoint) || PlayerRef.HasSpell(DiseaseSanguinareVampiris) || PlayerRef.HasSpell(DiseaseWitbane) || PlayerRef.HasSpell(TrapDiseaseAtaxia) || PlayerRef.HasSpell(TrapDiseaseBoneBreakFever) || PlayerRef.HasSpell(TrapDiseaseBrainRot) || PlayerRef.HasSpell(TrapDiseaseRattles) || PlayerRef.HasSpell(TrapDiseaseRockjoint) || PlayerRef.HasSpell(TrapDiseaseWitbane)
+		trauma = 6
+		trace("CondiExp_StartMod: updateTraumaStatus - disease:  " + trauma)
+		return trauma
+	endif
+
 	;check apropos
 	if ActorsQuest
 		trauma = GetWearState0to10(act, ActorsQuest)
@@ -318,7 +351,7 @@ int function getTraumaStatus(Actor act)
 	;check zap slave
 	if zbfFactionSlave && Condiexp_TraumaZBFFactionEnabled.GetValueInt() == 1
 		if (act.IsInFaction(zbfFactionSlave))
-			trauma = 10
+			trauma = 6
 			trace("CondiExp_StartMod: updateTraumaStatus - zbfFactionSlave:  " + trauma)
 			return trauma
 		endif

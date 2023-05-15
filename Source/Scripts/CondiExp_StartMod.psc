@@ -333,7 +333,7 @@ int function getTraumaStatus(Actor act)
 	endif
 	int trauma = 0
 
-	if PlayerRef.HasSpell(DiseaseAtaxia) || PlayerRef.HasSpell(DiseaseBoneBreakFever) || PlayerRef.HasSpell(DiseaseBrainRot) || PlayerRef.HasSpell(DiseaseRattles) || PlayerRef.HasSpell(DiseaseRockjoint) || PlayerRef.HasSpell(DiseaseSanguinareVampiris) || PlayerRef.HasSpell(DiseaseWitbane) || PlayerRef.HasSpell(TrapDiseaseAtaxia) || PlayerRef.HasSpell(TrapDiseaseBoneBreakFever) || PlayerRef.HasSpell(TrapDiseaseBrainRot) || PlayerRef.HasSpell(TrapDiseaseRattles) || PlayerRef.HasSpell(TrapDiseaseRockjoint) || PlayerRef.HasSpell(TrapDiseaseWitbane)
+	if act.HasSpell(DiseaseAtaxia) || act.HasSpell(DiseaseBoneBreakFever) || act.HasSpell(DiseaseBrainRot) || act.HasSpell(DiseaseRattles) || act.HasSpell(DiseaseRockjoint) || act.HasSpell(DiseaseSanguinareVampiris) || act.HasSpell(DiseaseWitbane) || act.HasSpell(TrapDiseaseAtaxia) || act.HasSpell(TrapDiseaseBoneBreakFever) || act.HasSpell(TrapDiseaseBrainRot) || act.HasSpell(TrapDiseaseRattles) || act.HasSpell(TrapDiseaseRockjoint) || act.HasSpell(TrapDiseaseWitbane)
 		trauma = 6
 		trace("CondiExp_StartMod: updateTraumaStatus - disease:  " + trauma)
 		return trauma
@@ -351,7 +351,7 @@ int function getTraumaStatus(Actor act)
 	;check zap slave
 	if zbfFactionSlave && Condiexp_TraumaZBFFactionEnabled.GetValueInt() == 1
 		if (act.IsInFaction(zbfFactionSlave))
-			trauma = 6
+			trauma = 5
 			trace("CondiExp_StartMod: updateTraumaStatus - zbfFactionSlave:  " + trauma)
 			return trauma
 		endif

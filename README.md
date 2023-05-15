@@ -1,36 +1,34 @@
 # ConditionalExpressionsExtended
 
-This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.27)
+This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.27) with new features and focus on compatibility
  
 ## What was changed?
-- Followers support (Up to 10 followers)
-- Added trauma (pain) expressions based on diseases (also supports apropos2 w&t or ZAP slave faction condition). There's a chance also for a sobbing sound. (can be disabled in mcm)
+
+- Added followers support (Up to 10 followers)
+- Added SunhelmSurvival support for cold expressions
+- Added trauma (pain) expressions for diseases. There's a chance also for a sobbing sound. (can be disabled in mcm)
 - Added sad expressions based on dirtiness level (Dirt&Blood || Keep it clean || Bathing in Skyrim are supported)
-- Added aroused expressions based on arousal level (SL Aroused)
+- Added aroused expressions based on arousal level (OSL Aroused)
 - Smoother exression changes
-- Code refactored - random script is no longer used for condition checking. Cold scripts simplified. 
+- Code refactored - random script is no longer used for condition checking. Cold scripts simplified.
 - SL compatibility is built-in via sl factions (osmelmc patch).
 - Ostim compatibility via events
 - Compatibility with DD and Toys wearables.
-- Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching.
+- Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching. E.g. compatible with "The Trappings of Fate" mod.
+- Compatibility with apropos2 w&t or ZAP slave faction condition for trauma expressions
  
 ## Hard dependencies
-- Mfg Fix
- 
-## Soft dependencies
-- Dirt&Blood || Keep it clean || Bathing in Skyrim
-- SL Aroused
-- Apropos 2 or slavery mods that support zbfFactionSlave from ZaZAnimationPack.esm
+
+- Conditional Expressions - Subtle Face Animations
  
 ## Installation
 
 - Override original mod (Conditional Expressions - Subtle Face Animations) mod with this one
-- Mod requires a new save (without Conditional Expressions installed before). (UPDATE:. you can update but be cautious - go inside and disable cold expressions before update) 
-
+- For midgame update be cautious - go inside or disable cold expressions before updating.
 
 ### Advanced config (not recommended):
 
-In console:  set [global variable name] [amount] 
+In console:  set [global variable name] [amount]
 
 Sample: set Condiexp_MinAroused 30
 
@@ -45,9 +43,7 @@ Sample: set Condiexp_MinAroused 30
 
 # Frequently Asked Questions
 
-
 ### MCM is not showing up; how do I enable it?
-
 
 Move Conditional Expressions.esp higher in the load order. You can also try using [Jaxonz MCM Kicker SE](https://www.nexusmods.com/skyrimspecialedition/mods/36801?tab=description) 
 

@@ -34,6 +34,17 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	;verbose(PlayerRef, "Trauma: OnEffectStart", Condiexp_Verbose.GetValueInt())
 EndEvent
 
+Event OnEffectFinish(Actor akTarget, Actor akCaster)
+	config.currentExpression = "Trauma"
+	Utility.Wait(1)
+	trauma()
+	resetMFGSmooth(PlayerRef)
+	;verbose(akTarget, "Trauma: OnEffectFinish", Condiexp_Verbose.GetValueInt())
+	Utility.Wait(2)
+	Condiexp_CurrentlyBusy.SetValueInt(0)
+	config.currentExpression = ""
+EndEvent
+
 Function trauma()
     If PlayerRef.IsDead()
         return
@@ -43,16 +54,6 @@ Function trauma()
 	BreatheAndSob(trauma)
 	Utility.Wait( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
 EndFunction
-
-Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	config.currentExpression = "Trauma"
-	Utility.Wait(1)
-	trauma()
-	resetMFGSmooth(PlayerRef)
-	;verbose(akTarget, "Trauma: OnEffectFinish", Condiexp_Verbose.GetValueInt())
-	Utility.Wait(2)
-	Condiexp_CurrentlyBusy.SetValueInt(0)
-EndEvent
 
 Function BreatheAndSob(int trauma)
 	If PlayerRef.IsDead()

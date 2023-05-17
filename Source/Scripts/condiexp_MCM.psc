@@ -455,6 +455,7 @@ if (option == Combat_B) && CombatToggle == True
 		ShowMessage("Default expression restored - If in the middle of a face animation, expression will be restored once animation is finished.")
 		Go.resetConditions()
 		resetMFG(PlayerRef)
+		currentExpression = ""
 		if (CondiExpFollowerQuest.IsRunning())
 			ResetQuest(CondiExpFollowerQuest)
 		endIf
@@ -471,6 +472,7 @@ if (option == Combat_B) && CombatToggle == True
 		Utility.Wait(0.5)
 		Go.StopMod()
 		Go.StartMod()
+		currentExpression = ""
 		if (CondiExpFollowerQuest.IsRunning())
 			ResetQuest(CondiExpFollowerQuest)
 		endIf

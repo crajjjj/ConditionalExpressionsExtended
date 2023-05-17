@@ -68,4 +68,5 @@ EndState
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
   Utility.Wait(0.5)
   MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+  config.currentExpression = ""
 EndEvent

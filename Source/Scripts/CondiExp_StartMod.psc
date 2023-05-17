@@ -108,8 +108,10 @@ EndEvent
 
 Event onPlayerLoadGame()
 	log("CondiExp_StartMod: Game reload event")
+	;to avoid expressions during load sequence
+	PlayerRef.RemoveSpell(CondiExp_Fatigue1)
 	_checkPlugins = 1
-	RegisterForSingleUpdate(1)
+	RegisterForSingleUpdate(4)
 endEvent
 
 function init()
@@ -207,29 +209,26 @@ Event OnUpdate()
 		EndIf
 	EndIf
 
-	Condiexp_CurrentlyCold.SetValueInt(getColdStatus(PlayerRef))
-	trace("CondiExp_StartMod: getColdStatus() " + Condiexp_CurrentlyCold.GetValueInt())
-	
-	Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(PlayerRef))
-	trace("CondiExp_StartMod: getTraumaStatus() " + Condiexp_CurrentlyTrauma.GetValueInt())
-
-	Condiexp_CurrentlyDirty.SetValueInt(getDirtyStatus(PlayerRef))
-	trace("CondiExp_StartMod: getDirtyStatus() " + Condiexp_CurrentlyDirty.GetValueInt())
-
-	Condiexp_CurrentlyAroused.SetValueInt(getArousalStatus(PlayerRef))
-	trace("CondiExp_StartMod: getArousalStatus() " + Condiexp_CurrentlyAroused.GetValueInt())
-
 	;check if there's a conflicting mod based on custom conditions
 	if checkIfModShouldBeSuspended(PlayerRef)
 		if isModEnabled()
 			log("CondiExp_StartMod: suspended according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(1)
-		endif	
+			resetStatuses()
+		endif
 	else
 		if !isModEnabled()
 			log("CondiExp_StartMod: resumed according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(0)
 		endif
+		Condiexp_CurrentlyCold.SetValueInt(getColdStatus(PlayerRef))
+		;trace("CondiExp_StartMod: getColdStatus() " + Condiexp_CurrentlyCold.GetValueInt())
+		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(PlayerRef))
+		;trace("CondiExp_StartMod: getTraumaStatus() " + Condiexp_CurrentlyTrauma.GetValueInt())
+		Condiexp_CurrentlyDirty.SetValueInt(getDirtyStatus(PlayerRef))
+		;trace("CondiExp_StartMod: getDirtyStatus() " + Condiexp_CurrentlyDirty.GetValueInt())
+		Condiexp_CurrentlyAroused.SetValueInt(getArousalStatus(PlayerRef))
+		;trace("CondiExp_StartMod: getArousalStatus() " + Condiexp_CurrentlyAroused.GetValueInt())
  	endif
 
 	if PlayerRef.HasSpell(CondiExp_Fatigue1) && Condiexp_UpdateInterval.GetValueInt() > 0
@@ -404,29 +403,29 @@ Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 	If CondiExp_Drugs.HasForm(akBaseObject)
 		CondiExp_PlayerIsHigh.SetValueInt(1)
 	
-		elseif  CondiExp_Drinks.HasForm(akBaseObject)
+	elseif  CondiExp_Drinks.HasForm(akBaseObject)
 			CondiExp_PlayerIsDrunk.SetValueInt(1)
 	
-		elseif akBaseObject.HasKeyWord(VendorItemFood)
+	elseif akBaseObject.HasKeyWord(VendorItemFood)
 			CondiExp_PlayerJustAte.SetValueInt(1)
 			utility.wait(5)
 			CondiExp_PlayerJustAte.SetValueInt(0)
 	
-		elseif akBaseObject.HasKeyword(VendorItemIngredient)
+	elseif akBaseObject.HasKeyword(VendorItemIngredient)
 	
-			If  Condiexp_GlobalEating.GetValueInt() == 2
+		If  Condiexp_GlobalEating.GetValueInt() == 2
 				CondiExp_PlayerJustAte.SetValueInt(1)
 				utility.wait(5)
 				CondiExp_PlayerJustAte.SetValueInt(0)
 	
-			elseif Condiexp_GlobalEating.GetValueInt() == 1
+		elseif Condiexp_GlobalEating.GetValueInt() == 1
 	
 				Condiexp_GlobalEating.SetValueInt(2)
 				CondiExp_PlayerJustAte.SetValueInt(1)
 				utility.wait(5)
 				CondiExp_PlayerJustAte.SetValueInt(0)
 				Condiexp_GlobalEating.SetValueInt(1)
-			endif
+		endif
 	Endif
 EndEvent
 
@@ -472,9 +471,12 @@ Function StartMod()
 		elseif Game.IsPluginInstalled("Frostbite.esp")
 		;Frostbite Installed
 			Condiexp_ColdMethod.SetValueInt(2)
+		elseif Game.IsPluginInstalled("SunHelmSurvival.esp")
+		;SunHelmSurvival Installed
+			Condiexp_ColdMethod.SetValueInt(3)
 		else
 		; vanilla cold weathers
-			Condiexp_ColdMethod.SetValueInt(3)
+			Condiexp_ColdMethod.SetValueInt(4)
 		endif
 	endif
 	Condiexp_ModSuspended.SetValueInt(0)
@@ -512,6 +514,13 @@ Function NewRace()
 			Condiexp_Sounds.SetValueInt(6)
 		endif
 	endif
+endfunction
+
+Function resetStatuses()
+	Condiexp_CurrentlyCold.SetValueInt(0)
+	Condiexp_CurrentlyDirty.SetValueInt(0)
+	Condiexp_CurrentlyTrauma.SetValueInt(0)
+	Condiexp_CurrentlyAroused.SetValueInt(0)
 endfunction
 
 Function resetConditions()

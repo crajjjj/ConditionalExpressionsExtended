@@ -8,7 +8,7 @@ import CondiExp_log
 import CondiExp_util
 
 Function PlayArousedExpression(Actor act, int aroused, condiexp_MCM config) global
-	Int power = 10 + aroused
+	Int power = aroused
 	if power > 100
 		power = 100
 	endif

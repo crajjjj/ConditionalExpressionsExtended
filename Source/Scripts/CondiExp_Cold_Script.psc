@@ -111,5 +111,6 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(1)
 	;verbose(PlayerRef, "Cold: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	resetMFGSmooth(PlayerRef)
+	config.currentExpression=""
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

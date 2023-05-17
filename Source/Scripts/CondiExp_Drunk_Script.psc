@@ -30,4 +30,5 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     PlayerRef.ClearExpressionOverride()
     Condiexp_CurrentlyBusy.SetValueInt(0)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
+    config.currentExpression = ""
 EndEvent

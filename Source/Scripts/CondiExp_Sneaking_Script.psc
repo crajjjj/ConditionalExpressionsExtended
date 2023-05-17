@@ -12,34 +12,35 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function KhajiitLikestoSneak()
-    config.currentExpression = "Sneaking"
-    verbose(PlayerRef, "Sneaking", config.Condiexp_Verbose.GetValueInt())
     MfgConsoleFunc.SetModifier(PlayerRef,12,45)
     MfgConsoleFunc.SetModifier(PlayerRef,13,45)
     MfgConsoleFunc.SetModifier(PlayerRef,2,20)
 
-Int Order =  RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1,12)
-If Order < 3
-LookLeft()
-LookRight()
-Elseif Order == 3
-LookLeft()
-Elseif Order == 4
-LookRight()
-Elseif Order == 5
-LookRight()
-LookLeft()
-Endif
+    Int Order =  RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1,12)
+    If Order < 3
+         LookLeft()
+        LookRight()
+    Elseif Order == 3
+         LookLeft()
+    Elseif Order == 4
+        LookRight()
+    Elseif Order == 5
+        LookRight()
+        LookLeft()
+    Endif
 EndFunction
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
+    config.currentExpression = "Sneaking"
+    verbose(PlayerRef, "Sneaking", config.Condiexp_Verbose.GetValueInt())
     KhajiitLikestoSneak()
     MfgConsoleFunc.SetModifier(PlayerRef,12,0)
     MfgConsoleFunc.SetModifier(PlayerRef,13,0)
     MfgConsoleFunc.SetModifier(PlayerRef,2,0)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)
+    config.currentExpression = ""
 EndEvent
 
 

@@ -54,6 +54,11 @@ Event OnUpdate()
 		Return
 	EndIf
 	
+	If act == PlayerRef
+		verbose(act, "FollowersQuest: player onupdate" , verboseInt)
+		Return
+	EndIf
+	
 	If (config.CondiExpFollowerQuest.IsStopped())
 		verbose(act, "Followers quest was stopped" , verboseInt)
 		self.Clear()

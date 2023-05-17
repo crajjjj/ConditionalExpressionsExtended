@@ -40,6 +40,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	resetMFGSmooth(PlayerRef)
 	;verbose(akTarget, "Aroused: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	Utility.Wait(2)
+	config.currentExpression = ""
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent
 

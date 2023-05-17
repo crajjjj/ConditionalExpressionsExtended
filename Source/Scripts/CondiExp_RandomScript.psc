@@ -48,5 +48,5 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	If Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
 		resetMFGSmooth(PlayerRef)
 	EndIf
-	
+	config.currentExpression = ""
 EndEvent

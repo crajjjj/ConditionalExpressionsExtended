@@ -27,6 +27,7 @@ TeethOut()
 CondiExp_PlayerJustAte.SetValueInt(0)
 ImEatingHere = False
 endif
+config.currentExpression = ""
 EndEvent
 
 Function YumYum()

@@ -291,11 +291,14 @@ If (option == ColdMethod_M)
 		Condiexp_ColdMethod.SetValueInt(2)
 	elseif index == 3
 		;ColdMethodList[3] = "Sunhelm Survival"
-		Condiexp_ColdMethod.SetValueInt(3)	
+		Condiexp_ColdMethod.SetValueInt(3)
 	else
 		;ColdMethodList[4] = "Automatic"
 		Condiexp_ColdMethod.SetValueInt(5)
+		_restart()
+		Notification("Restarted to apply Automatic Cold Detection option!")
 	endif
+	
 endif
 EndEvent
 
@@ -474,12 +477,7 @@ if (option == Combat_B) && CombatToggle == True
 	elseif option == update
 		ShowMessage("Please, exit menu. All functionalities will be restarted.")
 		Utility.Wait(0.5)
-		Go.StopMod()
-		Go.StartMod()
-		currentExpression = ""
-		if (CondiExpFollowerQuest.IsRunning())
-			ResetQuest(CondiExpFollowerQuest)
-		endIf
+		_restart()
 		Notification("Restarted correctly!")
 	
 	elseif option == registerFollowers
@@ -588,4 +586,13 @@ int Function _getFlag(Bool cond = true)
 	Else
    		return OPTION_FLAG_NONE
 	EndIf  
+EndFunction
+
+int Function _restart()
+	Go.StopMod()
+	Go.StartMod()
+	currentExpression = ""
+	if (CondiExpFollowerQuest.IsRunning())
+		ResetQuest(CondiExpFollowerQuest)
+	endIf
 EndFunction

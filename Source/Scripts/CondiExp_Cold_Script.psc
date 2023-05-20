@@ -84,11 +84,14 @@ bool Function isCold()
 	
 	bool isSwimming = PlayerRef.IsSwimming()
 
-	If isSuspended || isDisabled || lowStamina || lowHealth || isSwimming || isImmediateEffect
+	If isSuspended || isDisabled || lowStamina || lowHealth || isSwimming || isImmediateEffect || !isCold
+		log("CondiExp_Cold: cancelled effect")
 		return false
+	else
+		return true
 	endif
 
-	return isCold
+	
 endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)

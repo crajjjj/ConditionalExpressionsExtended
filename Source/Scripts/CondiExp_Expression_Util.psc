@@ -26,6 +26,8 @@ Function PlayArousedExpression(Actor act, int aroused, condiexp_MCM config) glob
 		Int randomEffect = Utility.RandomInt(1, topMargin)
 		verbose(act, "Aroused: Arousal: " + aroused + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValueInt())
 		_arousedVariants(randomEffect, act, power, config)
+	Else
+		CondiExp_log.trace(act, "Aroused: Arousal: " + aroused + ".Effect: skip ", config.Condiexp_Verbose.GetValueInt())
 	endif
 
 	Int randomLook = Utility.RandomInt(1, 10)
@@ -59,7 +61,7 @@ Function PlayTraumaExpression(Actor act, int trauma, condiexp_MCM config) global
 		verbose(act,"Trauma: Trauma: " + trauma + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValueInt())
 		_traumaVariants(randomEffect, act, power, config)
 	else
-		verbose(act,"Trauma: skipping. Trauma: " + trauma, config.Condiexp_Verbose.GetValueInt())
+		CondiExp_log.trace(act,"Trauma: skipping. Trauma: " + trauma, config.Condiexp_Verbose.GetValueInt())
 	endif
 	Utility.Wait(1)
 
@@ -84,7 +86,7 @@ Function PlayDirtyExpression(Actor act, int dirty, condiexp_MCM config) global
 	elseif randomSkip > 3
 		Disgust(60, act)
 	else
-		verbose(act, "Dirty: skipping effect: " + dirty, config.Condiexp_Verbose.GetValueInt())
+		CondiExp_log.trace(act, "Dirty: skipping effect: " + dirty, config.Condiexp_Verbose.GetValueInt())
 	endif
 
 	Int randomLook = Utility.RandomInt(1, 10)

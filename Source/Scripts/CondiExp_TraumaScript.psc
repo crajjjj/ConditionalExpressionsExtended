@@ -6,6 +6,7 @@ Import mfgconsolefunc
 
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
+GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 GlobalVariable Property Condiexp_CurrentlyTrauma Auto
 GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_GlobalTrauma Auto
@@ -32,27 +33,44 @@ bool playing = false
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
 	;verbose(PlayerRef, "Trauma: OnEffectStart", Condiexp_Verbose.GetValueInt())
+	playing = true
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	config.currentExpression = "Trauma"
 	Utility.Wait(1)
 	trauma()
 	resetMFGSmooth(PlayerRef)
 	;verbose(akTarget, "Trauma: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	Utility.Wait(2)
-	Condiexp_CurrentlyBusy.SetValueInt(0)
 	config.currentExpression = ""
+	playing = false
+	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent
 
+bool function isTraumaEnabled()
+	bool enabled = !PlayerRef.IsDead() && Condiexp_GlobalTrauma.GetValueInt() == 1
+	enabled = enabled && Condiexp_ModSuspended.GetValueInt() == 0  && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
+	enabled = enabled && !PlayerRef.IsRunning()
+	enabled = enabled && playing
+	return enabled
+endfunction
+
 Function trauma()
-    If PlayerRef.IsDead()
-        return
-    endif
-	Int trauma = Condiexp_CurrentlyTrauma.GetValueInt() as Int
-	PlayTraumaExpression(PlayerRef, trauma, config)
-	BreatheAndSob(trauma)
-	Utility.Wait( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
+	If isTraumaEnabled()
+        config.currentExpression = "Trauma"
+		Int trauma = Condiexp_CurrentlyTrauma.GetValueInt() as Int
+		;disease use case
+		if trauma == 0
+			trace(PlayerRef, "Trauma: disease ", Condiexp_Verbose.GetValueInt())
+			trauma = 6
+		endif
+		PlayTraumaExpression(PlayerRef, trauma, config)
+		BreatheAndSob(trauma)
+		Utility.Wait( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
+    else
+		log("CondiExp_Trauma: cancelled effect")
+	endif
+	
 EndFunction
 
 Function BreatheAndSob(int trauma)
@@ -102,8 +120,5 @@ Function playBreathOrRandomSob(int trauma)
 	endif 
 
 
-
-	
-	
 endfunction
 

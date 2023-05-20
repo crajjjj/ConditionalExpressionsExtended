@@ -38,9 +38,9 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     MfgConsoleFunc.SetModifier(PlayerRef,12,0)
     MfgConsoleFunc.SetModifier(PlayerRef,13,0)
     MfgConsoleFunc.SetModifier(PlayerRef,2,0)
+    config.currentExpression = ""
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)
-    config.currentExpression = ""
 EndEvent
 
 

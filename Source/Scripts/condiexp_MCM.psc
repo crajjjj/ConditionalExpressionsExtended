@@ -281,16 +281,20 @@ If (option == ColdMethod_M)
 		ColdMethodindex = index
 		SetMenuOptionValue(coldmethod_M, coldmethodList[coldmethodindex])
 	if index == 0
+		;ColdMethodList[0] = "Vanilla - Snowing"
 		Condiexp_ColdMethod.SetValueInt(4)
 	elseif index == 1
+		;ColdMethodList[1] = "Frostfall"
 		Condiexp_ColdMethod.SetValueInt(1)
 	elseif index == 2
+		;ColdMethodList[2] = "Frostbite"
 		Condiexp_ColdMethod.SetValueInt(2)
 	elseif index == 3
+		;ColdMethodList[3] = "Sunhelm Survival"
 		Condiexp_ColdMethod.SetValueInt(3)	
 	else
-		Condiexp_ColdMethod.SetValueInt(4)
-;nothing happens, automatic
+		;ColdMethodList[4] = "Automatic"
+		Condiexp_ColdMethod.SetValueInt(5)
 	endif
 endif
 EndEvent

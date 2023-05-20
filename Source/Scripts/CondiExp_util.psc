@@ -13,7 +13,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 104001
+    Return 104002
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -23,7 +23,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.4.1"
+    Return "1.4.2"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -100,8 +100,10 @@ EndFunction
 ;Th 14    W 15
 ;https://steamcommunity.com/sharedfiles/filedetails/?l=english&id=187155077
 Function SmoothSetPhoneme(Actor act, Int number, Int str_dest, float modifier = 1.0) global
-	While (!SetModifier(act, 14, 0))
+	int safeguard = 0
+	While (!SetModifier(act, 14, 0) && safeguard <= 5)
 		Wait(5.0)
+		safeguard = safeguard + 1
 	EndWhile
 	Int t1 = GetPhoneme(act, number)
 	Int t2

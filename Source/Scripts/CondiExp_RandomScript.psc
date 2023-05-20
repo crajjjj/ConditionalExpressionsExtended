@@ -21,20 +21,22 @@ condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	;verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValueInt())
-	config.currentExpression = "Random"
 	RegisterForSingleUpdate(1)
 	playing = true
 EndEvent
 
 Event OnUpdate()
 	If isRandomEnabled()
+		config.currentExpression = "Random"
    		PlayRandomExpression(PlayerRef, config)
         RegisterForSingleUpdate( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 5))
-    EndIf
+    else
+		log("CondiExp_Random: cancelled effect")
+	endif
 EndEvent
 
 bool function isRandomEnabled()
-	bool enabled = Condiexp_GlobalRandom.GetValueInt() == 1
+	bool enabled = !PlayerRef.IsDead() && Condiexp_GlobalRandom.GetValueInt() == 1
 	enabled = enabled && Condiexp_ModSuspended.GetValueInt() == 0 && Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
 	enabled = enabled && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning() 
 	enabled = enabled && playing

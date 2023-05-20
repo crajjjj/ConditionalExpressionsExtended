@@ -6,7 +6,7 @@ GlobalVariable Property Condiexp_CurrentlyBusy Auto
 condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-High()
+    High()
 EndEvent
 
 Function High()
@@ -28,8 +28,8 @@ Event OnUpdate()
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-MfgConsoleFunc.SetModifier(PlayerRef,11,0)
-MfgConsoleFunc.SetPhoneme(PlayerRef,4,0)
-PlayerRef.ClearExpressionOverride()
-Condiexp_CurrentlyBusy.SetValueInt(0)
+    MfgConsoleFunc.SetModifier(PlayerRef,11,0)
+    MfgConsoleFunc.SetPhoneme(PlayerRef,4,0)
+    PlayerRef.ClearExpressionOverride()
+    Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

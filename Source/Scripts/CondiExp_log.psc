@@ -24,15 +24,28 @@ Function log(String asMessage, Int aiPriority = 0) Global
 	Debug.TraceUser(asModName, asMessage, aiPriority)
 EndFunction
 
-Function trace(String msg, Int aiPriority = 0) Global 
-	;log(msg,aiPriority)
-EndFunction
 
 Function verbose(Actor act, String msg, Int enabled = 0) Global 
 	;log(msg,aiPriority)
 	If (enabled == 1)
 		msg = "[CondiExp] (Actor:"+ act.GetLeveledActorBase().GetName() +") " + msg
 		Debug.Notification(msg)
+		log(msg)
+	EndIf
+EndFunction
+
+Function trace(Actor act, String msg, Int enabled = 0) Global 
+	;log(msg,aiPriority)
+	If (enabled == 1)
+		msg = "[CondiExp] (Actor:"+ act.GetLeveledActorBase().GetName() +") " + msg
+		log(msg)
+	EndIf
+EndFunction
+
+Function trace_line(String msg, Int enabled = 0) Global 
+	;log(msg,aiPriority)
+	If (enabled == 1)
+		msg = "[CondiExp]" + msg
 		log(msg)
 	EndIf
 EndFunction
@@ -52,5 +65,5 @@ Function Notification(String msg) Global
 EndFunction
 
 Function PrintConsole(String msg) Global
-    MiscUtil.PrintConsole("[CondiExp] " + msg)
+    ;MiscUtil.PrintConsole("[CondiExp] " + msg)
 EndFunction

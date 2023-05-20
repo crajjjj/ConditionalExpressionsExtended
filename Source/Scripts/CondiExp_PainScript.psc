@@ -19,7 +19,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     PlayPainExpression(PlayerRef, config)
     Utility.Wait(3)
     resetMFGSmooth(PlayerRef)
+    config.currentExpression = ""
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)
-    config.currentExpression = ""
 EndEvent

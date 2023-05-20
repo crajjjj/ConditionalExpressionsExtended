@@ -25,7 +25,7 @@ Function ShowExpression()
 	config.currentExpression="Cold"
 	verbose(PlayerRef, "Cold", Condiexp_Verbose.GetValueInt())
 	while isCold()
-		Utility.Wait(0.5)
+		Utility.Wait(0.2)
 		PlayerRef.SetExpressionOverride(1,50)
 		 ; cold intro
 		if (coldExpression <= 65) 
@@ -70,12 +70,10 @@ Function ShowExpression()
 		MfgConsoleFunc.SetModifier(PlayerRef, 4, coldExpression)
 		coldExpression  -= 5
 	endwhile
-	
 	; if the outro is done we clean up and stop
-	resetMFGSmooth(PlayerRef)
 endFunction
 
-bool Function isCold() 
+bool Function isCold()
 	bool isCold = Condiexp_CurrentlyCold.GetValueInt() == 1
 
 	bool isSuspended =  Condiexp_ModSuspended.GetValueInt() == 1
@@ -109,7 +107,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		Utility.Wait(0.5) ; !!!
 	endwhile
 	Utility.Wait(1)
-	;verbose(PlayerRef, "Cold: OnEffectFinish", Condiexp_Verbose.GetValueInt())
+	trace(PlayerRef, "Cold: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	resetMFGSmooth(PlayerRef)
 	config.currentExpression=""
 	Condiexp_CurrentlyBusy.SetValueInt(0)

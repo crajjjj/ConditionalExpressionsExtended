@@ -171,7 +171,7 @@ function init()
 	 	Cold2 = Game.GetFormFromFile(0x006E81E2, "SunHelmSurvival.esp") as Spell
 	 	Cold3 = Game.GetFormFromFile(0x006E81E4, "SunHelmSurvival.esp") as Spell
 	endif
-
+	
 	; checking what bath mod is loaded
 	LoadedBathMod = "None Found"
 	if (isDependencyReady("Dirt and Blood - Dynamic Visuals.esp") && GetDABDirtinessStage2Effect() != none) ; if Dirt and Blood is loaded
@@ -215,6 +215,8 @@ Event OnUpdate()
 			log("CondiExp_StartMod: suspended according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(1)
 			resetStatuses()
+			Condiexp_CurrentlyBusy.SetValueInt(0)
+			Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 		endif
 	else
 		if !isModEnabled()
@@ -222,14 +224,16 @@ Event OnUpdate()
 			Condiexp_ModSuspended.SetValueInt(0)
 		endif
 		Condiexp_CurrentlyCold.SetValueInt(getColdStatus(PlayerRef))
-		;trace("CondiExp_StartMod: getColdStatus() " + Condiexp_CurrentlyCold.GetValueInt())
 		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(PlayerRef))
-		;trace("CondiExp_StartMod: getTraumaStatus() " + Condiexp_CurrentlyTrauma.GetValueInt())
 		Condiexp_CurrentlyDirty.SetValueInt(getDirtyStatus(PlayerRef))
-		;trace("CondiExp_StartMod: getDirtyStatus() " + Condiexp_CurrentlyDirty.GetValueInt())
 		Condiexp_CurrentlyAroused.SetValueInt(getArousalStatus(PlayerRef))
-		;trace("CondiExp_StartMod: getArousalStatus() " + Condiexp_CurrentlyAroused.GetValueInt())
+		
  	endif
+
+	if Condiexp_Verbose.GetValueInt() == 1
+		String msg = "Status: CondiExp_CurrentlyBusy:" + CondiExp_CurrentlyBusy.GetValueInt() + ":::" + "Condiexp_CurrentlyBusyImmediate:" + Condiexp_CurrentlyBusyImmediate.GetValueInt()
+		trace(PlayerRef,msg, 1)
+	endif
 
 	if PlayerRef.HasSpell(CondiExp_Fatigue1) && Condiexp_UpdateInterval.GetValueInt() > 0
 		RegisterForSingleUpdate(Condiexp_UpdateInterval.GetValueInt())
@@ -267,18 +271,21 @@ int function getColdStatus(Actor act )
 	endif
 	If Condiexp_ColdMethod.GetValueInt() == 1
 		If Temp.GetValueInt() > 2 
+			trace(act,"CondiExp_StartMod: getColdStatus frostfall:  is cold", Condiexp_Verbose.GetValueInt())
 			return 1
 			else
 			return 0
 		endif
 	elseIf Condiexp_ColdMethod.GetValueInt() == 2 || Condiexp_ColdMethod.GetValueInt() == 3
-		If act.HasSpell(Cold1) || act.HasSpell(Cold2) || act.HasSpell(Cold3)  
+		If act.HasSpell(Cold1) || act.HasSpell(Cold2) || act.HasSpell(Cold3)
+			trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is cold", Condiexp_Verbose.GetValueInt())
 			return 1
 			else
 			return 0
 		endif
 	elseIf Condiexp_ColdMethod.GetValueInt() == 4
 		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
+			trace(act,"CondiExp_StartMod: getColdStatus vanilla: is cold", Condiexp_Verbose.GetValueInt())
 			return 1
 		else
 			return 0
@@ -288,26 +295,28 @@ int function getColdStatus(Actor act )
 endfunction
 
 int function getDirtyStatus(Actor act)
-	If (Condiexp_GlobalDirty.GetValueInt() == 0 || LoadedBathMod == "None Found")
+	If (Condiexp_GlobalDirty.GetValueInt() == 0)
 		return 0
 	EndIf
 
 	int dirty = 0
-	if act.HasMagicEffect(DirtinessStage2Effect) || (BloodinessStage2Effect && act.HasMagicEffect(BloodinessStage2Effect))
-		dirty = 1  ;not enough dirt to be sad
-	elseif (act.HasMagicEffect(DirtinessStage3Effect) || (BloodinessStage3Effect && act.HasMagicEffect(BloodinessStage3Effect)))
-		dirty = 2
-	elseif (act.HasMagicEffect(DirtinessStage4Effect) || (BloodinessStage4Effect && act.HasMagicEffect(BloodinessStage4Effect)) || (DirtinessStage5Effect && act.HasMagicEffect(DirtinessStage5Effect)) || (BloodinessStage5Effect && act.HasMagicEffect(BloodinessStage5Effect)))
-		dirty = 3
-	else
-		dirty = 0
-	endIf
+	If (LoadedBathMod != "None Found")
+		if act.HasMagicEffect(DirtinessStage2Effect) || (BloodinessStage2Effect && act.HasMagicEffect(BloodinessStage2Effect))
+			dirty = 1  ;not enough dirt to be sad
+		elseif (act.HasMagicEffect(DirtinessStage3Effect) || (BloodinessStage3Effect && act.HasMagicEffect(BloodinessStage3Effect)))
+			dirty = 2
+		elseif (act.HasMagicEffect(DirtinessStage4Effect) || (BloodinessStage4Effect && act.HasMagicEffect(BloodinessStage4Effect)) || (DirtinessStage5Effect && act.HasMagicEffect(DirtinessStage5Effect)) || (BloodinessStage5Effect && act.HasMagicEffect(BloodinessStage5Effect)))
+			dirty = 3
+		else
+			dirty = 0
+		endIf
+	EndIf
 	
 	;check cum oral
 	if sexlab && dirty < 3
 		if IsPlayerCumsoakedOral(sexlab, act)
 			dirty = 3
-			log("CondiExp_StartMod: updateDirtyStatus(): cumsoaked 3")
+			trace(act,"CondiExp_StartMod: updateDirtyStatus(): cumsoaked 3", Condiexp_Verbose.GetValueInt())
 		endif
 	endif
 
@@ -315,7 +324,7 @@ int function getDirtyStatus(Actor act)
 	if sexlab && dirty < 2
 		if IsPlayerCumsoakedVagOrAnal(sexlab, act)
 			dirty = 2
-			log("CondiExp_StartMod: updateDirtyStatus(): cumsoaked 2")
+			trace(act,"CondiExp_StartMod: updateDirtyStatus(): cumsoaked 2", Condiexp_Verbose.GetValueInt())
 		endif
 	endif
 
@@ -332,17 +341,11 @@ int function getTraumaStatus(Actor act)
 	endif
 	int trauma = 0
 
-	if act.HasSpell(DiseaseAtaxia) || act.HasSpell(DiseaseBoneBreakFever) || act.HasSpell(DiseaseBrainRot) || act.HasSpell(DiseaseRattles) || act.HasSpell(DiseaseRockjoint) || act.HasSpell(DiseaseSanguinareVampiris) || act.HasSpell(DiseaseWitbane) || act.HasSpell(TrapDiseaseAtaxia) || act.HasSpell(TrapDiseaseBoneBreakFever) || act.HasSpell(TrapDiseaseBrainRot) || act.HasSpell(TrapDiseaseRattles) || act.HasSpell(TrapDiseaseRockjoint) || act.HasSpell(TrapDiseaseWitbane)
-		trauma = 6
-		trace("CondiExp_StartMod: updateTraumaStatus - disease:  " + trauma)
-		return trauma
-	endif
-
 	;check apropos
 	if ActorsQuest
 		trauma = GetWearState0to10(act, ActorsQuest)
 		if trauma > 1 && trauma > Condiexp_MinTrauma.GetValueInt()
-			trace("CondiExp_StartMod: updateTraumaStatus - GetWearState(): " + trauma)
+			trace(act, "CondiExp_StartMod: updateTraumaStatus - AverageAbuseState: " + trauma, Condiexp_Verbose.GetValueInt())
 			return trauma
 		endif
 	endif
@@ -351,7 +354,7 @@ int function getTraumaStatus(Actor act)
 	if zbfFactionSlave && Condiexp_TraumaZBFFactionEnabled.GetValueInt() == 1
 		if (act.IsInFaction(zbfFactionSlave))
 			trauma = 5
-			trace("CondiExp_StartMod: updateTraumaStatus - zbfFactionSlave:  " + trauma)
+			trace(act, "CondiExp_StartMod: updateTraumaStatus - zbfFactionSlave:  " + trauma, Condiexp_Verbose.GetValueInt())
 			return trauma
 		endif
 	endif
@@ -369,7 +372,7 @@ int function getArousalStatus(Actor act)
 	if sla
 		aroused = getArousal0To100(act, sla, slaArousalFaction)
 		if aroused > 0 && aroused > Condiexp_MinAroused.GetValueInt()
-			trace("CondiExp_StartMod: updateArousalStatus(): " + Condiexp_CurrentlyAroused.GetValueInt())
+			trace(act, "CondiExp_StartMod: GetActorArousal(): " + aroused, Condiexp_Verbose.GetValueInt())
 			return aroused
 		endif
 	endif
@@ -440,6 +443,8 @@ Function StopMod()
 
 	UnregisterForModEvent("dhlp-Suspend")
 	UnregisterForModEvent("dhlp-Resume")
+	UnregisterForModEvent("ostim_end")
+	UnregisterForModEvent("ostim_start")
 
 	log("Stopped")
 endfunction
@@ -464,19 +469,25 @@ Function StartMod()
 		NewRace()
 	Endif
 
-	If Condiexp_GlobalCold.GetValueInt() == 1
+	trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): " + Condiexp_ColdMethod.GetValueInt(), Condiexp_Verbose.GetValueInt())
+
+	If Condiexp_GlobalCold.GetValueInt() == 1 && Condiexp_ColdMethod.GetValueInt() == 5
 		If Game.IsPluginInstalled("Frostfall.esp")
 		;Frostfall Installed
 			Condiexp_ColdMethod.SetValueInt(1)
+			trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): 1 - Frostfall", Condiexp_Verbose.GetValueInt())
 		elseif Game.IsPluginInstalled("Frostbite.esp")
 		;Frostbite Installed
 			Condiexp_ColdMethod.SetValueInt(2)
+			trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): 2 - Frostbite", Condiexp_Verbose.GetValueInt())
 		elseif Game.IsPluginInstalled("SunHelmSurvival.esp")
 		;SunHelmSurvival Installed
 			Condiexp_ColdMethod.SetValueInt(3)
+			trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): 3 - SunHelmSurvival", Condiexp_Verbose.GetValueInt())
 		else
 		; vanilla cold weathers
 			Condiexp_ColdMethod.SetValueInt(4)
+			trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): 4 - Vanilla", Condiexp_Verbose.GetValueInt())
 		endif
 	endif
 	Condiexp_ModSuspended.SetValueInt(0)

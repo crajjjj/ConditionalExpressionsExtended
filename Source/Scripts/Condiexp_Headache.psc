@@ -42,8 +42,8 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
      Utility.Wait(0.1)
     endwhile
     Utility.Wait(1)
-    Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
-    Condiexp_CurrentlyBusy.SetValueInt(0)
     PlayerRef.ClearExpressionOverride()
     config.currentExpression = ""
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
+    Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

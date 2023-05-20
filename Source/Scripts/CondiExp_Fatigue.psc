@@ -75,8 +75,8 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
         safeguard = safeguard + 1
     EndWhile
     Exhale(33, 0, PlayerRef)
+    config.currentExpression = ""
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)
-    config.currentExpression = ""
   ;  verbose(PlayerRef, "Fatigue: OnEffectFinish. Times:" + safeguard, Condiexp_Verbose.GetValueInt())
 EndEvent

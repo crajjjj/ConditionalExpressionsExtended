@@ -28,7 +28,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     Utility.Wait(5)
     CondiExp_PlayerIsDrunk.SetValueInt(0)
     PlayerRef.ClearExpressionOverride()
+    config.currentExpression = ""
     Condiexp_CurrentlyBusy.SetValueInt(0)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
-    config.currentExpression = ""
 EndEvent

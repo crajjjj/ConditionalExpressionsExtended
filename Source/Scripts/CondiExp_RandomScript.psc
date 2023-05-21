@@ -17,21 +17,29 @@ GlobalVariable Property Condiexp_GlobalRandom Auto
 GlobalVariable Property Condiexp_Verbose Auto
 GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 bool playing = false
+int resetCounter = 0
 condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	;verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValueInt())
 	RegisterForSingleUpdate(1)
 	playing = true
+	
 EndEvent
 
 Event OnUpdate()
 	If isRandomEnabled()
 		config.currentExpression = "Random"
    		PlayRandomExpression(PlayerRef, config)
+		resetCounter += 1
+		if resetCounter > 5
+			resetMFGSmooth(PlayerRef)
+			resetCounter = 0
+		endif
         RegisterForSingleUpdate( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 5))
     else
 		log("CondiExp_Random: cancelled effect")
+		resetCounter = 0
 	endif
 EndEvent
 
@@ -45,6 +53,7 @@ endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	playing = false
+	resetCounter = 0
 	Utility.Wait(1)
 	;verbose(PlayerRef, "Random: OnEffectFinish", Condiexp_Verbose.GetValueInt() )
 	If Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0

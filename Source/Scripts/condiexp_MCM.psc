@@ -109,7 +109,7 @@ endFunction
 
 Event OnConfigInit()
 	ModName="Conditional Expressions Extended"
-	Notification("$CEE_A2")	
+	Notification("MCM menu initialized")
 EndEvent
 
 event OnVersionUpdate(int a_version)
@@ -305,7 +305,7 @@ If (option == ColdMethod_M)
 		;ColdMethodList[4] = "Automatic"
 		Condiexp_ColdMethod.SetValueInt(5)
 		_restart()
-		Notification("$CEE_G1")
+		Notification("Restarted to apply Automatic Cold Detection option!")
 	endif
 	
 endif
@@ -486,7 +486,7 @@ if (option == Combat_B) && CombatToggle == True
 		ShowMessage("$CEE_G4")
 		Utility.Wait(0.5)
 		_restart()
-		Notification("$CEE_G5")
+		Notification("Restarted correctly!")
 	
 	elseif option == registerFollowers
 		if (CondiExpFollowerQuest.IsRunning())

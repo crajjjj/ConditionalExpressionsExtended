@@ -98,12 +98,18 @@ string ColdMethod
 int ColdMethodIndex = 4
 string[] ColdMethodList
 
+Int oidHKPause
+Int oidHKRegisterFollowers
+GlobalVariable Property Condiexp_HKPause Auto ; HOTKEY ==========
+GlobalVariable Property Condiexp_HKRegisterFollowers Auto ; HOTKEY ==========
+
 int function GetVersion()
     return CondiExp_util.GetVersion()
 endFunction
 
 Event OnConfigInit()
-	Notification("MCM menu initialized")	
+	ModName="Conditional Expressions Extended"
+	Notification("$CEE_A2")	
 EndEvent
 
 event OnVersionUpdate(int a_version)
@@ -114,21 +120,21 @@ endEvent
 
 Event OnConfigOpen()
 	Pages = New String[3]
-	Pages[0] = "Expressions"
-	Pages[1] = "Settings"
-	Pages[2] = "Maintenance"
+	Pages[0] = "$CEE_A3"
+	Pages[1] = "$CEE_A4"
+	Pages[2] = "$CEE_A5"
 
 	EatingFastSlowList = new string[3]
-	EatingFastSlowList[0] = "Quick Eating"
-	EatingFastSlowList[1] = "Slow Eating"
-	EatingFastSlowList[2] = "Disabled"
+	EatingFastSlowList[0] = "$CEE_A6"
+	EatingFastSlowList[1] = "$CEE_A7"
+	EatingFastSlowList[2] = "$CEE_A8"
 
 	ColdMethodList = new string[5]
-	ColdMethodList[0] = "Vanilla - Snowing"
-	ColdMethodList[1] = "Frostfall"
-	ColdMethodList[2] = "Frostbite"
-	ColdMethodList[3] = "Sunhelm Survival"
-	ColdMethodList[4] = "Automatic"
+	ColdMethodList[0] = "$CEE_A9"
+	ColdMethodList[1] = "$CEE_B1"
+	ColdMethodList[2] = "$CEE_B2"
+	ColdMethodList[3] = "$CEE_B3"
+	ColdMethodList[4] = "$CEE_B4"
 EndEvent
 
 Event OnPageReset(string page)
@@ -138,11 +144,11 @@ Event OnPageReset(string page)
 		UnloadCustomContent()
 	Endif
 	
-	if (page == "Expressions")
+	if (page == "$CEE_A3")
 		Expressions()
-	elseIf (page == "Settings")
+	elseIf (page == "$CEE_A4")
 		Settings()
-	elseIf (page == "Maintenance")
+	elseIf (page == "$CEE_A5")
 		Maintenance()
 	endIf
 EndEvent
@@ -150,56 +156,59 @@ EndEvent
 
 Function Expressions()
 	SetCursorFillMode(LEFT_TO_RIGHT)
-	AddHeaderOption("Conditional Expressions Extended. Version: " + GetVersionString())
-	AddHeaderOption("List of Expressions")
+	AddHeaderOption("Conditional Expressions Extended.Version: " + GetVersionString())
+	AddHeaderOption("$CEE_B7")
 	AddEmptyOption()
 	AddEmptyOption()
 	AddEmptyOption()
-	EatingFastSlow_M = AddMenuOption("Eating Expression", EatingFastSlowList[EatingFastSlowIndex])
+	EatingFastSlow_M = AddMenuOption("$CEE_B8", EatingFastSlowList[EatingFastSlowIndex])
 	If PlayerRef.IsInCombat()
-		Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle, OPTION_FLAG_DISABLED)
+		Combat_B = AddToggleOption("$CEE_B9", CombatToggle, OPTION_FLAG_DISABLED)
 		else
-		Combat_B = AddToggleOption("Less Dramatic Combat Expression", CombatToggle)
+		Combat_B = AddToggleOption("$CEE_B9", CombatToggle)
 	endif
-	Random_B = AddToggleOption("Random Idle Expressions", RandomToggle)
-	Cold_B = AddToggleOption("Cold Expression", ColdToggle)
-	Stamina_B = AddToggleOption("Out of Stamina Expression", StaminaToggle)
-	coldmethod_M = AddMenuOption("Cold Detection", ColdMethodList[ColdMethodIndex]) 
-	Pain_B = AddToggleOption("In Pain Expression", PainToggle)
-	Drunk_B = AddToggleOption("Drunk Expression", DrunkToggle)
-	Skooma_B = AddToggleOption("'This Is Good Skooma' Expression", SkoomaToggle)
-	Clothes_B = AddToggleOption("Embarrassed - No Clothes Expression", ClothesToggle)
-	Sneaking_B = AddToggleOption("Sneaking Expression", SneakingToggle)
-	Water_B = AddToggleOption("Water/Torch Expression", WaterToggle)
-	Headache_B = AddToggleOption("Headache/Diseased", HeadacheToggle)
-	Trauma_B = AddToggleOption("Trauma Expression", TraumaToggle)
-	Dirty_B = AddToggleOption("Dirty Expression", DirtyToggle)
-	Aroused_B = AddToggleOption("Aroused Expression", ArousedToggle)
+	Random_B = AddToggleOption("$CEE_C1", RandomToggle)
+	Cold_B = AddToggleOption("$CEE_C2", ColdToggle)
+	Stamina_B = AddToggleOption("$CEE_C3", StaminaToggle)
+	coldmethod_M = AddMenuOption("$CEE_C4", ColdMethodList[ColdMethodIndex]) 
+	Pain_B = AddToggleOption("$CEE_C5", PainToggle)
+	Drunk_B = AddToggleOption("$CEE_C6", DrunkToggle)
+	Skooma_B = AddToggleOption("$CEE_C7", SkoomaToggle)
+	Clothes_B = AddToggleOption("$CEE_C8", ClothesToggle)
+	Sneaking_B = AddToggleOption("$CEE_C9", SneakingToggle)
+	Water_B = AddToggleOption("$CEE_D1", WaterToggle)
+	Headache_B = AddToggleOption("$CEE_D2", HeadacheToggle)
+	Trauma_B = AddToggleOption("$CEE_D3", TraumaToggle)
+	Dirty_B = AddToggleOption("$CEE_D4", DirtyToggle)
+	Aroused_B = AddToggleOption("$CEE_D5", ArousedToggle)
 EndFunction
+
 
 Function Settings()
 	SetCursorFillMode(TOP_TO_BOTTOM)
-	AddHeaderOption("Settings")
+	AddHeaderOption("$CEE_D6")
 	AddEmptyOption()
-	Sounds_B = AddToggleOption("Breathing Sounds", SoundsToggle)
-	_update_interval_slider = AddSliderOption("Update interval", Condiexp_UpdateInterval.GetValueInt(), "{0}", OPTION_FLAG_NONE)
-	_expression_strength_slider = AddSliderOption("Expression Strength", Condiexp_ExpressionStr.GetValue(), "{2}", OPTION_FLAG_NONE)
-	_modifier_strength_slider = AddSliderOption("Modifier Strength", Condiexp_ModifierStr.GetValue(), "{2}", OPTION_FLAG_NONE)
-	_phoneme_strength_slider = AddSliderOption("Phoneme Strength", Condiexp_PhonemeStr.GetValue(), "{2}", OPTION_FLAG_NONE)
-	AddHeaderOption("Followers")
-	Followers_B =  AddToggleOption("Followers Support", CondiExpFollowerQuest.IsRunning())
-	_update_interval_followers_slider = AddSliderOption("Update interval Followers", Condiexp_FollowersUpdateInterval.GetValueInt(), "{0}", _getFlag(FollowersToggle))
-	registerFollowers = AddTextOption("Register Followers", "")
+	Sounds_B = AddToggleOption("$CEE_D7", SoundsToggle)
+	_update_interval_slider = AddSliderOption("$CEE_D8", Condiexp_UpdateInterval.GetValueInt(), "{0}", OPTION_FLAG_NONE)
+	_expression_strength_slider = AddSliderOption("$CEE_D9", Condiexp_ExpressionStr.GetValue(), "{2}", OPTION_FLAG_NONE)
+	_modifier_strength_slider = AddSliderOption("$CEE_E1", Condiexp_ModifierStr.GetValue(), "{2}", OPTION_FLAG_NONE)
+	_phoneme_strength_slider = AddSliderOption("$CEE_E2", Condiexp_PhonemeStr.GetValue(), "{2}", OPTION_FLAG_NONE)
+	AddHeaderOption("$CEE_E3")
+	Followers_B =  AddToggleOption("$CEE_E4", CondiExpFollowerQuest.IsRunning())
+	_update_interval_followers_slider = AddSliderOption("$CEE_E5", Condiexp_FollowersUpdateInterval.GetValueInt(), "{0}", _getFlag(FollowersToggle))
+	registerFollowers = AddTextOption("$CEE_E6", "")
+	oidHKRegisterFollowers = AddKeyMapOption("Register followers key", Condiexp_HKRegisterFollowers.GetValueInt())
 EndFunction
 
 Function Maintenance()
 	SetCursorFillMode(TOP_TO_BOTTOM)
-	AddHeaderOption("Maintenance")
+	AddHeaderOption("$CEE_E7")
 	AddEmptyOption()
-	Update = AddTextOption("Update/Restart", "")
-	restore = AddTextOption("Reset Current Expression: "+ currentExpression, "")
-	Uninstall = AddTextOption("Prepare to Uninstall", "")
-	Verbose_B =  AddToggleOption("Verbose Notifications", VerboseToggle)
+	Update = AddTextOption("$CEE_E8", "")
+	restore = AddTextOption("Reset Current Expression: " + currentExpression, "")
+	Uninstall = AddTextOption("$CEE_F1", "")
+	Verbose_B =  AddToggleOption("$CEE_F2", VerboseToggle)
+	oidHKPause = AddKeyMapOption("Pause-Unpause mod  key", Condiexp_HKPause.GetValueInt())
 EndFunction
 
 Event OnOptionSliderOpen(Int mcm_option)
@@ -296,7 +305,7 @@ If (option == ColdMethod_M)
 		;ColdMethodList[4] = "Automatic"
 		Condiexp_ColdMethod.SetValueInt(5)
 		_restart()
-		Notification("Restarted to apply Automatic Cold Detection option!")
+		Notification("$CEE_G1")
 	endif
 	
 endif
@@ -459,7 +468,7 @@ if (option == Combat_B) && CombatToggle == True
 		DetectRace()
 	
 	elseif option == restore
-		ShowMessage("Default expression restored - If in the middle of a face animation, expression will be restored once animation is finished.")
+		ShowMessage("$CEE_G2")
 		Go.resetConditions()
 		resetMFG(PlayerRef)
 		currentExpression = ""
@@ -468,24 +477,23 @@ if (option == Combat_B) && CombatToggle == True
 		endIf
 
 	elseif option == uninstall
-		ShowMessage("Mod is now prepared to be uninstalled. Please, exit menu, save and uninstall. Keep in mind: It's never 100% safe to uninstall mods mid-game, always make back-ups of your saves before installing mods!")
+		ShowMessage("$CEE_G3")
 		Go.StopMod()
 		StopQuest(CondiExpFollowerQuest)
 		StopQuest(CondiExpQuest)
 
-
 	elseif option == update
-		ShowMessage("Please, exit menu. All functionalities will be restarted.")
+		ShowMessage("$CEE_G4")
 		Utility.Wait(0.5)
 		_restart()
-		Notification("Restarted correctly!")
+		Notification("$CEE_G5")
 	
 	elseif option == registerFollowers
 		if (CondiExpFollowerQuest.IsRunning())
 			ResetQuest(CondiExpFollowerQuest)
-			ShowMessage("Please, exit menu. Followers were registered")
+			ShowMessage("$CEE_G6")
 		else
-			ShowMessage("Followers support is disabled")
+			ShowMessage("$CEE_G7")
 		endIf
 		
 endif
@@ -495,64 +503,92 @@ endevent
 
 event OnOptionHighlight(int option) 
 if (option == EatingFastSlow_M) 
-	SetInfoText("Quick and slow refer to how fast your character starts chewing.\nDepending on your eating animation mod, one or the other will fit better.") 
+	SetInfoText("$CEE_G8") 
 elseif (option == Combat_B)
-	SetInfoText("This enables a more focused combat expression. Disabling this will revert back\n to the vanilla combat expression. Cannot be disabled during combat") 
+	SetInfoText("$CEE_G9") 
 elseif (option == Random_B)
-	SetInfoText("When your character is idle, they will often have random subtle expressions.\nThis must be enabled for cold animations to work.")
+	SetInfoText("$CEE_G10")
 elseif (option == Cold_B)
-	SetInfoText("Your character will react to being cold depending on your 'cold-manager' mod.\n") 
+	SetInfoText("$CEE_G11") 
 elseif (option == Stamina_B)
-	SetInfoText("When out of Stamina, your character will be out of breath.") 
+	SetInfoText("$CEE_G12") 
 elseif (option == Pain_B)
-	SetInfoText("During low health, your character will be in pain/scared.") 
+	SetInfoText("$CEE_G13") 
 elseif (option == Drunk_B)
-	SetInfoText("After drinking alcohol, your character will be 'happy' for 1 to 2 hours.") 
+	SetInfoText("$CEE_G14") 
 elseif (option == Skooma_B)
-	SetInfoText("After taking skooma, your character will have \na random happier-than-usual expression for 1 to 2 hours.") 
+	SetInfoText("$CEE_G15") 
 elseif (option == Clothes_B)
-	SetInfoText("When not at home, your character will have \nan embarrassed expression when wearing no clothes.") 
+	SetInfoText("$CEE_G16") 
 elseif (option == Sneaking_B)
-	SetInfoText("Your character will squint their eyes \nand look at their surroundings when sneaking.") 
+	SetInfoText("$CEE_G17") 
 elseif (option == Water_B)
-	SetInfoText("Your character will squint their eyes \nwhen swimming or diving underwater.") 
+	SetInfoText("$CEE_G18") 
 elseif (option == restore)
-	SetInfoText("If for some reason the face of your character \nis glitched, click here to reset it back to normal.") 
+	SetInfoText("$CEE_G19") 
 elseif (option == uninstall)
-	SetInfoText("Clicking here will stop all functionalities of the mod.\nDo this ONLY if you are planning on uninstalling the mod right after.")
+	SetInfoText("$CEE_G20")
 elseif (option == coldmethod_M)
-	SetInfoText("The Automatic option scans your load order for frostfall or frostbite. Change this manually only\nif you have switched from one mod to another or want to use the vanilla detection method.")
+	SetInfoText("$CEE_G21")
 elseif (option == Update)
-	SetInfoText("Clicking here will stop and restart the mod's functionalities.\nThis is useful if you have updated to a new version.")
+	SetInfoText("$CEE_G22")
 elseif (option == Headache_B)
-	SetInfoText("Your character will have a 'headache' look when almost out of mana.\nSame look will be applied when you have a disease.")
+	SetInfoText("$CEE_G23")
 elseif (option == Sounds_B)
-	SetInfoText("When out of stamina, you can hear your character (quietly) breathing\n heavily until they recover half of their stamina. Enables trauma sounds as well")
+	SetInfoText("$CEE_G24")
 elseif (option == Trauma_B)
-	SetInfoText("Your character will react to trauma or disease (painful subtle expressions).\n There's also a pain sound once in a while")
+	SetInfoText("$CEE_G25")
 elseif (option == Dirty_B)
-	SetInfoText("Your character will react to dirt (disgusted subtle expressions).\n Integrated with Dirt&Blood,Keep it clean,Bathing in Skyrim")
+	SetInfoText("$CEE_G26")
 elseif (option == Aroused_B)
-	SetInfoText("Your character will react to arousal (pleasure subtle expressions).\n Integrated with OSL Aroused")
+	SetInfoText("$CEE_G27")
 elseif (option == Verbose_B)
-	SetInfoText("Verbose debug notifications. Shows what emotion is playing")
+	SetInfoText("$CEE_G28")
 elseif (option == Followers_B)
-	SetInfoText("Toggle  followers support")
+	SetInfoText("$CEE_G29")
 elseif (option == registerFollowers)
-	SetInfoText("Clicking here will register new followers. Followers are also registered when game is loaded.")
+	SetInfoText("$CEE_G30")
 elseif (option == _update_interval_followers_slider)
-	SetInfoText("Update period for followers expressions")
+	SetInfoText("$CEE_G31")
 elseif (option == _update_interval_slider)
-	SetInfoText("Update period for long term conditions checking. Set to 0 if you want to disable them")
+	SetInfoText("$CEE_G32")
 elseif (option == _expression_strength_slider)
-	SetInfoText("Expression strength - 1 means default unmodified")
+	SetInfoText("$CEE_G33")
 elseif (option == _modifier_strength_slider)
-	SetInfoText("Modifier strength - 1 means default unmodified")
+	SetInfoText("$CEE_G34")
 elseif (option == _phoneme_strength_slider)
-	SetInfoText("Phoneme strength - 1 means default unmodified")	
+	SetInfoText("$CEE_G35")	
 endif
 endevent
 
+event OnOptionKeyMapChange(int option, int keyCode, string conflictControl, string conflictName)
+	if (option == oidHKPause|| option == oidHKRegisterFollowers)
+		bool continue = true
+		if (conflictControl != "")
+			string msg
+			if (conflictName != "")
+				msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n(" + conflictName + ")\n\nAre you sure you want to continue?"
+			else
+				msg = "This key is already mapped to:\n\"" + conflictControl + "\"\n\nAre you sure you want to continue?"
+			endIf
+
+			continue = ShowMessage(msg, true, "Yes", "No")
+		endIf
+		if (continue)
+			if (option == oidHKPause)
+				SetKeymapOptionValue(oidHKPause, keyCode)
+				Go.UnregisterForKey(Condiexp_HKPause.GetValueInt())
+				Condiexp_HKPause.SetValueInt(keyCode)
+				Go.RegisterForKey(Condiexp_HKPause.GetValueInt())
+			elseif (option == oidHKRegisterFollowers)
+				SetKeymapOptionValue(oidHKRegisterFollowers, keyCode)
+				Go.UnregisterForKey(Condiexp_HKRegisterFollowers.GetValueInt())
+				Condiexp_HKRegisterFollowers.SetValueInt(keyCode)
+				Go.RegisterForKey(Condiexp_HKRegisterFollowers.GetValueInt())
+			endif
+		endIf
+	endIf
+endEvent
 
 Function DetectRace()
 ActorBase PlayerBase = PlayerRef.GetActorBase()

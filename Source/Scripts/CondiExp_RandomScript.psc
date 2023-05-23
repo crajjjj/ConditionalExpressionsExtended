@@ -32,7 +32,7 @@ Event OnUpdate()
 		config.currentExpression = "Random"
    		PlayRandomExpression(PlayerRef, config)
 		resetCounter += 1
-		if resetCounter > 5
+		if resetCounter > 4
 			resetMFGSmooth(PlayerRef)
 			resetCounter = 0
 		endif
@@ -46,7 +46,7 @@ EndEvent
 bool function isRandomEnabled()
 	bool enabled = !PlayerRef.IsDead() && Condiexp_GlobalRandom.GetValueInt() == 1
 	enabled = enabled && Condiexp_ModSuspended.GetValueInt() == 0 && Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
-	enabled = enabled && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning() 
+	enabled = enabled && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning()
 	enabled = enabled && playing
 	return enabled 
 endfunction
@@ -55,9 +55,11 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	playing = false
 	resetCounter = 0
 	Utility.Wait(1)
-	;verbose(PlayerRef, "Random: OnEffectFinish", Condiexp_Verbose.GetValueInt() )
-	If Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
+	trace_line("CondiExp_Random: OnEffectFinish. Suspended: " + Condiexp_ModSuspended.GetValueInt(), Condiexp_Verbose.GetValueInt())
+	If Condiexp_ModSuspended.GetValueInt()
 		resetMFGSmooth(PlayerRef)
-	EndIf
+	elseIf Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
+		resetMFGSmooth(PlayerRef)
+	endif
 	config.currentExpression = ""
 EndEvent

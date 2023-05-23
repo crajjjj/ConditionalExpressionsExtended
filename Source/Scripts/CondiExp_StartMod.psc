@@ -46,7 +46,12 @@ GlobalVariable Property Condiexp_Verbose Auto
 GlobalVariable Property Condiexp_GlobalEating Auto
 
 GlobalVariable Property Condiexp_SuspendedByDhlpEvent Auto
+GlobalVariable Property Condiexp_SuspendedByKey Auto
 GlobalVariable Property Condiexp_PO3ExtenderInstalled Auto
+
+GlobalVariable Property Condiexp_HKPause Auto
+GlobalVariable Property Condiexp_HKRegisterFollowers Auto
+Quest Property CondiExpFollowerQuest Auto
 
 Race Property KhajiitRace Auto
 Race Property KhajiitRaceVampire Auto
@@ -227,7 +232,6 @@ Event OnUpdate()
 		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(PlayerRef))
 		Condiexp_CurrentlyDirty.SetValueInt(getDirtyStatus(PlayerRef))
 		Condiexp_CurrentlyAroused.SetValueInt(getArousalStatus(PlayerRef))
-		
  	endif
 
 	if Condiexp_Verbose.GetValueInt() == 1
@@ -244,6 +248,11 @@ EndEvent
 Bool function checkIfModShouldBeSuspended(Actor act)
 	if isSuspendedByDhlpEvent()
 		log("CondiExp_StartMod: dhlp event. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
+		return true
+	endif
+
+	if isSuspendedByKey()
+		log("CondiExp_StartMod: key down event. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
 		return true
 	endif
 
@@ -502,6 +511,29 @@ If CondiExp_Sounds.GetValueInt() > 0
 Endif
 EndEvent
 
+Event OnKeyDown(Int KeyCode)
+	if _checkPlugins !=0
+		Notification("Initialization in progress. Please wait")
+		return
+	endif
+	If (KeyCode == Condiexp_HKPause.GetValueInt()) ; Action key
+		If (Condiexp_SuspendedByKey.GetValueInt() == 1)
+			Condiexp_SuspendedByKey.SetValueInt(0)
+			Notification("Resumed by key. Please wait")
+		else
+			Condiexp_SuspendedByKey.SetValueInt(1)
+			Notification("Suspended by key. Please wait")
+		Endif
+	Endif
+	If (KeyCode == Condiexp_HKRegisterFollowers.GetValueInt()) ; Action key
+		if (CondiExpFollowerQuest.IsRunning())
+			ResetQuest(CondiExpFollowerQuest)
+			Notification("Followers were registered")
+		else
+			Notification("Followers support is disabled")
+		endIf
+	Endif
+EndEvent
 
 Function NewRace()
 	ActorBase PlayerBase = PlayerRef.GetActorBase()
@@ -550,4 +582,8 @@ endfunction
 
 Bool function isSuspendedByDhlpEvent()
 	return Condiexp_SuspendedByDhlpEvent.GetValueInt() == 1
+endfunction
+
+Bool function isSuspendedByKey()
+	return Condiexp_SuspendedByKey.GetValueInt() == 1
 endfunction

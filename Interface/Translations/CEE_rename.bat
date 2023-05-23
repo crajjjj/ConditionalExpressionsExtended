@@ -1,0 +1,7 @@
+copy /y "Conditional Expressions_ENGLISH.txt" "Conditional Expressions_CHINESE.txt"
+copy /y "Conditional Expressions_ENGLISH.txt" "Conditional Expressions_CZECH.txt"
+copy /y "Conditional Expressions_ENGLISH.txt" "Conditional Expressions_FRENCH.txt"
+copy /y "Conditional Expressions_ENGLISH.txt" "Conditional Expressions_ITALIAN.txt"
+copy /y "Conditional Expressions_ENGLISH.txt" "Conditional Expressions_JAPANESE.txt"
+copy /y "Conditional Expressions_ENGLISH.txt" "Conditional Expressions_POLISH.txt"
+copy /y "Conditional Expressions_ENGLISH.txt" "Conditional Expressions_SPANISH.txt"

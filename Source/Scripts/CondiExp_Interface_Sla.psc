@@ -20,9 +20,15 @@ Int Function getArousal0To100(Actor act, Quest sla, Faction arousalFaction) glob
 	return arousal
 EndFunction
 
-Function setArousaTo0(Actor act, Quest sla) global
+Function setArousaTo0(Actor act, Quest sla, Faction arousalFaction) global
 	if !sla
 		return
 	endif
-	(sla as slaFrameworkScr).SetActorExposure(act,0)
+	Int arousal = act.GetFactionRank(arousalFaction)
+	If (arousal < 0)
+		arousal = (sla as slaFrameworkScr).GetActorArousal(act)
+	EndIf
+	if arousal > 5
+		(sla as slaFrameworkScr).SetActorExposure(act,0)
+	endif
 EndFunction

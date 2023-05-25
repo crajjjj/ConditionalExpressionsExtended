@@ -358,8 +358,8 @@ int function getTraumaStatus(Actor act)
 			;No arousal when high trauma
 			int AROUSAL_BLOCKING_TRAUMA_LEVEL = 6
 			if sla && trauma >= AROUSAL_BLOCKING_TRAUMA_LEVEL
-				trace(act, "CondiExp_StartMod: blocking arousal cause of high trauma")
-				setArousaTo0(act, sla)
+				trace(act, "CondiExp_StartMod: blocking arousal cause of high trauma", Condiexp_Verbose.GetValueInt())
+				setArousaTo0(act, sla, slaArousalFaction)
 			endif
 			return trauma
 		endif

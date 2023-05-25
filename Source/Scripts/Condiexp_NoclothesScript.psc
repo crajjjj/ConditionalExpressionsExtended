@@ -22,7 +22,7 @@ EndFunction
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     config.currentExpression = "No Clothes"
     Blush()
-    Utility.Wait(5)
+    Utility.Wait(10)
   ;  verbose(PlayerRef, "No Clothes: OnEffectFinish.  " , Condiexp_Verbose.GetValueInt() )
     resetMFGSmooth(PlayerRef)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)

@@ -21,12 +21,11 @@ GlobalVariable Property Condiexp_Verbose Auto
 
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    int current = Condiexp_CurrentlyBusyImmediate.GetValueInt() as int
-    Condiexp_CurrentlyBusyImmediate.SetValueInt(current + 1)
+    int lock = Condiexp_CurrentlyBusyImmediate.GetValueInt() as int
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(lock + 1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
     resetMFGSmooth(akTarget)
-   
- ;   verbose(PlayerRef, "Fatigue: OnEffectStart", Condiexp_Verbose.GetValueInt())
+    trace(PlayerRef, "Fatigue: OnEffectStart.Lock:" + lock, Condiexp_Verbose.GetValueInt())
 EndEvent
 
 bool function isFatigueActive()
@@ -78,5 +77,5 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     config.currentExpression = ""
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)
-  ;  verbose(PlayerRef, "Fatigue: OnEffectFinish. Times:" + safeguard, Condiexp_Verbose.GetValueInt())
+    trace(PlayerRef, "Fatigue: OnEffectFinish. Times:" + safeguard, Condiexp_Verbose.GetValueInt())
 EndEvent

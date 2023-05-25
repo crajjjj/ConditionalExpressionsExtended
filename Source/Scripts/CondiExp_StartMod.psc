@@ -355,6 +355,12 @@ int function getTraumaStatus(Actor act)
 		trauma = GetWearState0to10(act, ActorsQuest)
 		if trauma > 1 && trauma > Condiexp_MinTrauma.GetValueInt()
 			trace(act, "CondiExp_StartMod: updateTraumaStatus - AverageAbuseState: " + trauma, Condiexp_Verbose.GetValueInt())
+			;No arousal when high trauma
+			int AROUSAL_BLOCKING_TRAUMA_LEVEL = 6
+			if sla && trauma >= AROUSAL_BLOCKING_TRAUMA_LEVEL
+				trace(act, "CondiExp_StartMod: blocking arousal cause of high trauma")
+				setArousaTo0(act, sla)
+			endif
 			return trauma
 		endif
 	endif

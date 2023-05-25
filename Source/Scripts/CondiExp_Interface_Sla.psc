@@ -2,14 +2,14 @@ Scriptname CondiExp_Interface_Sla Hidden
 import CondiExp_log
 import CondiExp_util
 
-Int Function getArousal0To100(Actor PlayerRef, Quest sla, Faction arousalFaction) global
+Int Function getArousal0To100(Actor act, Quest sla, Faction arousalFaction) global
 	if !sla
 		return 0
 	endif
 
-	Int arousal = PlayerRef.GetFactionRank(arousalFaction)
+	Int arousal = act.GetFactionRank(arousalFaction)
 	If (arousal < 0)
-		arousal = (sla as slaFrameworkScr).GetActorArousal(PlayerRef)
+		arousal = (sla as slaFrameworkScr).GetActorArousal(act)
 	EndIf
 	
 	if arousal < 0
@@ -18,4 +18,11 @@ Int Function getArousal0To100(Actor PlayerRef, Quest sla, Faction arousalFaction
 		arousal = 100
 	endIf
 	return arousal
+EndFunction
+
+Function setArousaTo0(Actor act, Quest sla) global
+	if !sla
+		return
+	endif
+	(sla as slaFrameworkScr).SetActorExposure(act,0)
 EndFunction

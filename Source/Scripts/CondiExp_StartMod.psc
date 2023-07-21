@@ -34,6 +34,8 @@ GlobalVariable Property Condiexp_ColdGlobal Auto ;to delete
 GlobalVariable Property Condiexp_GlobalAroused Auto
 GlobalVariable Property Condiexp_CurrentlyAroused Auto
 GlobalVariable Property Condiexp_MinAroused Auto
+GlobalVariable Property Condiexp_GlobalArousalModifiers Auto
+GlobalVariable Property Condiexp_GlobalArousalModifiersNotifications Auto
 
 GlobalVariable Property Condiexp_ModSuspended Auto
 
@@ -116,7 +118,7 @@ Event onPlayerLoadGame()
 	;to avoid expressions during load sequence
 	PlayerRef.RemoveSpell(CondiExp_Fatigue1)
 	_checkPlugins = 1
-	RegisterForSingleUpdate(4)
+	RegisterForSingleUpdate(5)
 endEvent
 
 function init()
@@ -228,7 +230,13 @@ Event OnUpdate()
 			log("CondiExp_StartMod: resumed according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(0)
 		endif
-		Condiexp_CurrentlyCold.SetValueInt(getColdStatus(PlayerRef))
+		int coldy = getColdStatus(PlayerRef)
+		Condiexp_CurrentlyCold.SetValueInt(coldy)
+		If (coldy == 0)
+			if !PlayerRef.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 2 
+				SendSLAModEvent(50, "is not feeling very aroused because it's raining", PlayerRef)
+			endif
+		EndIf
 		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(PlayerRef))
 		Condiexp_CurrentlyDirty.SetValueInt(getDirtyStatus(PlayerRef))
 		Condiexp_CurrentlyAroused.SetValueInt(getArousalStatus(PlayerRef))
@@ -279,22 +287,33 @@ int function getColdStatus(Actor act )
 		return 0
 	endif
 	If Condiexp_ColdMethod.GetValueInt() == 1
-		If Temp.GetValueInt() > 2 
+		If Temp.GetValueInt() > 2
 			trace(act,"CondiExp_StartMod: getColdStatus frostfall:  is cold", Condiexp_Verbose.GetValueInt())
+			SendSLAModEvent(50, "is not feeling aroused because of cold", act)
 			return 1
 			else
 			return 0
 		endif
 	elseIf Condiexp_ColdMethod.GetValueInt() == 2 || Condiexp_ColdMethod.GetValueInt() == 3
-		If act.HasSpell(Cold1) || act.HasSpell(Cold2) || act.HasSpell(Cold3)
-			trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is cold", Condiexp_Verbose.GetValueInt())
-			return 1
-			else
-			return 0
+		If act.HasSpell(Cold1)
+				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is chilly", Condiexp_Verbose.GetValueInt())
+				SendSLAModEvent(50, "is not feeling very aroused because it's chilly", act)
+				return 1
+			ElseIf act.HasSpell(Cold2)
+				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is cold", Condiexp_Verbose.GetValueInt())
+				SendSLAModEvent(25, "is not feeling aroused because it's cold", act)
+				return 1
+			elseif act.HasSpell(Cold3)
+				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is freezing", Condiexp_Verbose.GetValueInt())
+				SendSLAModEvent(0, "is not feeling aroused because it's freezing", act)
+				return 1
+			else	
+				return 0
 		endif
 	elseIf Condiexp_ColdMethod.GetValueInt() == 4
 		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
 			trace(act,"CondiExp_StartMod: getColdStatus vanilla: is cold", Condiexp_Verbose.GetValueInt())
+			SendSLAModEvent(50, "is not feeling aroused because it's cold", act)
 			return 1
 		else
 			return 0
@@ -357,9 +376,12 @@ int function getTraumaStatus(Actor act)
 			trace(act, "CondiExp_StartMod: updateTraumaStatus - AverageAbuseState: " + trauma, Condiexp_Verbose.GetValueInt())
 			;No arousal when high trauma
 			int AROUSAL_BLOCKING_TRAUMA_LEVEL = 6
-			if sla && trauma >= AROUSAL_BLOCKING_TRAUMA_LEVEL
+			if trauma >= AROUSAL_BLOCKING_TRAUMA_LEVEL
 				trace(act, "CondiExp_StartMod: blocking arousal cause of high trauma", Condiexp_Verbose.GetValueInt())
-				setArousaTo0(act, sla, slaArousalFaction)
+				SendSLAModEvent(0, " not feeling aroused because of strong trauma", act)
+				;setArousaToValue(act, sla, slaArousalFaction, 0)
+			ElseIf (true)
+				SendSLAModEvent(50, " not feeling very aroused because of trauma", act)
 			endif
 			return trauma
 		endif
@@ -394,8 +416,17 @@ int function getArousalStatus(Actor act)
 
 	;nothing found: 0
 	return 0
-
 endfunction
+
+Event OnCondiExpSLAEvent(String eventName, int arg1, String arg2, Form act)
+	If !sla || Condiexp_GlobalArousalModifiers.GetValueInt() == 0
+		return
+	endif
+	trace_line("CondiExp_StartMod: OnCondiExpSLAEvent Actor" + act.GetName() + " Message: "+ arg2, Condiexp_Verbose.GetValueInt())
+	if setArousaToValue(act as Actor, sla, slaArousalFaction, arg1) &&  Condiexp_GlobalArousalModifiersNotifications.GetValueInt() == 1
+		Notification((act as Actor).GetLeveledActorBase().GetName() + " " + arg2)
+	endif
+ EndEvent
 
 Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 	log("CondiExp_StartMod: suspended by: " + sender.GetName())
@@ -460,7 +491,7 @@ Function StopMod()
 	UnregisterForModEvent("dhlp-Resume")
 	UnregisterForModEvent("ostim_end")
 	UnregisterForModEvent("ostim_start")
-
+	UnregisterForModEvent("CondiExp_SLAEvent")
 	log("Stopped")
 endfunction
 
@@ -475,10 +506,12 @@ Function StartMod()
 	UnregisterForModEvent("dhlp-Resume")
 	UnregisterForModEvent("ostim_end")
 	UnregisterForModEvent("ostim_start")
+	UnregisterForModEvent("OnCondiExp_SLAEvent")
 	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
 	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
 	RegisterForModEvent("ostim_start", "OnDhlpSuspend")
 	RegisterForModEvent("ostim_end", "OnDhlpResume")
+	RegisterForModEvent("CondiExp_SLAEvent","OnCondiExpSLAEvent")
 
 	If CondiExp_Sounds.GetValueInt() > 0
 		NewRace()

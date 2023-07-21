@@ -16,6 +16,7 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
 - Compatibility with DD and Toys wearables.
 - Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching. E.g. compatible with "The Trappings of Fate" mod.
 - Compatibility with apropos2 w&t or ZAP slave faction condition for trauma expressions
+- Added arousal cap feature with different conditions.Examples - if it's raining arousal capped by 50
  
 ## Hard dependencies
 

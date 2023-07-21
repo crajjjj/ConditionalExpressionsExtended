@@ -110,6 +110,7 @@ Event OnUpdate()
 
 	If (act.GetActorValuePercentage("Health") < 0.40 && config.Condiexp_GlobalPain.GetValueInt() == 1)
 		PlayPainExpression(act, config)
+		SendSLAModEvent(25, "is not feeling aroused because of pain", act)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + 3)
 		Return
 	EndIf

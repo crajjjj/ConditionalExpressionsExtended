@@ -20,6 +20,8 @@ GlobalVariable Property Condiexp_Sounds Auto
 GlobalVariable Property Condiexp_GlobalTrauma Auto
 GlobalVariable Property Condiexp_GlobalDirty Auto
 GlobalVariable Property Condiexp_GlobalAroused Auto
+GlobalVariable Property Condiexp_GlobalArousalModifiers Auto
+GlobalVariable Property Condiexp_GlobalArousalModifiersNotifications Auto
 GlobalVariable Property Condiexp_Verbose Auto
 GlobalVariable Property Condiexp_UpdateInterval Auto
 GlobalVariable Property Condiexp_FollowersUpdateInterval Auto
@@ -61,6 +63,8 @@ int Sounds_B
 int Trauma_B
 int Dirty_B
 int Aroused_B
+int ArousedModifiers_B
+int ArousedModifiersNotifications_B
 int Verbose_B
 int Followers_B
 int registerFollowers
@@ -85,6 +89,8 @@ bool SoundsToggle = True
 bool TraumaToggle = true
 bool DirtyToggle = true
 bool ArousedToggle = true
+bool ArousedModifiersToggle = true
+bool ArousedModifiersNotificationsToggle = true
 bool VerboseToggle = false 
 bool FollowersToggle = false 
 
@@ -198,6 +204,8 @@ Function Settings()
 	_update_interval_followers_slider = AddSliderOption("$CEE_E5", Condiexp_FollowersUpdateInterval.GetValueInt(), "{0}", _getFlag(FollowersToggle))
 	registerFollowers = AddTextOption("$CEE_E6", "")
 	oidHKRegisterFollowers = AddKeyMapOption("Register followers key", Condiexp_HKRegisterFollowers.GetValueInt())
+	ArousedModifiers_B = AddToggleOption("Aroused Modifiers", ArousedModifiersToggle)
+	ArousedModifiersNotifications_B = AddToggleOption("Aroused Modifiers Notifications", ArousedModifiersNotificationsToggle)
 EndFunction
 
 Function Maintenance()
@@ -438,6 +446,24 @@ if (option == Combat_B) && CombatToggle == True
 		ArousedToggle = True
 		SetToggleOptionValue(Aroused_B, ArousedToggle)
 		Condiexp_GlobalAroused.SetValueInt(1)
+
+	elseif (option == ArousedModifiers_B) && ArousedModifiersToggle == True
+		ArousedModifiersToggle = False
+		SetToggleOptionValue(ArousedModifiers_B, ArousedModifiersToggle)
+		Condiexp_GlobalArousalModifiers.SetValueInt(0)
+	elseif (option == ArousedModifiers_B) && ArousedModifiersToggle == False
+		ArousedModifiersToggle = True
+		SetToggleOptionValue(ArousedModifiers_B, ArousedModifiersToggle)
+		Condiexp_GlobalArousalModifiers.SetValueInt(1)
+
+	elseif (option == ArousedModifiersNotifications_B) && ArousedModifiersNotificationsToggle == True
+		ArousedModifiersNotificationsToggle = False
+		SetToggleOptionValue(ArousedModifiersNotifications_B, ArousedModifiersNotificationsToggle)
+		Condiexp_GlobalArousalModifiersNotifications.SetValueInt(0)
+	elseif (option == ArousedModifiersNotifications_B) && ArousedModifiersNotificationsToggle == False
+		ArousedModifiersNotificationsToggle = True
+		SetToggleOptionValue(ArousedModifiersNotifications_B, ArousedModifiersNotificationsToggle)
+		Condiexp_GlobalArousalModifiersNotifications.SetValueInt(1)
 
 	elseif (option == Verbose_B) && VerboseToggle == True
 		VerboseToggle = False

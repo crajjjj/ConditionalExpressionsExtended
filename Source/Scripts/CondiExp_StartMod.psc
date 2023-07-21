@@ -116,7 +116,9 @@ EndEvent
 Event onPlayerLoadGame()
 	log("CondiExp_StartMod: Game reload event")
 	;to avoid expressions during load sequence
-	PlayerRef.RemoveSpell(CondiExp_Fatigue1)
+	if (PlayerRef)
+		PlayerRef.RemoveSpell(CondiExp_Fatigue1)
+	endif
 	_checkPlugins = 1
 	RegisterForSingleUpdate(5)
 endEvent
@@ -206,6 +208,11 @@ function init()
 endfunction
 
 Event OnUpdate()
+	if (!PlayerRef)
+		log("CondiExp_StartMod: PlayerRef empty")
+		RegisterForSingleUpdate(5)
+		return
+	endif
 	;postponed module init
 	If _checkPlugins > 0
 		_checkPlugins += 1
@@ -234,7 +241,7 @@ Event OnUpdate()
 		Condiexp_CurrentlyCold.SetValueInt(coldy)
 		If (coldy == 0)
 			if !PlayerRef.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 2 
-				SendSLAModEvent(50, "is not feeling very aroused because it's raining", PlayerRef)
+				OnCondiExpSLAEvent(50, "is not feeling very aroused because it's raining", PlayerRef)
 			endif
 		EndIf
 		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(PlayerRef))
@@ -289,7 +296,7 @@ int function getColdStatus(Actor act )
 	If Condiexp_ColdMethod.GetValueInt() == 1
 		If Temp.GetValueInt() > 2
 			trace(act,"CondiExp_StartMod: getColdStatus frostfall:  is cold", Condiexp_Verbose.GetValueInt())
-			SendSLAModEvent(50, "is not feeling aroused because of cold", act)
+			OnCondiExpSLAEvent(50, "is not feeling aroused because of cold", act)
 			return 1
 			else
 			return 0
@@ -297,15 +304,15 @@ int function getColdStatus(Actor act )
 	elseIf Condiexp_ColdMethod.GetValueInt() == 2 || Condiexp_ColdMethod.GetValueInt() == 3
 		If act.HasSpell(Cold1)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is chilly", Condiexp_Verbose.GetValueInt())
-				SendSLAModEvent(50, "is not feeling very aroused because it's chilly", act)
+				OnCondiExpSLAEvent(50, "is not feeling very aroused because it's chilly", act)
 				return 1
 			ElseIf act.HasSpell(Cold2)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is cold", Condiexp_Verbose.GetValueInt())
-				SendSLAModEvent(25, "is not feeling aroused because it's cold", act)
+				OnCondiExpSLAEvent(25, "is not feeling aroused because it's cold", act)
 				return 1
 			elseif act.HasSpell(Cold3)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is freezing", Condiexp_Verbose.GetValueInt())
-				SendSLAModEvent(0, "is not feeling aroused because it's freezing", act)
+				OnCondiExpSLAEvent(0, "is not feeling aroused because it's freezing", act)
 				return 1
 			else	
 				return 0
@@ -313,13 +320,16 @@ int function getColdStatus(Actor act )
 	elseIf Condiexp_ColdMethod.GetValueInt() == 4
 		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
 			trace(act,"CondiExp_StartMod: getColdStatus vanilla: is cold", Condiexp_Verbose.GetValueInt())
-			SendSLAModEvent(50, "is not feeling aroused because it's cold", act)
+			OnCondiExpSLAEvent(50, "is not feeling aroused because it's cold", act)
 			return 1
 		else
 			return 0
 		endif
+	elseIf Condiexp_ColdMethod.GetValueInt() == 5
+		log("Condiexp_ColdMethod is set to auto and wasn't updated", 1)
 	endif
-	
+
+	return 0
 endfunction
 
 int function getDirtyStatus(Actor act)
@@ -361,6 +371,7 @@ int function getDirtyStatus(Actor act)
 	else
 		return 0
 	EndIf
+	return 0
 endfunction
 
 int function getTraumaStatus(Actor act)
@@ -378,10 +389,10 @@ int function getTraumaStatus(Actor act)
 			int AROUSAL_BLOCKING_TRAUMA_LEVEL = 6
 			if trauma >= AROUSAL_BLOCKING_TRAUMA_LEVEL
 				trace(act, "CondiExp_StartMod: blocking arousal cause of high trauma", Condiexp_Verbose.GetValueInt())
-				SendSLAModEvent(0, " not feeling aroused because of strong trauma", act)
+				OnCondiExpSLAEvent(0, " not feeling aroused because of strong trauma", act)
 				;setArousaToValue(act, sla, slaArousalFaction, 0)
 			ElseIf (true)
-				SendSLAModEvent(50, " not feeling very aroused because of trauma", act)
+				OnCondiExpSLAEvent(50, " not feeling very aroused because of trauma", act)
 			endif
 			return trauma
 		endif
@@ -418,13 +429,15 @@ int function getArousalStatus(Actor act)
 	return 0
 endfunction
 
-Event OnCondiExpSLAEvent(String eventName, int arg1, String arg2, Form act)
+Event OnCondiExpSLAEvent(int arousalCap, String notification, Form act)
 	If !sla || Condiexp_GlobalArousalModifiers.GetValueInt() == 0
+		trace_line("Event received but Condiexp_GlobalArousalModifiers is disabled", Condiexp_Verbose.GetValueInt())
 		return
 	endif
-	trace_line("CondiExp_StartMod: OnCondiExpSLAEvent Actor" + act.GetName() + " Message: "+ arg2, Condiexp_Verbose.GetValueInt())
-	if setArousaToValue(act as Actor, sla, slaArousalFaction, arg1) &&  Condiexp_GlobalArousalModifiersNotifications.GetValueInt() == 1
-		Notification((act as Actor).GetLeveledActorBase().GetName() + " " + arg2)
+	trace(act as Actor,"CondiExp_StartMod: OnCondiExpSLAEvent: "+ notification, Condiexp_Verbose.GetValueInt())
+	bool wasChanged = setArousaToValue(act as Actor, sla, slaArousalFaction, arousalCap)
+	if  wasChanged && (Condiexp_GlobalArousalModifiersNotifications.GetValueInt() == 1)
+		Notification((act as Actor).GetLeveledActorBase().GetName() + " " + notification)
 	endif
  EndEvent
 
@@ -483,42 +496,48 @@ Function StopMod()
 	Condiexp_ModSuspended.SetValueInt(1)
 	utility.wait(3)
 	resetConditions()
-
 	PlayerRef.RemoveSpell(CondiExp_Fatigue1)
 	resetMFG(PlayerRef)
-
-	UnregisterForModEvent("dhlp-Suspend")
-	UnregisterForModEvent("dhlp-Resume")
-	UnregisterForModEvent("ostim_end")
-	UnregisterForModEvent("ostim_start")
-	UnregisterForModEvent("CondiExp_SLAEvent")
+	unregisterEvents()
 	log("Stopped")
 endfunction
 
 Function StartMod()
 	resetConditions()
+	PlayerRef.RemoveSpell(CondiExp_Fatigue1)
+	resolveAutoColdMethod()
+	trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): " + Condiexp_ColdMethod.GetValueInt(), Condiexp_Verbose.GetValueInt())
 	init()
 	Utility.Wait(0.5)
-	PlayerRef.RemoveSpell(CondiExp_Fatigue1)
 	PlayerRef.AddSpell(CondiExp_Fatigue1, false)
 	;for compatibility with other mods
+	unregisterEvents()
+	registerEvents()
+	If CondiExp_Sounds.GetValueInt() > 0
+		NewRace()
+	Endif
+	Condiexp_ModSuspended.SetValueInt(0)
+	RegisterForSingleUpdate(5)
+	log("Started")
+Endfunction
+
+Function unregisterEvents()
 	UnregisterForModEvent("dhlp-Suspend")
 	UnregisterForModEvent("dhlp-Resume")
 	UnregisterForModEvent("ostim_end")
 	UnregisterForModEvent("ostim_start")
-	UnregisterForModEvent("OnCondiExp_SLAEvent")
+	UnregisterForModEvent("CondiExp_SLAEvent")
+endfunction
+
+Function registerEvents()
 	RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
 	RegisterForModEvent("dhlp-Resume", "OnDhlpResume")
 	RegisterForModEvent("ostim_start", "OnDhlpSuspend")
 	RegisterForModEvent("ostim_end", "OnDhlpResume")
 	RegisterForModEvent("CondiExp_SLAEvent","OnCondiExpSLAEvent")
+endfunction
 
-	If CondiExp_Sounds.GetValueInt() > 0
-		NewRace()
-	Endif
-
-	trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): " + Condiexp_ColdMethod.GetValueInt(), Condiexp_Verbose.GetValueInt())
-
+Function resolveAutoColdMethod()
 	If Condiexp_GlobalCold.GetValueInt() == 1 && Condiexp_ColdMethod.GetValueInt() == 5
 		If Game.IsPluginInstalled("Frostfall.esp")
 		;Frostfall Installed
@@ -538,16 +557,12 @@ Function StartMod()
 			trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): 4 - Vanilla", Condiexp_Verbose.GetValueInt())
 		endif
 	endif
-	Condiexp_ModSuspended.SetValueInt(0)
-	RegisterForSingleUpdate(5)
-	log("Started")
-Endfunction
-
+endfunction
 
 Event OnRaceSwitchComplete()
-If CondiExp_Sounds.GetValueInt() > 0
-	NewRace()
-Endif
+	If CondiExp_Sounds.GetValueInt() > 0
+		NewRace()
+	Endif
 EndEvent
 
 Event OnKeyDown(Int KeyCode)

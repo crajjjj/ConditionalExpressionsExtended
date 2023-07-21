@@ -199,13 +199,13 @@ Function Settings()
 	_expression_strength_slider = AddSliderOption("$CEE_D9", Condiexp_ExpressionStr.GetValue(), "{2}", OPTION_FLAG_NONE)
 	_modifier_strength_slider = AddSliderOption("$CEE_E1", Condiexp_ModifierStr.GetValue(), "{2}", OPTION_FLAG_NONE)
 	_phoneme_strength_slider = AddSliderOption("$CEE_E2", Condiexp_PhonemeStr.GetValue(), "{2}", OPTION_FLAG_NONE)
+	ArousedModifiers_B = AddToggleOption("Aroused Modifiers", ArousedModifiersToggle)
+	ArousedModifiersNotifications_B = AddToggleOption("Aroused Modifiers Notifications", ArousedModifiersNotificationsToggle)
 	AddHeaderOption("$CEE_E3")
 	Followers_B =  AddToggleOption("$CEE_E4", CondiExpFollowerQuest.IsRunning())
 	_update_interval_followers_slider = AddSliderOption("$CEE_E5", Condiexp_FollowersUpdateInterval.GetValueInt(), "{0}", _getFlag(FollowersToggle))
 	registerFollowers = AddTextOption("$CEE_E6", "")
 	oidHKRegisterFollowers = AddKeyMapOption("Register followers key", Condiexp_HKRegisterFollowers.GetValueInt())
-	ArousedModifiers_B = AddToggleOption("Aroused Modifiers", ArousedModifiersToggle)
-	ArousedModifiersNotifications_B = AddToggleOption("Aroused Modifiers Notifications", ArousedModifiersNotificationsToggle)
 EndFunction
 
 Function Maintenance()
@@ -300,22 +300,21 @@ If (option == ColdMethod_M)
 	if index == 0
 		;ColdMethodList[0] = "Vanilla - Snowing"
 		Condiexp_ColdMethod.SetValueInt(4)
-	elseif index == 1
-		;ColdMethodList[1] = "Frostfall"
-		Condiexp_ColdMethod.SetValueInt(1)
-	elseif index == 2
-		;ColdMethodList[2] = "Frostbite"
-		Condiexp_ColdMethod.SetValueInt(2)
-	elseif index == 3
-		;ColdMethodList[3] = "Sunhelm Survival"
-		Condiexp_ColdMethod.SetValueInt(3)
-	else
+		elseif index == 1
+			;ColdMethodList[1] = "Frostfall"
+			Condiexp_ColdMethod.SetValueInt(1)
+		elseif index == 2
+			;ColdMethodList[2] = "Frostbite"
+			Condiexp_ColdMethod.SetValueInt(2)
+		elseif index == 3
+			;ColdMethodList[3] = "Sunhelm Survival"
+			Condiexp_ColdMethod.SetValueInt(3)
+		else
 		;ColdMethodList[4] = "Automatic"
-		Condiexp_ColdMethod.SetValueInt(5)
-		_restart()
-		Notification("Restarted to apply Automatic Cold Detection option!")
+			Condiexp_ColdMethod.SetValueInt(5)
 	endif
-	
+	_restart()
+	Notification("Restarted to apply Cold Detection option!")
 endif
 EndEvent
 

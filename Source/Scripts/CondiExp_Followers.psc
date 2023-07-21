@@ -19,28 +19,18 @@ int additionalLagBig = 30
 
 Actor act
 
+;only for player actor
 Event OnPlayerLoadGame()
 	log("CondiExp_Followers OnPlayerLoadGame.Actor: " + act.GetLeveledActorBase().GetName())
 	ResetQuest(this_quest)
 EndEvent
 
 Event OnInit()
-	act = self.GetActorReference()
-	int verboseInt = Condiexp_Verbose.GetValueInt()
-	If (!act)
-		self.Clear()
-		act = None
-		Return
-	EndIf
-	If act == PlayerRef
-		verbose(act, "FollowersQuest: started" , verboseInt)
-		Return
-	EndIf
-	if (!ResetPhonemeModifier(act))
-		verbose(act, "FollowersQuest: can't reset phoneme modifier - stopping", verboseInt)
-		return
+	If (act)
+		log("CondiExp_Followers OnInit. Actor: " + act.GetLeveledActorBase().GetName())
+	else
+		log("CondiExp_Followers OnInit. Actor empty", 1)
 	endif
-	log("CondiExp_Followers OnInit. Actor: " + act.GetLeveledActorBase().GetName())
 	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + 10)
 EndEvent
 
@@ -48,14 +38,14 @@ Event OnUpdate()
 	int verboseInt = Condiexp_Verbose.GetValueInt()
 	act = self.GetActorReference()
 	If (!act)
-		verbose(act, "Actor was removed" , verboseInt)
+		trace_line("Actor was removed" , verboseInt)
 		self.Clear()
 		act = None
 		Return
 	EndIf
 	
 	If act == PlayerRef
-		verbose(act, "FollowersQuest: player onupdate" , verboseInt)
+		verbose(act, "FollowersQuest: started" , verboseInt)
 		Return
 	EndIf
 	
@@ -68,7 +58,7 @@ Event OnUpdate()
 	
 	float dist = act.GetDistance(PlayerRef)
 
-	If (dist > 1000)
+	If (dist > 1500)
 		verbose(act, "Actor is too far - removing" , verboseInt)
 		self.Clear()
 		act = None

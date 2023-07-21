@@ -322,8 +322,10 @@ Int Function RandomNumber(bool isPO3ExtenderInstalled, int a, int b) global
 
 Function SendSLAModEvent(Int arousalCap, String notification, Actor act) Global
     Int eid = ModEvent.Create("CondiExp_SLAEvent")
-    ModEvent.PushInt(eid, arousalCap)
-	ModEvent.PushString(eid, notification)
-	ModEvent.PushForm(eid, act)
-    ModEvent.Send(eid)
+	if (eid)
+    	ModEvent.PushInt(eid, arousalCap)
+		ModEvent.PushString(eid, notification)
+		ModEvent.PushForm(eid, act)
+   		ModEvent.Send(eid)
+	endIf
 EndFunction

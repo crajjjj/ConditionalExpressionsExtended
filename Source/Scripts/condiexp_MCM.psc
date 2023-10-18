@@ -106,6 +106,14 @@ string EatingFastSlow
 int EatingFastSlowIndex = 1
 string[] EatingFastSlowList
 
+int Phase_M
+string[] PhaseList
+int PhaseListIndex = 1
+int ExpressionType_M
+string[] ExpressionTypeList
+int ExpressionTypeListIndex = 1
+int TestExpr
+
 int ColdMethod_M
 string ColdMethod
 int ColdMethodIndex = 4
@@ -148,6 +156,21 @@ Event OnConfigOpen()
 	ColdMethodList[2] = "$CEE_B2"
 	ColdMethodList[3] = "$CEE_B3"
 	ColdMethodList[4] = "$CEE_B4"
+
+	PhaseList = new string[7]
+	PhaseList[0] = "1"
+	PhaseList[1] = "2"
+	PhaseList[2] = "3"
+	PhaseList[3] = "4"
+	PhaseList[4] = "5"
+	PhaseList[5] = "6"
+	PhaseList[6] = "7"
+
+	ExpressionTypeList = new string[4]
+	ExpressionTypeList[0] = "Pain"
+	ExpressionTypeList[1] = "Arousal"
+	ExpressionTypeList[2] = "Trauma"
+	ExpressionTypeList[3] = "Dirty"
 EndEvent
 
 Event OnPageReset(string page)
@@ -171,7 +194,6 @@ Function Expressions()
 	SetCursorFillMode(LEFT_TO_RIGHT)
 	AddHeaderOption("Conditional Expressions Extended.Version: " + GetVersionString())
 	AddHeaderOption("$CEE_B7")
-	AddEmptyOption()
 	AddEmptyOption()
 	AddEmptyOption()
 	EatingFastSlow_M = AddMenuOption("$CEE_B8", EatingFastSlowList[EatingFastSlowIndex])
@@ -216,20 +238,60 @@ Function Settings()
 EndFunction
 
 Function Maintenance()
-	SetCursorFillMode(TOP_TO_BOTTOM)
+	SetCursorFillMode(LEFT_TO_RIGHT)
 	AddHeaderOption("$CEE_E7")
 	AddEmptyOption()
+
 	Update = AddTextOption("$CEE_E8", "")
 	restore = AddTextOption("Reset Current Expression: " + currentExpression, "")
+
 	Uninstall = AddTextOption("$CEE_F1", "")
 	Verbose_B =  AddToggleOption("$CEE_F2", VerboseToggle)
+
 	oidHKPause = AddKeyMapOption("Pause-Unpause mod  key", Condiexp_HKPause.GetValueInt())
+	AddEmptyOption()
+	
 	AddHeaderOption("Loaded expressions")
+	AddHeaderOption("Test expressions")
+
 	arousalExprRegistered = AddTextOption("Arousal Expressions:", arousalExpr.PhasesMale + arousalExpr.PhasesFemale)
+	ExpressionType_M = AddMenuOption("ExpressionType", ExpressionTypeList[ExpressionTypeListIndex])
+
  	traumaExprRegistered = AddTextOption("Trauma Expressions:", traumaExpr.PhasesMale + traumaExpr.PhasesFemale)
+	 Phase_M = AddMenuOption("Phase", PhaseList[PhaseListIndex])
+
  	dirtyExprRegistered = AddTextOption("Dirty Expressions:", dirtyExpr.PhasesMale + dirtyExpr.PhasesFemale)
+	AddTextOptionST("TEST_EXPRESSIONS_STATE","Test Expression","GO", OPTION_FLAG_NONE)
  	painExprRegistered = AddTextOption("Pain Expressions:", painExpr.PhasesMale + painExpr.PhasesFemale)
 EndFunction
+
+State TEST_EXPRESSIONS_STATE
+    Event OnSelectST()
+        SetOptionFlagsST(OPTION_FLAG_DISABLED)
+		int phaseNum = PhaseListIndex + 1
+		CondiExp_util.resetMFG(PlayerRef)
+		if ExpressionTypeListIndex == 0
+			Notification("Pain expression:" + phaseNum )
+			painExpr.apply(PlayerRef, phaseNum, 100)
+		elseIf (ExpressionTypeListIndex == 1)
+			Notification("Arousal expression:" + phaseNum)
+			arousalExpr.apply(PlayerRef, phaseNum, 100)
+		elseIf (ExpressionTypeListIndex == 2)
+			Notification("Trauma expression:" + phaseNum)
+			TraumaExpr.apply(PlayerRef, phaseNum, 100)
+		elseIf (ExpressionTypeListIndex == 3)
+			Notification("Dirty expression:" + phaseNum)
+			DirtyExpr.apply(PlayerRef, phaseNum, 100)
+		endif
+
+		SetTextOptionValueST("Applied")
+        SetOptionFlagsST(OPTION_FLAG_NONE)
+    EndEvent
+	
+	Event OnHighlightST()
+		SetInfoText("Click to apply. Pause the mod to stop the update cycle")
+    EndEvent
+EndState
 
 Event OnOptionSliderOpen(Int mcm_option)
 	If (mcm_option == _update_interval_slider)
@@ -289,21 +351,38 @@ event OnOptionMenuOpen(int option)
 		SetMenuDialogOptions(ColdMethodList)
 		SetMenuDialogStartIndex(ColdMethodIndex)
 		SetMenuDialogDefaultIndex(4)
+
+	elseif (option == ExpressionType_M)
+		SetMenuDialogOptions(ExpressionTypeList)
+		SetMenuDialogStartIndex(ExpressionTypeListIndex)
+		SetMenuDialogDefaultIndex(0)
+	elseif (option == Phase_M)
+		SetMenuDialogOptions(PhaseList)
+		SetMenuDialogStartIndex(PhaseListIndex)
+		SetMenuDialogDefaultIndex(0)
 	endIf
 endEvent
 
 
 event OnOptionMenuAccept(int option, int index)
+	if (option == ExpressionType_M)
+		ExpressionTypeListIndex = index
+		SetMenuOptionValue(ExpressionType_M, ExpressionTypeList[ExpressionTypeListIndex])
+	endif
+	if (option == Phase_M)
+		PhaseListIndex = index
+		SetMenuOptionValue(Phase_M, PhaseList[PhaseListIndex])
+	endif
 	if (option == EatingFastSlow_M)
 		EatingFastSlowIndex = index
 		SetMenuOptionValue(EatingFastSlow_M, EatingFastSlowList[EatingFastSlowIndex])
-	if index == 0
-		Condiexp_GlobalEating.SetValueInt(2)
-	elseif index == 1
-		Condiexp_GlobalEating.SetValueInt(1)
-	elseif index == 2
-		Condiexp_GlobalEating.SetValueInt(0)
-	endif
+		if index == 0
+			Condiexp_GlobalEating.SetValueInt(2)
+		elseif index == 1
+			Condiexp_GlobalEating.SetValueInt(1)
+		elseif index == 2
+			Condiexp_GlobalEating.SetValueInt(0)
+		endif
 	endif
 
 If (option == ColdMethod_M)
@@ -328,6 +407,7 @@ If (option == ColdMethod_M)
 	_restart()
 	Notification("Restarted to apply Cold Detection option!")
 endif
+
 EndEvent
 
 
@@ -532,7 +612,7 @@ if (option == Combat_B) && CombatToggle == True
 		else
 			ShowMessage("$CEE_G7")
 		endIf
-		
+
 endif
 
 endevent

@@ -6,9 +6,9 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
 
 - Added followers support (Up to 10 followers)
 - Added SunhelmSurvival support for cold expressions
-- Added trauma (pain) expressions for diseases. There's a chance also for a sobbing sound. (can be disabled in mcm)
-- Added sad expressions based on dirtiness level (Dirt&Blood || Keep it clean || Bathing in Skyrim are supported)
-- Added aroused expressions based on arousal level (OSL Aroused)
+- Added trauma (pain) expressions for diseases. There's a chance also for a sobbing sound. (can be disabled in mcm). Customisable
+- Added sad expressions based on dirtiness level (Dirt&Blood || Keep it clean || Bathing in Skyrim are supported). Customisable
+- Added aroused expressions based on arousal level (OSL Aroused). Customisable
 - Smoother exression changes
 - Code refactored - random script is no longer used for condition checking. Cold scripts simplified.
 - SL compatibility is built-in via sl factions (osmelmc patch).
@@ -17,10 +17,12 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
 - Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching. E.g. compatible with "The Trappings of Fate" mod.
 - Compatibility with apropos2 w&t or ZAP slave faction condition for trauma expressions
 - Added arousal cap feature with different conditions.Examples - if it's raining arousal capped by 50
+- Json based customisations for expressions
  
 ## Hard dependencies
 
-- Conditional Expressions - Subtle Face Animations
+- MFG fix
+- PapyrusUtil 
  
 ## Installation
 

@@ -7,6 +7,7 @@ Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
 GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 condiexp_MCM Property config auto
+CondiExp_BaseExpression Property painExpr Auto
 
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana.. expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
@@ -16,8 +17,8 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    config.currentExpression = "Pain"
-    PlayPainExpression(PlayerRef, config)
+    config.currentExpression = painExpr.Name
+    PlayPainExpression(PlayerRef, painExpr)
     Utility.Wait(3)
     resetMFGSmooth(PlayerRef)
     config.currentExpression = ""

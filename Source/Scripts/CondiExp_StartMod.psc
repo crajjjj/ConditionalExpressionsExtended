@@ -79,6 +79,11 @@ Spell Property TrapDiseaseRattles Auto
 Spell Property TrapDiseaseRockjoint Auto
 Spell Property TrapDiseaseWitbane Auto
 
+CondiExp_BaseExpression Property arousalExpr Auto
+CondiExp_BaseExpression Property traumaExpr Auto
+CondiExp_BaseExpression Property dirtyExpr Auto
+CondiExp_BaseExpression Property painExpr Auto
+
 ;Bathing mod
 MagicEffect DirtinessStage2Effect 
 MagicEffect DirtinessStage3Effect
@@ -205,6 +210,12 @@ function init()
 		DirtinessStage4Effect = GetKICDirtinessStage4Effect()
 	endif
 	log("CondiExp_StartMod: Bathing mod: " + LoadedBathMod)
+	
+	; load expressions
+	arousalExpr.Initialize()
+	traumaExpr.Initialize()
+	dirtyExpr.Initialize()
+	painExpr.Initialize()
 endfunction
 
 Event OnUpdate()

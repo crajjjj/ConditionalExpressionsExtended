@@ -12,7 +12,7 @@ GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_Verbose Auto
 condiexp_MCM Property config auto
-
+CondiExp_BaseExpression Property dirtyExpr Auto
 bool playing = false
 
 ;dirty is not strong emotion and can be overridden by pain etc
@@ -32,8 +32,9 @@ endfunction
 
 Function dirty()
 	If isDirtyEnabled()
-        config.currentExpression = "Dirty"
-		PlayDirtyExpression(PlayerRef,  Condiexp_CurrentlyDirty.GetValueInt() as Int, config)
+        config.currentExpression = dirtyExpr.Name
+		Int dirty = Condiexp_CurrentlyDirty.GetValueInt() as Int
+		PlayDirtyExpression(PlayerRef, dirty, dirtyExpr)
     else
 		log("CondiExp_Dirty: cancelled effect")
 	endif

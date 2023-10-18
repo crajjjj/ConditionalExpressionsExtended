@@ -26,7 +26,7 @@ condiexp_MCM Property config auto
 
 Faction Property SexLabAnimatingFaction Auto ;empty - to delete
 GlobalVariable Property Condiexp_Verbose Auto
-
+CondiExp_BaseExpression Property traumaExpr Auto
 
 bool playing = false
 
@@ -57,14 +57,14 @@ endfunction
 
 Function trauma()
 	If isTraumaEnabled()
-        config.currentExpression = "Trauma"
+        config.currentExpression = traumaExpr.Name
 		Int trauma = Condiexp_CurrentlyTrauma.GetValueInt() as Int
 		;disease use case
 		if trauma == 0
 			trace(PlayerRef, "Trauma: disease ", Condiexp_Verbose.GetValueInt())
 			trauma = 6
 		endif
-		PlayTraumaExpression(PlayerRef, trauma, config)
+		PlayTraumaExpression(PlayerRef, trauma, traumaExpr)
 		BreatheAndSob(trauma)
 		Utility.Wait( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
     else

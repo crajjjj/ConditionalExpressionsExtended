@@ -43,7 +43,10 @@ Spell Property CondiExp_Effects Auto
 Actor Property PlayerRef Auto
 Quest Property CondiExpQuest Auto
 Quest Property CondiExpFollowerQuest Auto
-
+CondiExp_BaseExpression Property arousalExpr Auto
+CondiExp_BaseExpression Property traumaExpr Auto
+CondiExp_BaseExpression Property dirtyExpr Auto
+CondiExp_BaseExpression Property painExpr Auto
 
 int Combat_B
 int Drunk_B
@@ -73,6 +76,10 @@ int _update_interval_followers_slider
 int _expression_strength_slider
 int _modifier_strength_slider
 int _phoneme_strength_slider
+int arousalExprRegistered
+int traumaExprRegistered
+int dirtyExprRegistered
+int painExprRegistered
 
 bool CombatToggle = true
 bool DrunkToggle = true
@@ -217,6 +224,11 @@ Function Maintenance()
 	Uninstall = AddTextOption("$CEE_F1", "")
 	Verbose_B =  AddToggleOption("$CEE_F2", VerboseToggle)
 	oidHKPause = AddKeyMapOption("Pause-Unpause mod  key", Condiexp_HKPause.GetValueInt())
+	AddHeaderOption("Loaded expressions")
+	arousalExprRegistered = AddTextOption("Arousal Expressions:", arousalExpr.PhasesMale + arousalExpr.PhasesFemale)
+ 	traumaExprRegistered = AddTextOption("Trauma Expressions:", traumaExpr.PhasesMale + traumaExpr.PhasesFemale)
+ 	dirtyExprRegistered = AddTextOption("Dirty Expressions:", dirtyExpr.PhasesMale + dirtyExpr.PhasesFemale)
+ 	painExprRegistered = AddTextOption("Pain Expressions:", painExpr.PhasesMale + painExpr.PhasesFemale)
 EndFunction
 
 Event OnOptionSliderOpen(Int mcm_option)

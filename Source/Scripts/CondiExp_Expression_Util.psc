@@ -7,7 +7,7 @@ import Math
 import CondiExp_log
 import CondiExp_util
 
-Function PlayArousedExpression(Actor act, int aroused, condiexp_MCM config) global
+Function PlayArousedExpression(Actor act, int aroused, CondiExp_BaseExpression expr) global
 	Int power = aroused
 	if power > 100
 		power = 100
@@ -24,10 +24,9 @@ Function PlayArousedExpression(Actor act, int aroused, condiexp_MCM config) glob
 			topMargin = 7
 		endif 
 		Int randomEffect = Utility.RandomInt(1, topMargin)
-		verbose(act, "Aroused: Arousal: " + aroused + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValueInt())
-		_arousedVariants(randomEffect, act, power, config)
+		expr.Apply(act, randomEffect, power)
 	Else
-		CondiExp_log.trace(act, "Aroused: Arousal: " + aroused + ".Effect: skip ", config.Condiexp_Verbose.GetValueInt())
+		CondiExp_log.trace(act, "Aroused: Arousal: " + aroused + ".Effect: skip ")
 	endif
 
 	Int randomLook = Utility.RandomInt(1, 10)
@@ -40,7 +39,7 @@ Function PlayArousedExpression(Actor act, int aroused, condiexp_MCM config) glob
 	endif
 EndFunction
 
-Function PlayTraumaExpression(Actor act, int trauma, condiexp_MCM config) global
+Function PlayTraumaExpression(Actor act, int trauma, CondiExp_BaseExpression expr) global
 	Int power = 10 + trauma * 10
 	if power > 100
 		power = 100
@@ -58,10 +57,11 @@ Function PlayTraumaExpression(Actor act, int trauma, condiexp_MCM config) global
 			topMargin = 10
 		endif 
 		Int randomEffect = Utility.RandomInt(bottomMargin, topMargin)
-		verbose(act,"Trauma: Trauma: " + trauma + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValueInt())
-		_traumaVariants(randomEffect, act, power, config)
+		;verbose(act,"Trauma: Trauma: " + trauma + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValueInt())
+		;_traumaVariants(randomEffect, act, power, config)
+		expr.Apply(act, randomEffect, power)
 	else
-		CondiExp_log.trace(act,"Trauma: skipping. Trauma: " + trauma, config.Condiexp_Verbose.GetValueInt())
+		CondiExp_log.trace(act, "Trauma: Trauma: " + trauma + ".Effect: skip ")
 	endif
 	Utility.Wait(1)
 
@@ -76,17 +76,22 @@ Function PlayTraumaExpression(Actor act, int trauma, condiexp_MCM config) global
 	Utility.Wait(5)
 EndFunction
 
-Function PlayDirtyExpression(Actor act, int dirty, condiexp_MCM config) global
-	Int power = 100
-	;random skip 33%
+Function PlayDirtyExpression(Actor act, int dirty, CondiExp_BaseExpression expr) global
+	Int power = 25 + dirty * 25
+	if power > 100
+		power = 100
+	endif
+;random skip 33%
 	Int randomSkip = Utility.RandomInt(1, 10)
-	if randomSkip > 5
-		verbose(act, "Dirty: playing effect: " + dirty, config.Condiexp_Verbose.GetValueInt())
-    	_dirtyVariants(dirty, act, power, config)
-	elseif randomSkip > 3
-		Disgust(60, act)
+	if randomSkip > 3
+		int topMargin = 2
+		if dirty > 2
+			topMargin = 7
+		endif 
+		Int randomEffect = Utility.RandomInt(1, topMargin)
+		expr.Apply(act, randomEffect, power)
 	else
-		CondiExp_log.trace(act, "Dirty: skipping effect: " + dirty, config.Condiexp_Verbose.GetValueInt())
+		CondiExp_log.trace(act, "Dirty: Dirty: " + dirty + ".Effect: skip ")
 	endif
 
 	Int randomLook = Utility.RandomInt(1, 10)
@@ -96,6 +101,8 @@ Function PlayDirtyExpression(Actor act, int dirty, condiexp_MCM config) global
 		LookRight(50, act)
 	ElseIf randomLook == 8
 		LookDown(50, act)
+	Elseif randomLook == 9
+		Disgust(60, act)
 	endif
 EndFunction
 
@@ -110,261 +117,15 @@ Function Breathe(Actor act, bool final = true) global
 	endif
 EndFunction
 
-Function PlayPainExpression(Actor act, condiexp_MCM config) global
+Function PlayPainExpression(Actor act, CondiExp_BaseExpression expr) global
     Int Order = Utility.RandomInt(1, 4)
-	
-    verbose(act,"Pain: Effect: " + Order, config.Condiexp_Verbose.GetValueInt())
-    If Order == 1
-        act.SetExpressionOverride(9,60)
-        MfgConsoleFunc.SetModifier(act,2,52)
-        MfgConsoleFunc.SetModifier(act,3,52)
-        MfgConsoleFunc.SetPhoneMe(act,5,30)
-    elseif Order == 2
-        MfgConsoleFunc.SetModifier(act,4,115)
-        MfgConsoleFunc.SetModifier(act,5,115)
-        MfgConsoleFunc.SetPhoneMe(act,4,30)
-        act.SetExpressionOverride(3,50)
-    elseif Order == 3
-        MfgConsoleFunc.SetModifier(act,4,115)
-        MfgConsoleFunc.SetModifier(act,5,115)
-        MfgConsoleFunc.SetModifier(act,0,70)
-        MfgConsoleFunc.SetPhoneMe(act,4,30)
-    elseif Order == 4
-        MfgConsoleFunc.SetModifier(act,4,115)
-        MfgConsoleFunc.SetModifier(act,5,115)
-        MfgConsoleFunc.SetModifier(act,1,70)
-        MfgConsoleFunc.SetPhoneMe(act,4,30)
-    Endif
+	expr.Apply(act, Order, 100)
 EndFunction
 
 Function PlayRandomExpression(Actor act, condiexp_MCM config) global
 	verbose(act,"Random emotion", config.Condiexp_Verbose.GetValueInt())
 	RandomEmotion(act, config)
 EndFunction
-
-; Sets an expression to override any other expression other systems may give this actor.
-;							7 - Mood Neutral
-; 0 - Dialogue Anger		8 - Mood Anger		15 - Combat Anger
-; 1 - Dialogue Fear			9 - Mood Fear		16 - Combat Shout
-; 2 - Dialogue Happy		10 - Mood Happy
-; 3 - Dialogue Sad			11 - Mood Sad
-; 4 - Dialogue Surprise		12 - Mood Surprise
-; 5 - Dialogue Puzzled		13 - Mood Puzzled
-; 6 - Dialogue Disgusted	14 - Mood Disgusted
-; aiStrength is from 0 to 100 (percent)
-Function _arousedVariants(Int index, Actor act, int Power, condiexp_MCM config) global
-	if Power > 100
-		Power = 100
-	endif
-
-	float exprStr = config.Condiexp_ExpressionStr.GetValue()
-	float modStr = config.Condiexp_ModifierStr.GetValue()
-	float phStr = config.Condiexp_PhonemeStr.GetValue()
-
-	if index == 1
-
-		SmoothSetExpression(act, 2, Power, 0, exprStr)
-		SmoothSetPhoneme(act, 5, 30, phStr)
-		SmoothSetPhoneme(act, 6, 10, phStr)
-	elseIf  index == 2
-		SmoothSetExpression(act, 10, Power, 0, exprStr)
-		
-		SmoothSetModifier(act,0,1,10,modStr)
-		SmoothSetModifier(act,2,3,25,modStr)
-		SmoothSetModifier(act,6,7,100,modStr)
-		SmoothSetModifier(act,12,13,30,modStr)
-		
-		SmoothSetPhoneme(act, 4, 35, phStr)
-		SmoothSetPhoneme(act, 10, 20, phStr)
-		SmoothSetPhoneme(act, 12, 30, phStr)
-	elseIf  index == 3
-		SmoothSetExpression(act, 4, Power, 0, exprStr)
-
-		SmoothSetModifier(act, 11,-1, 20, modStr)
-
-		SmoothSetPhoneme(act, 1, 10, phStr)
-		SmoothSetPhoneme(act, 11, 10, phStr)
-	elseIf  index == 4
-
-		SmoothSetExpression(act, 10, Power, 0, exprStr)
-		SmoothSetPhoneme(act, 0, 30, phStr)
-		SmoothSetPhoneme(act, 7, 60, phStr)
-		SmoothSetPhoneme(act, 12, 40, phStr)
-
-		SmoothSetModifier(act,0,1,30, modStr)
-		SmoothSetModifier(act,4,5,100, modStr)
-		SmoothSetModifier(act,12,13,30, modStr)
-	elseIf index == 5
-		SmoothSetExpression(act, 5, Power, 0, exprStr)
-		SmoothSetPhoneme(act, 8, 25, phStr)
-		SmoothSetModifier(act,2,3,20, modStr)
-	elseIf index == 6
-		SmoothSetExpression(act, 10, Power, 0, exprStr)
-		SmoothSetPhoneme(act, 0, 60, phStr)
-		SmoothSetPhoneme(act, 6, 50, phStr)
-		SmoothSetPhoneme(act, 7, 50, phStr)
-
-		SmoothSetModifier(act,0,1,30, modStr)
-		SmoothSetModifier(act,2,3,70, modStr)
-		SmoothSetModifier(act,4,5,100, modStr)
-		SmoothSetModifier(act,12,13,40, modStr)
-	else
-		SmoothSetExpression(act, 7, Power, 0, exprStr)
-		SmoothSetPhoneme(act, 0, 60, phStr)
-		SmoothSetPhoneme(act, 6, 50, phStr)
-		SmoothSetPhoneme(act, 7, 50, phStr)
-
-		SmoothSetModifier(act,0,1,30, modStr)
-		SmoothSetModifier(act,2,3,80, modStr)
-		SmoothSetModifier(act,4,5,100, modStr)
-		SmoothSetModifier(act,12,13,60, modStr)
-	endIf
-endFunction
-
-; Sets an expression to override any other expression other systems may give this actor.
-;							7 - Mood Neutral
-; 0 - Dialogue Anger		8 - Mood Anger		15 - Combat Anger
-; 1 - Dialogue Fear			9 - Mood Fear		16 - Combat Shout
-; 2 - Dialogue Happy		10 - Mood Happy
-; 3 - Dialogue Sad			11 - Mood Sad
-; 4 - Dialogue Surprise		12 - Mood Surprise
-; 5 - Dialogue Puzzled		13 - Mood Puzzled
-; 6 - Dialogue Disgusted	14 - Mood Disgusted
-; aiStrength is from 0 to 100 (percent)
-Function _traumaVariants(Int index, Actor act, int Power, condiexp_MCM config) global
-	if Power > 100
-		Power = 100
-	endif
-
-	float exprStr = config.Condiexp_ExpressionStr.GetValue()
-	float modStr = config.Condiexp_ModifierStr.GetValue()
-	float phStr = config.Condiexp_PhonemeStr.GetValue()
-
-
-	if index == 1
-		SmoothSetExpression(act,1,Power,0, exprStr)
-		SmoothSetPhoneme(act, 1, 10, phStr)
-		SmoothSetPhoneme(act, 5, 30, phStr)
-		SmoothSetPhoneme(act, 7, 50, phStr)
-		SmoothSetPhoneme(act, 15, 50, phStr)
-	elseIf index == 2
-		
-		SmoothSetExpression(act,3,Power,0, exprStr)
-
-		SmoothSetModifier(act,11,-1,50, modStr)
-		SmoothSetModifier(act,13,-1,14, modStr)
-
-		SmoothSetPhoneme(act, 2, 50, phStr)
-		SmoothSetPhoneme(act, 13, 10, phStr)
-		SmoothSetPhoneme(act, 15, 20, phStr)
-	elseIf index == 3
-	
-		SmoothSetExpression(act,3,Power,0, exprStr)
-
-		SmoothSetModifier(act,11,-1, 40, modStr)
-		SmoothSetModifier(act,13,-1, 14, modStr)
-
-		SmoothSetPhoneme(act, 2, 50, phStr)
-		SmoothSetPhoneme(act, 13, 15, phStr)
-		SmoothSetPhoneme(act, 15, 25, phStr)
-	elseIf index == 4
-		SmoothSetExpression(act,3,Power,0, exprStr)
-	
-		SmoothSetModifier(act,11,-1,50, modStr)
-		SmoothSetModifier(act,13,-1,14, modStr)
-
-		SmoothSetPhoneme(act, 2, 50, phStr)
-		SmoothSetPhoneme(act, 13, 10, phStr)
-		SmoothSetPhoneme(act, 15, 20, phStr)
-	elseIf index == 5
-	
-		SmoothSetExpression(act,9, Power, 0, exprStr)
-	
-		SmoothSetModifier(act,2,3,100, modStr)
-		SmoothSetModifier(act,4,5,100, modStr)
-		SmoothSetModifier(act,11,-1,90, modStr)
-
-		SmoothSetPhoneme(act, 2, 10, phStr)
-		SmoothSetPhoneme(act, 0, 10, phStr)
-	elseIf index == 6
-		SmoothSetExpression(act,9,Power,0, exprStr)
-
-		SmoothSetModifier(act,2,3,100, modStr)
-		SmoothSetModifier(act,4,5,100, modStr)
-		SmoothSetModifier(act,11,-1,90, modStr)
-
-		SmoothSetPhoneme(act, 0, 10, phStr)
-		SmoothSetPhoneme(act, 2, 100, phStr)
-		SmoothSetPhoneme(act, 11, 20, phStr)
-	elseIf index == 7
-		SmoothSetExpression(act,8,Power,0, exprStr)
-
-		SmoothSetModifier(act,0,1,100, modStr)
-		SmoothSetModifier(act,2,3,100, modStr)
-
-		SmoothSetModifier(act,4,5,100, modStr)
-		SmoothSetPhoneme(act, 2, 100, phStr)
-		SmoothSetPhoneme(act, 5, 40, phStr)
-	else
-		SmoothSetExpression(act,8,Power,0, exprStr)
-	
-		SmoothSetModifier(act,0,1,100, modStr)
-		SmoothSetModifier(act,2,3,100, modStr)
-		SmoothSetModifier(act,4,5,100, modStr)
-
-		SmoothSetPhoneme(act, 2, 50, phStr)
-		SmoothSetPhoneme(act, 5, 50, phStr)
-		SmoothSetPhoneme(act, 11, 10, phStr)
-	endIf
-endFunction
-
-; Sets an expression to override any other expression other systems may give this actor.
-;							7 - Mood Neutral
-; 0 - Dialogue Anger		8 - Mood Anger		15 - Combat Anger
-; 1 - Dialogue Fear			9 - Mood Fear		16 - Combat Shout
-; 2 - Dialogue Happy		10 - Mood Happy
-; 3 - Dialogue Sad			11 - Mood Sad
-; 4 - Dialogue Surprise		12 - Mood Surprise
-; 5 - Dialogue Puzzled		13 - Mood Puzzled
-; 6 - Dialogue Disgusted	14 - Mood Disgusted
-; aiStrength is from 0 to 100 (percent)
-
-Function _dirtyVariants(Int index, Actor act, int Power, condiexp_MCM config) global
-	Int expression = Utility.RandomInt(1, index)
-	
-	float exprStr = config.Condiexp_ExpressionStr.GetValue()
-	float modStr = config.Condiexp_ModifierStr.GetValue()
-	float phStr = config.Condiexp_PhonemeStr.GetValue()
-	
-	if expression == 1
-	
-		SmoothSetExpression(act, 3, 30, 0, exprStr)
-		SmoothSetPhoneme(act,2,100, phStr)
-	
-	elseIf expression == 2
-	
-		SmoothSetModifier(act,2,3,50, modStr)
-		SmoothSetModifier(act,4,5,50, modStr)
-		SmoothSetModifier(act,12,13,50, modStr)
-
-		SmoothSetExpression( act,3, 60, 0, exprStr)
-        SmoothSetPhoneme(act, 1, 10, phStr)
-		SmoothSetPhoneme(act, 2, 100, phStr)
-		
-	else
-		SmoothSetModifier(act,2,3,50, modStr)
-		SmoothSetModifier(act,4,5,50, modStr)
-
-		SmoothSetModifier(act,12,13,50, modStr)
-		SmoothSetExpression(act,3, 90, 0, exprStr)
-		
-		SmoothSetPhoneme(act, 2, 100, phStr)
-		SmoothSetPhoneme(act, 7, 50, phStr)
-		SmoothSetPhoneme(act, 1, 10, phStr)
-	endIf
-endFunction
-
-
 
 Function RandomEmotion(Actor act, condiexp_MCM config) Global
 

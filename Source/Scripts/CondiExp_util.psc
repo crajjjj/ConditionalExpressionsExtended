@@ -13,7 +13,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 104005
+    Return 105000
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -23,7 +23,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.4.5"
+    Return "1.5.0"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -134,7 +134,6 @@ EndFunction
 ;LookUp 11
 ;SquintL 12
 ;SquintR 13
-
 ;for changing 2 values at the same time (e.g. eyes squint)
 ;set -1 to mod2 if not needed 
 Function SmoothSetModifier(Actor act, Int mod1, Int mod2, Int str_dest, float strModifier = 1.0) global
@@ -329,3 +328,31 @@ Function SendSLAModEvent(Int arousalCap, String notification, Actor act) Global
    		ModEvent.Send(eid)
 	endIf
 EndFunction
+
+int[] function ToIntArray(float[] FloatArray) global
+	int[] Output = new int[32]
+	int i = FloatArray.Length
+	while i
+		i -= 1
+		if i == 30
+			Output[i] = FloatArray[i] as int
+		else
+			Output[i] = (FloatArray[i] * 100.0) as int
+		endIf
+	endWhile
+	return Output
+endFunction
+
+float[] function ToFloatArray(int[] IntArray) global
+	float[] Output = new float[32]
+	int i = IntArray.Length
+	while i
+		i -= 1
+		if i == 30
+			Output[i] = IntArray[i] as float
+		else
+			Output[i] = (IntArray[i] as float) / 100.0
+		endIf
+	endWhile
+	return Output
+endFunction

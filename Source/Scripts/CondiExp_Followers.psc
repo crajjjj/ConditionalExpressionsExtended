@@ -99,7 +99,7 @@ Event OnUpdate()
 	EndIf
 
 	If (act.GetActorValuePercentage("Health") < 0.40 && config.Condiexp_GlobalPain.GetValueInt() == 1)
-		PlayPainExpression(act, config)
+		PlayPainExpression(act, config.painExpr)
 		SendSLAModEvent(25, "is not feeling aroused because of pain", act)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + 3)
 		Return
@@ -126,7 +126,7 @@ Event OnUpdate()
 
 	int trauma = sm.getTraumaStatus(act)
 	If (trauma > 0)
-		PlayTraumaExpression( act, trauma, config)
+		PlayTraumaExpression( act, trauma, config.traumaExpr)
 		resetMFGSmooth(act)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
@@ -134,7 +134,7 @@ Event OnUpdate()
 
 	int dirty = sm.getDirtyStatus(act)
 	If (dirty > 0)
-		PlayDirtyExpression( act, dirty, config)
+		PlayDirtyExpression( act, dirty, config.dirtyExpr)
 		Utility.Wait(5)
 		resetMFGSmooth(act)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
@@ -143,7 +143,7 @@ Event OnUpdate()
 
 	int aroused = sm.getArousalStatus(act)
 	If (aroused > 0)
-		PlayArousedExpression( act, aroused, config)
+		PlayArousedExpression( act, aroused, config.arousalExpr)
 		Utility.Wait(5)
 		resetMFGSmooth(act)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())

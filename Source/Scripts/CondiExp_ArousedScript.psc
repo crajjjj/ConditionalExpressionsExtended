@@ -12,6 +12,7 @@ GlobalVariable Property Condiexp_CurrentlyAroused Auto
 GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_Sounds Auto
 GlobalVariable Property Condiexp_Verbose Auto
+CondiExp_BaseExpression Property arousalExpr Auto
 
 condiexp_MCM Property config auto
 
@@ -25,9 +26,9 @@ EndEvent
 
 Function aroused()
 	If isArousedEnabled()
-        config.currentExpression = "Aroused"
+        config.currentExpression = arousalExpr.Name
 		Int arousal = Condiexp_CurrentlyAroused.GetValueInt()
-		PlayArousedExpression(PlayerRef, arousal, config)
+		PlayArousedExpression(PlayerRef, arousal, arousalExpr)
 		Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
     else
 		log("CondiExp_Aroused: cancelled effect")
@@ -35,7 +36,7 @@ Function aroused()
 EndFunction
 
 bool function isArousedEnabled()
-	bool enabled =  !PlayerRef.IsDead() && Condiexp_GlobalAroused.GetValueInt() == 1
+	bool enabled = !PlayerRef.IsDead() && Condiexp_GlobalAroused.GetValueInt() == 1
 	enabled = enabled && Condiexp_ModSuspended.GetValueInt() == 0  && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
 	enabled = enabled && !PlayerRef.IsRunning() 
 	enabled = enabled && playing

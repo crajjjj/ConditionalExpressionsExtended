@@ -30,6 +30,10 @@ string property File hidden
 	endFunction
 endProperty
 
+Event OnInit()
+	Initialize()
+EndEvent
+
 int[] Phases
 int[] property PhaseCounts hidden
 	int[] function get()

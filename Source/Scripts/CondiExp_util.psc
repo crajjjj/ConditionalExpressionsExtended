@@ -84,11 +84,18 @@ Bool Function isToysReady() Global
 	Return isDependencyReady("Toys.esm")
 EndFunction
 
+;Bool Function isDependencyReady(String modname) Global
+	;Return Game.IsPluginInstalled(modname)
+;EndFunction
+
 Bool Function isDependencyReady(String modname) Global
-	Return Game.IsPluginInstalled(modname)
+	int index = Game.GetModByName(modname)
+	if index == 255 || index == -1
+		return false
+	else
+		return true
+	endif
 EndFunction
-
-
 
 ;Aah 0    BigAah 1
 ;BMP 2    ChjSh 3
@@ -315,7 +322,7 @@ Int Function RandomNumber(bool isPO3ExtenderInstalled, int a, int b) global
 	if isPO3ExtenderInstalled
 	  return PO3_SKSEFunctions.GenerateRandomInt(a, b)
 	else
-	  Utility.RandomInt(a,b)
+	  return Utility.RandomInt(a,b)
 	endif
   EndFunction
 

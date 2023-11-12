@@ -13,7 +13,7 @@ condiexp_MCM Property config auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
-    SendSLAModEvent(60, "not feeling very aroused because of headache", PlayerRef)
+    SendSLAModEvent(0, "not feeling very aroused because of headache", PlayerRef)
 EndEvent
 
 

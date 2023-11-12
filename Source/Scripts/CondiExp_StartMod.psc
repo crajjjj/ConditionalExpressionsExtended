@@ -110,6 +110,7 @@ Keyword ToysEffectMouthOpen
 ;SLA
 Quest sla
 Faction slaArousalFaction
+Faction slaExposureFaction
 
 int _checkPlugins = 0
 
@@ -147,10 +148,11 @@ function init()
 	if vZadGagEffect
 		log("CondiExp_StartMod: Found Devious Devices - Integration: " + vZadGagEffect.GetName() )
 	endif
-	if !sla || !slaArousalFaction
+	if !sla || !slaArousalFaction || !slaExposureFaction
 		if isSLAReady()
 			sla = Game.GetFormFromFile(0x4290F, "SexLabAroused.esm") As Quest
 			slaArousalFaction = Game.GetFormFromFile(0x3FC36, "SexLabAroused.esm") As Faction
+			slaExposureFaction = Game.GetFormFromFile(0x25837, "SexLabAroused.esm") As Faction
 		endif
 	endif
 	if sla && slaArousalFaction
@@ -252,7 +254,7 @@ Event OnUpdate()
 		Condiexp_CurrentlyCold.SetValueInt(coldy)
 		If (coldy == 0)
 			if !PlayerRef.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 2 
-				OnCondiExpSLAEvent(50, "is not feeling very aroused because it's raining", PlayerRef)
+				OnCondiExpSLAEvent(0, "is not feeling very aroused because it's raining", PlayerRef)
 			endif
 		EndIf
 		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(PlayerRef))
@@ -307,7 +309,7 @@ int function getColdStatus(Actor act )
 	If Condiexp_ColdMethod.GetValueInt() == 1
 		If Temp.GetValueInt() > 2
 			trace(act,"CondiExp_StartMod: getColdStatus frostfall:  is cold", Condiexp_Verbose.GetValueInt())
-			OnCondiExpSLAEvent(50, "is not feeling aroused because of cold", act)
+			OnCondiExpSLAEvent(0, "is not feeling aroused because of cold", act)
 			return 1
 			else
 			return 0
@@ -315,11 +317,11 @@ int function getColdStatus(Actor act )
 	elseIf Condiexp_ColdMethod.GetValueInt() == 2 || Condiexp_ColdMethod.GetValueInt() == 3
 		If act.HasSpell(Cold1)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is chilly", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(50, "is not feeling very aroused because it's chilly", act)
+				OnCondiExpSLAEvent(10, "is not feeling very aroused because it's chilly", act)
 				return 1
 			ElseIf act.HasSpell(Cold2)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is cold", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(25, "is not feeling aroused because it's cold", act)
+				OnCondiExpSLAEvent(5, "is not feeling aroused because it's cold", act)
 				return 1
 			elseif act.HasSpell(Cold3)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is freezing", Condiexp_Verbose.GetValueInt())
@@ -331,7 +333,7 @@ int function getColdStatus(Actor act )
 	elseIf Condiexp_ColdMethod.GetValueInt() == 4
 		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
 			trace(act,"CondiExp_StartMod: getColdStatus vanilla: is cold", Condiexp_Verbose.GetValueInt())
-			OnCondiExpSLAEvent(50, "is not feeling aroused because it's cold", act)
+			OnCondiExpSLAEvent(0, "is not feeling aroused because it's cold", act)
 			return 1
 		else
 			return 0
@@ -402,8 +404,8 @@ int function getTraumaStatus(Actor act)
 				trace(act, "CondiExp_StartMod: blocking arousal cause of high trauma", Condiexp_Verbose.GetValueInt())
 				OnCondiExpSLAEvent(0, " not feeling aroused because of strong trauma", act)
 				;setArousaToValue(act, sla, slaArousalFaction, 0)
-			ElseIf (true)
-				OnCondiExpSLAEvent(50, " not feeling very aroused because of trauma", act)
+			else
+				OnCondiExpSLAEvent(10, " not feeling very aroused because of trauma", act)
 			endif
 			return trauma
 		endif
@@ -446,7 +448,7 @@ Event OnCondiExpSLAEvent(int arousalCap, String notification, Form act)
 		return
 	endif
 	trace(act as Actor,"CondiExp_StartMod: OnCondiExpSLAEvent: "+ notification, Condiexp_Verbose.GetValueInt())
-	bool wasChanged = setArousaToValue(act as Actor, sla, slaArousalFaction, arousalCap)
+	bool wasChanged = setExposureToValue(act as Actor, sla, slaExposureFaction, arousalCap)
 	if  wasChanged && (Condiexp_GlobalArousalModifiersNotifications.GetValueInt() == 1)
 		Notification((act as Actor).GetLeveledActorBase().GetName() + " " + notification)
 	endif

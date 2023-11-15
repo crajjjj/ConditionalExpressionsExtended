@@ -9,7 +9,7 @@ Int Function getArousal0To100(Actor act, Quest sla, Faction arousalFaction) glob
 
 	Int arousal = act.GetFactionRank(arousalFaction)
 	If (arousal < 0)
-		arousal = (sla as slaFrameworkScr).GetActorArousal(act)
+		 arousal = (sla as slaFrameworkScr).GetActorArousal(act)
 	EndIf
 	
 	if arousal < 0
@@ -37,14 +37,32 @@ Bool Function setArousaToValue(Actor act, Quest sla, Faction arousalFaction,Int 
 	return false
 endfunction
 
-Bool Function setExposureToValue(Actor act, Quest sla, Faction exposureFaction, Int exposureCap) global
+Bool Function capExposureAndArousal(Actor act, Quest sla, Faction exposureFaction, Faction arousalFaction, Int cap) global
 	if !sla || !act
 		return false
 	endif
+	bool result = false
 	Int exposure = getExposureLevel(exposureFaction, sla, act)
-	if exposure > (exposureCap + 5)
-		(sla as slaFrameworkScr).SetActorExposure(act,exposureCap)
-		return true
+	int arousal = getArousal0To100( act, sla, arousalFaction)
+	
+	int additionalCap = 50
+	if cap == 0
+		additionalCap = 100
 	endif
-	return false
+
+	if arousal > (cap + 5)
+		int handle = ModEvent.Create("slaSetArousalEffect")
+            ModEvent.PushForm(handle, act)
+            ModEvent.PushString(handle, "CondiExpArousalCap")
+            ModEvent.PushFloat(handle, cap-arousal-additionalCap)
+            ModEvent.PushInt(handle, 2);
+            ModEvent.PushFloat(handle, cap-additionalCap * 24.0); -100 each hour
+            ModEvent.PushFloat(handle, cap-additionalCap * 2 ); remove when cap reached
+		result = ModEvent.Send(handle)
+	endif
+	if exposure > (cap + 5)
+		(sla as slaFrameworkScr).SetActorExposure(act,cap)
+		result = true
+	endif
+	return result
 EndFunction

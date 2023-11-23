@@ -13,7 +13,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 105002
+    Return 105003
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -23,7 +23,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.5.2"
+    Return "1.5.3"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -326,11 +326,13 @@ Int Function RandomNumber(bool isPO3ExtenderInstalled, int a, int b) global
 	endif
   EndFunction
 
-Function SendSLAModEvent(Int arousalCap, String notification, Actor act) Global
+Function SendSLAModEvent(Int arousalCap, int decrease, String notification, Actor act, String effectName="CondiExpArousalCap") Global
     Int eid = ModEvent.Create("CondiExp_SLAEvent")
 	if (eid)
     	ModEvent.PushInt(eid, arousalCap)
+		ModEvent.PushInt(eid, decrease)
 		ModEvent.PushString(eid, notification)
+		ModEvent.PushString(eid, effectName)
 		ModEvent.PushForm(eid, act)
    		ModEvent.Send(eid)
 	endIf

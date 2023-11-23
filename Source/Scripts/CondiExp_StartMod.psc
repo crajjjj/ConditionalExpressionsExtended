@@ -254,7 +254,7 @@ Event OnUpdate()
 		Condiexp_CurrentlyCold.SetValueInt(coldy)
 		If (coldy == 0)
 			if !PlayerRef.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 2 
-				OnCondiExpSLAEvent(20, "is not feeling very aroused because it's raining", PlayerRef)
+				OnCondiExpSLAEvent(30, 100, "is not feeling very aroused because it's raining", "CondiExpRaining", PlayerRef)
 			endif
 		EndIf
 		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(PlayerRef))
@@ -309,7 +309,7 @@ int function getColdStatus(Actor act )
 	If Condiexp_ColdMethod.GetValueInt() == 1
 		If Temp.GetValueInt() > 2
 			trace(act,"CondiExp_StartMod: getColdStatus frostfall:  is cold", Condiexp_Verbose.GetValueInt())
-			OnCondiExpSLAEvent(0, "is not feeling aroused because of cold", act)
+			OnCondiExpSLAEvent(0, 150, "is not feeling aroused because of cold", "CondiExpCold", act)
 			return 1
 			else
 			return 0
@@ -317,23 +317,23 @@ int function getColdStatus(Actor act )
 	elseIf Condiexp_ColdMethod.GetValueInt() == 2 || Condiexp_ColdMethod.GetValueInt() == 3
 		If act.HasSpell(Cold1)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is chilly", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(40, "is not feeling very aroused because it's chilly", act)
+				OnCondiExpSLAEvent(40, 100, "is not feeling very aroused because it's chilly", "CondiExpChilly", act)
 				return 1
 			ElseIf act.HasSpell(Cold2)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is cold", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(20, "is not feeling aroused because it's cold", act)
+				OnCondiExpSLAEvent(20, 150, "is not feeling aroused because it's cold", "CondiExpCold", act)
 				return 1
 			elseif act.HasSpell(Cold3)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is freezing", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(0, "is not feeling aroused because it's freezing", act)
+				OnCondiExpSLAEvent(0, 200, "is not feeling aroused because it's freezing", "CondiExpFreezing", act)
 				return 1
-			else	
+			else
 				return 0
 		endif
 	elseIf Condiexp_ColdMethod.GetValueInt() == 4
 		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
 			trace(act,"CondiExp_StartMod: getColdStatus vanilla: is cold", Condiexp_Verbose.GetValueInt())
-			OnCondiExpSLAEvent(0, "is not feeling aroused because it's cold", act)
+			OnCondiExpSLAEvent(0, 150, "is not feeling aroused because of cold", "CondiExpCold", act)
 			return 1
 		else
 			return 0
@@ -399,13 +399,14 @@ int function getTraumaStatus(Actor act)
 		if trauma > 1 && trauma > Condiexp_MinTrauma.GetValueInt()
 			trace(act, "CondiExp_StartMod: updateTraumaStatus - AverageAbuseState: " + trauma, Condiexp_Verbose.GetValueInt())
 			;No arousal when high trauma
-			int AROUSAL_BLOCKING_TRAUMA_LEVEL = 6
-			if trauma >= AROUSAL_BLOCKING_TRAUMA_LEVEL
+			int AROUSAL_BLOCKING_TRAUMA_MAJOR = 6
+			int AROUSAL_BLOCKING_TRAUMA_MINOR = 3
+			if trauma >= AROUSAL_BLOCKING_TRAUMA_MAJOR
 				trace(act, "CondiExp_StartMod: blocking arousal cause of high trauma", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(0, " not feeling aroused because of strong trauma", act)
+				OnCondiExpSLAEvent(0, trauma*30, " not feeling aroused because of strong trauma", "CondiExpTraumaStrong", act)
 				;setArousaToValue(act, sla, slaArousalFaction, 0)
-			else
-				OnCondiExpSLAEvent(10, " not feeling very aroused because of trauma", act)
+			elseif trauma >= AROUSAL_BLOCKING_TRAUMA_MINOR
+				OnCondiExpSLAEvent(30, trauma*10, " not feeling very aroused because of trauma", "CondiExpTrauma", act)
 			endif
 			return trauma
 		endif
@@ -442,13 +443,13 @@ int function getArousalStatus(Actor act)
 	return 0
 endfunction
 
-Event OnCondiExpSLAEvent(int arousalCap, String notification, Form act)
+Event OnCondiExpSLAEvent(int arousalCap, int decrease, String notification, String effectName, Form act)
 	If !sla || Condiexp_GlobalArousalModifiers.GetValueInt() == 0
 		trace_line("Event received but Condiexp_GlobalArousalModifiers is disabled", Condiexp_Verbose.GetValueInt())
 		return
 	endif
 	trace(act as Actor,"CondiExp_StartMod: OnCondiExpSLAEvent: "+ notification, Condiexp_Verbose.GetValueInt())
-	bool wasChanged = capExposureAndArousal(act as Actor, sla, slaExposureFaction, slaArousalFaction, arousalCap)
+	bool wasChanged = capExposureAndArousal(act as Actor, sla, slaExposureFaction, arousalCap, decrease, effectName)
 	if  wasChanged && (Condiexp_GlobalArousalModifiersNotifications.GetValueInt() == 1)
 		Notification((act as Actor).GetLeveledActorBase().GetName() + " " + notification)
 	endif

@@ -26,7 +26,6 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusy.SetValueInt(1)
     resetMFGSmooth(akTarget)
     trace(PlayerRef, "Fatigue: OnEffectStart.Lock:" + lock, Condiexp_Verbose.GetValueInt())
-    SendSLAModEvent(30, 50, "not feeling very aroused because of fatigue", PlayerRef, "CondiExpFatigue")
 EndEvent
 
 bool function isFatigueActive()

@@ -11,7 +11,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     config.currentExpression = "Water squint"
     verbose(PlayerRef, "Water squint", config.Condiexp_Verbose.GetValueInt())
-    SendSLAModEvent(0, 100, "not feeling very aroused because of swimming", PlayerRef, "CondiExpSwimming")
+    SendSLAModEvent(20, 60, "not feeling very aroused because of swimming", PlayerRef, "CondiExpSwimming")
     Squint()
 EndEvent
 

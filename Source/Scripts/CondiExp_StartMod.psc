@@ -317,11 +317,11 @@ int function getColdStatus(Actor act )
 	elseIf Condiexp_ColdMethod.GetValueInt() == 2 || Condiexp_ColdMethod.GetValueInt() == 3
 		If act.HasSpell(Cold1)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is chilly", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(40, 100, "is not feeling very aroused because it's chilly", "CondiExpChilly", act)
+				OnCondiExpSLAEvent(40, 80, "is not feeling very aroused because it's chilly", "CondiExpChilly", act)
 				return 1
 			ElseIf act.HasSpell(Cold2)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is cold", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(20, 150, "is not feeling aroused because it's cold", "CondiExpCold", act)
+				OnCondiExpSLAEvent(20, 120, "is not feeling aroused because it's cold", "CondiExpCold", act)
 				return 1
 			elseif act.HasSpell(Cold3)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is freezing", Condiexp_Verbose.GetValueInt())
@@ -333,7 +333,7 @@ int function getColdStatus(Actor act )
 	elseIf Condiexp_ColdMethod.GetValueInt() == 4
 		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
 			trace(act,"CondiExp_StartMod: getColdStatus vanilla: is cold", Condiexp_Verbose.GetValueInt())
-			OnCondiExpSLAEvent(0, 150, "is not feeling aroused because of cold", "CondiExpCold", act)
+			OnCondiExpSLAEvent(0, 120, "is not feeling aroused because of cold", "CondiExpCold", act)
 			return 1
 		else
 			return 0
@@ -449,7 +449,7 @@ Event OnCondiExpSLAEvent(int arousalCap, int decrease, String notification, Stri
 		return
 	endif
 	trace(act as Actor,"CondiExp_StartMod: OnCondiExpSLAEvent: "+ notification, Condiexp_Verbose.GetValueInt())
-	bool wasChanged = capExposureAndArousal(act as Actor, sla, slaExposureFaction, arousalCap, decrease, effectName)
+	bool wasChanged = capExposureAndArousal(act as Actor, sla, slaExposureFaction, slaArousalFaction, arousalCap, decrease, effectName)
 	if  wasChanged && (Condiexp_GlobalArousalModifiersNotifications.GetValueInt() == 1)
 		Notification((act as Actor).GetLeveledActorBase().GetName() + " " + notification)
 	endif

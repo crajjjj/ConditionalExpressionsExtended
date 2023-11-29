@@ -6,33 +6,22 @@ Int Function getArousal0To100(Actor act, Quest sla, Faction arousalFaction) glob
 	if !sla || !act
 		return 0
 	endif
-
-	Int arousal = act.GetFactionRank(arousalFaction)
-	If (arousal < 0)
-		 arousal = (sla as slaFrameworkScr).GetActorArousal(act)
-	EndIf
-	
-	if arousal < 0
-		arousal = 0
-	elseif arousal > 100
-		arousal = 100
-	endIf
-	return arousal
-EndFunction
-
-Int Function getArousal0To100Direct(Actor act, Quest sla) global
-	if !sla || !act
-		return 0
+	int slaVersion = (sla as slaFrameworkScr).GetVersion()
+	Int arousal = 0
+	if slaVersion > 20200000
+		arousal = (sla as slaFrameworkScr).GetActorArousal(act)
+	else
+		arousal = act.GetFactionRank(arousalFaction)
+		If (arousal < 0)
+			 arousal = (sla as slaFrameworkScr).GetActorArousal(act)
+		EndIf
 	endif
-
-	Int arousal = (sla as slaFrameworkScr).GetActorArousal(act)
 	if arousal < 0
 		arousal = 0
 	elseif arousal > 100
 		arousal = 100
 	endIf
 	return arousal
-
 EndFunction
 
 Int Function getExposureLevel(Faction exposureFaction, Quest sla, Actor akTarget) Global
@@ -48,25 +37,22 @@ Int Function getExposureLevel(Faction exposureFaction, Quest sla, Actor akTarget
 	return exposure
 EndFunction
 
-Bool Function setArousaToValue(Actor act, Quest sla, Faction arousalFaction,Int arousalCap) global
-	return false
-endfunction
-
-Bool Function capExposureAndArousal(Actor act, Quest sla, Faction exposureFaction, Int cap, Int decrease, String effectName) global
+Bool Function capExposureAndArousal(Actor act, Quest sla, Faction exposureFaction, Faction arousalFaction, Int cap, Int decrease, String effectName) global
 	if !sla || !act
 		return false
 	endif
 	bool result = false
+	int step = 60
 	Int exposure = getExposureLevel(exposureFaction, sla, act)
-	int arousal = getArousal0To100Direct(act, sla)
+	int arousal = getArousal0To100(act, sla, arousalFaction)
 
 	if arousal >= (cap + 5)
 		int handle = ModEvent.Create("slaSetArousalEffect")
             ModEvent.PushForm(handle, act)
             ModEvent.PushString(handle, effectName)
-            ModEvent.PushFloat(handle, arousal - decrease)
+            ModEvent.PushFloat(handle, 0-decrease); start negative
             ModEvent.PushInt(handle, 2);
-            ModEvent.PushFloat(handle, 100 * 24.0); 100 each hour
+            ModEvent.PushFloat(handle, step * 24.0); 60 each hour
             ModEvent.PushFloat(handle, 0); remove when cap reached
 
 		result = ModEvent.Send(handle)

@@ -2,7 +2,6 @@ Scriptname CondiExp_ArousedScript extends ActiveMagicEffect
 import CondiExp_log
 import CondiExp_util
 import CondiExp_Expression_Util
-Import mfgconsolefunc
 
 Actor Property PlayerRef Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto

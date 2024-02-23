@@ -1,11 +1,10 @@
 Scriptname CondiExp_Expression_Util Hidden
 
 Import Debug
-Import mfgconsolefunc
+Import CondiExp_util
 import Utility
 import Math
 import CondiExp_log
-import CondiExp_util
 
 Function PlayArousedExpression(Actor act, int aroused, CondiExp_BaseExpression expr) global
 	Int power = aroused
@@ -205,7 +204,7 @@ Function LookLeft(int n, Actor act) Global
 	int i = 0
 	
 	while i < n
-	MfgConsoleFunc.SetModifier(act, 9,i)
+	CondiExp_util.SetModifier(act, 9,i)
 	i = i + 5
 	if (i >n)
 	i = n
@@ -216,7 +215,7 @@ Function LookLeft(int n, Actor act) Global
 	Utility.Wait(0.8)
 	
 	while i > 0
-	MfgConsoleFunc.SetModifier(act, 9,i)
+	CondiExp_util.SetModifier(act, 9,i)
 	i = i - 5
 	if (i < 0)
 	i = 0
@@ -231,7 +230,7 @@ Function LookRight(int n, Actor act) Global
 	int i = 0
 	
 	while i < n
-	MfgConsoleFunc.SetModifier(act, 10,i)
+	CondiExp_util.SetModifier(act, 10,i)
 	i = i + 5
 	if (i > n)
 	i = n
@@ -242,7 +241,7 @@ Function LookRight(int n, Actor act) Global
 	Utility.Wait(1.5)
 	
 	while i > 0
-	MfgConsoleFunc.SetModifier(act, 10,i)
+	CondiExp_util.SetModifier(act, 10,i)
 	i = i - 5
 	if (i < 0)
 	i = 0
@@ -257,8 +256,8 @@ Function Squint(Actor act) Global
 	int i = 0
 	
 	while i < 55
-	MfgConsoleFunc.SetModifier(act, 12, i)
-	MfgConsoleFunc.SetModifier(act, 13, i)
+	CondiExp_util.SetModifier(act, 12, i)
+	CondiExp_util.SetModifier(act, 13, i)
 	i = i + 5
 	if (i >55)
 	i = 55
@@ -269,8 +268,8 @@ Function Squint(Actor act) Global
 	Utility.Wait(3.5)
 	
 	while i > 0
-	MfgConsoleFunc.SetModifier(act, 12, i)
-	MfgConsoleFunc.SetModifier(act, 13, i)
+	CondiExp_util.SetModifier(act, 12, i)
+	CondiExp_util.SetModifier(act, 13, i)
 	i = i - 5
 	if (i < 0)
 	i = 0
@@ -284,8 +283,8 @@ Function Frown(int n, Actor act) Global
 	int i = 0
 	
 	while i < n
-	MfgConsoleFunc.SetModifier(act, 2, i)
-	MfgConsoleFunc.SetModifier(act, 3, i)
+	CondiExp_util.SetModifier(act, 2, i)
+	CondiExp_util.SetModifier(act, 3, i)
 	i = i + 5
 	if (i > n)
 	i = n
@@ -296,8 +295,8 @@ Function Frown(int n, Actor act) Global
 	Utility.Wait(2.5)
 	
 	while i > 0
-	MfgConsoleFunc.SetModifier(act, 2, i)
-	MfgConsoleFunc.SetModifier(act, 3, i)
+	CondiExp_util.SetModifier(act, 2, i)
+	CondiExp_util.SetModifier(act, 3, i)
 	i = i - 5
 	if (i < 0)
 	i = 0
@@ -311,7 +310,7 @@ Function Smile(int n, Actor act) Global
 	int i = 0
 	
 	while i < n
-	MfgConsoleFunc.SetPhoneMe(act, 4, i)
+	CondiExp_util.SetPhoneMe(act, 4, i)
 	i = i + 5
 	if (i >n)
 	i = n
@@ -322,7 +321,7 @@ Function Smile(int n, Actor act) Global
 	Utility.Wait(3)
 	
 	while i > 0
-	MfgConsoleFunc.SetPhoneMe(act, 4, i)
+	CondiExp_util.SetPhoneMe(act, 4, i)
 	i = i - 5
 	if (i < 0)
 	i = 0
@@ -336,9 +335,9 @@ Function Angry(Actor act) Global
 	int i = 0
 	
 	while i < 70
-	MfgConsoleFunc.SetModifier(act, 2, i)
-	MfgConsoleFunc.SetModifier(act, 3, i)
-	MfgConsoleFunc.SetModifier(act, 9,i)
+	CondiExp_util.SetModifier(act, 2, i)
+	CondiExp_util.SetModifier(act, 3, i)
+	CondiExp_util.SetModifier(act, 9,i)
 	i = i + 5
 	if (i > 70)
 	i = 70
@@ -349,9 +348,9 @@ Function Angry(Actor act) Global
 	Utility.Wait(1.5)
 	
 	while i > 0
-	MfgConsoleFunc.SetModifier(act, 2, i)
-	MfgConsoleFunc.SetModifier(act, 3, i)
-	MfgConsoleFunc.SetModifier(act, 9,i)
+	CondiExp_util.SetModifier(act, 2, i)
+	CondiExp_util.SetModifier(act, 3, i)
+	CondiExp_util.SetModifier(act, 9,i)
 	i = i - 2
 	if (i < 0)
 	i = 0
@@ -365,8 +364,8 @@ Function Thinking(int n, Actor act) Global
 	int i = 0
 	
 	while i < n
-	MfgConsoleFunc.SetModifier(act, 7, i)
-	MfgConsoleFunc.SetPhoneMe(act, 7,i)
+	CondiExp_util.SetModifier(act, 7, i)
+	CondiExp_util.SetPhoneMe(act, 7,i)
 	i = i + 5
 	if (i > n)
 	i = n
@@ -377,8 +376,8 @@ Function Thinking(int n, Actor act) Global
 	Utility.Wait(2.5)
 	
 	while i > 0
-	MfgConsoleFunc.SetModifier(act, 7, i)
-	MfgConsoleFunc.SetPhoneMe(act, 7,i)
+	CondiExp_util.SetModifier(act, 7, i)
+	CondiExp_util.SetPhoneMe(act, 7,i)
 	i = i - 5
 	if (i < 0)
 	i = 0
@@ -392,11 +391,11 @@ Function Yawn(Actor act) Global
 	int i = 0
 	
 	while i < 75
-	MfgConsoleFunc.SetModifier(act, 0, i)
-	MfgConsoleFunc.SetModifier(act, 1, i)
-	MfgConsoleFunc.SetModifier(act, 6, i)
-	MfgConsoleFunc.SetModifier(act, 7, i)
-	MfgConsoleFunc.SetPhoneMe(act, 1,i)
+	CondiExp_util.SetModifier(act, 0, i)
+	CondiExp_util.SetModifier(act, 1, i)
+	CondiExp_util.SetModifier(act, 6, i)
+	CondiExp_util.SetModifier(act, 7, i)
+	CondiExp_util.SetPhoneMe(act, 1,i)
 	i = i + 3
 	if (i > 75)
 	i = 75
@@ -414,11 +413,11 @@ Function Yawn(Actor act) Global
 	endif
 	
 	while i > 0
-	MfgConsoleFunc.SetModifier(act, 0, i)
-	MfgConsoleFunc.SetModifier(act, 1, i)
-	MfgConsoleFunc.SetModifier(act, 6, i)
-	MfgConsoleFunc.SetModifier(act, 7, i)
-	MfgConsoleFunc.SetPhoneMe(act, 1,i)
+	CondiExp_util.SetModifier(act, 0, i)
+	CondiExp_util.SetModifier(act, 1, i)
+	CondiExp_util.SetModifier(act, 6, i)
+	CondiExp_util.SetModifier(act, 7, i)
+	CondiExp_util.SetPhoneMe(act, 1,i)
 	i = i - 3
 	if (i < 0)
 	i = 0
@@ -432,7 +431,7 @@ Function LookDown(int n, Actor act) Global
 	int i = 0
 	
 	while i < n
-	MfgConsoleFunc.SetModifier(act, 8,i)
+	CondiExp_util.SetModifier(act, 8,i)
 	i = i + 5
 	if (i >n)
 	i = n
@@ -443,7 +442,7 @@ Function LookDown(int n, Actor act) Global
 	Utility.Wait(1.5)
 	
 	while i > 0
-	MfgConsoleFunc.SetModifier(act, 8,i)
+	CondiExp_util.SetModifier(act, 8,i)
 	i = i - 5
 	if (i < 0)
 	i = 0
@@ -457,8 +456,8 @@ Function BrowsUp( Actor act) Global
 	int i = 0
 	
 	while i < 75
-	MfgConsoleFunc.SetModifier(act, 6, i)
-	MfgConsoleFunc.SetModifier(act, 7, i)
+	CondiExp_util.SetModifier(act, 6, i)
+	CondiExp_util.SetModifier(act, 7, i)
 	i = i + 10
 	if (i > 75)
 	i = 75
@@ -469,8 +468,8 @@ Function BrowsUp( Actor act) Global
 	Utility.Wait(2)
 	
 	while i > 0
-	MfgConsoleFunc.SetModifier(act, 6, i)
-	MfgConsoleFunc.SetModifier(act, 7, i)
+	CondiExp_util.SetModifier(act, 6, i)
+	CondiExp_util.SetModifier(act, 7, i)
 	i = i - 5
 	if (i < 0)
 	i = 0
@@ -485,9 +484,9 @@ Function BrowsUpSmile(int n, Actor act) Global
 	int i = 0
 	
 	while i < n
-	MfgConsoleFunc.SetModifier(act, 6, i)
-	MfgConsoleFunc.SetModifier(act, 7, i)
-	MfgConsoleFunc.SetPhoneMe(act, 5, i)
+	CondiExp_util.SetModifier(act, 6, i)
+	CondiExp_util.SetModifier(act, 7, i)
+	CondiExp_util.SetPhoneMe(act, 5, i)
 	
 	i = i + 5
 	if (i > n)
@@ -499,9 +498,9 @@ Function BrowsUpSmile(int n, Actor act) Global
 	Utility.Wait(1.5)
 	
 	while i > 0
-	MfgConsoleFunc.SetModifier(act, 6, i)
-	MfgConsoleFunc.SetModifier(act, 7, i)
-	MfgConsoleFunc.SetPhoneMe(act, 5, i)
+	CondiExp_util.SetModifier(act, 6, i)
+	CondiExp_util.SetModifier(act, 7, i)
+	CondiExp_util.SetPhoneMe(act, 5, i)
 	
 	i = i - 5
 	if (i < 0)
@@ -571,7 +570,7 @@ Function Inhale(int n, int j, Actor act) Global
 	int i = n
    
    while i <  j
-   MfgConsoleFunc.SetPhoneme(act, 0,i)
+   CondiExp_util.SetPhoneme(act, 0,i)
    i = i + 3
    If (i >j)
    i = j
@@ -585,7 +584,7 @@ Function Exhale(int n, int j, Actor act) Global
 	int i = n
    
    while i > j
-  	 MfgConsoleFunc.SetPhoneme(act, 0, i)
+  	 CondiExp_util.SetPhoneme(act, 0, i)
   	 i = i - 3
    	If (i < j)
    		i = j
@@ -627,7 +626,7 @@ Function HumanOuch(Actor act) global
 	int i = 0
 	
 	while i < 100
-		MfgConsoleFunc.SetPhoneMe(act, 10,i)
+		CondiExp_util.SetPhoneMe(act, 10,i)
 		i = i + 12
 		if (i > 100)
 			i = 100
@@ -638,7 +637,7 @@ Function HumanOuch(Actor act) global
 	Utility.Wait(0.2)
 	
 	while i > 0
-		MfgConsoleFunc.SetPhoneMe(act, 10,i)
+		CondiExp_util.SetPhoneMe(act, 10,i)
 		i = i - 15
 		if (i < 0)
 			i = 0
@@ -653,9 +652,9 @@ Function VampireOuch(Actor act) global
 	int i = 0
 	
 	while i < 60
-		MfgConsoleFunc.SetPhoneMe(act, 10,i)
-		MfgConsoleFunc.SetPhoneMe(act, 9,i)
-		MfgConsoleFunc.SetPhoneMe(act, 5,i)
+		CondiExp_util.SetPhoneMe(act, 10,i)
+		CondiExp_util.SetPhoneMe(act, 9,i)
+		CondiExp_util.SetPhoneMe(act, 5,i)
 	i = i + 12
 		if (i > 60)
 			i = 60
@@ -666,9 +665,9 @@ Function VampireOuch(Actor act) global
 	Utility.Wait(4)
 	
 	while i > 0
-		MfgConsoleFunc.SetPhoneMe(act, 10,i)
-		MfgConsoleFunc.SetPhoneMe(act, 9,i)
-		MfgConsoleFunc.SetPhoneMe(act, 5,i)
+		CondiExp_util.SetPhoneMe(act, 10,i)
+		CondiExp_util.SetPhoneMe(act, 9,i)
+		CondiExp_util.SetPhoneMe(act, 5,i)
 		i = i - 15
 		if (i < 0)
 			i = 0

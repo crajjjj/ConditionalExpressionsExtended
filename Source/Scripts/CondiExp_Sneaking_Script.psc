@@ -12,9 +12,9 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function KhajiitLikestoSneak()
-    MfgConsoleFunc.SetModifier(PlayerRef,12,45)
-    MfgConsoleFunc.SetModifier(PlayerRef,13,45)
-    MfgConsoleFunc.SetModifier(PlayerRef,2,20)
+    CondiExp_util.SetModifier(PlayerRef,12,45)
+    CondiExp_util.SetModifier(PlayerRef,13,45)
+    CondiExp_util.SetModifier(PlayerRef,2,20)
 
     Int Order =  RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1,12)
     If Order < 3
@@ -35,9 +35,9 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     config.currentExpression = "Sneaking"
     verbose(PlayerRef, "Sneaking", config.Condiexp_Verbose.GetValueInt())
     KhajiitLikestoSneak()
-    MfgConsoleFunc.SetModifier(PlayerRef,12,0)
-    MfgConsoleFunc.SetModifier(PlayerRef,13,0)
-    MfgConsoleFunc.SetModifier(PlayerRef,2,0)
+    CondiExp_util.SetModifier(PlayerRef,12,0)
+    CondiExp_util.SetModifier(PlayerRef,13,0)
+    CondiExp_util.SetModifier(PlayerRef,2,0)
     config.currentExpression = ""
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)
@@ -51,7 +51,7 @@ Function LookLeft()
 int i = 0
 
 while i < 70
-MfgConsoleFunc.SetModifier(PlayerRef, 9,i)
+CondiExp_util.SetModifier(PlayerRef, 9,i)
 i = i + 5
 if (i >70)
 i = 70
@@ -62,7 +62,7 @@ endwhile
 Utility.Wait(0.8)
 
 while i > 0
-MfgConsoleFunc.SetModifier(PlayerRef, 9,i)
+CondiExp_util.SetModifier(PlayerRef, 9,i)
 i = i - 5
 if (i < 0)
 i = 0
@@ -77,7 +77,7 @@ Function LookRight()
 int i = 0
 
 while i < 70
-MfgConsoleFunc.SetModifier(PlayerRef, 10,i)
+CondiExp_util.SetModifier(PlayerRef, 10,i)
 i = i + 5
 if (i >70)
 i = 70
@@ -88,7 +88,7 @@ endwhile
 Utility.Wait(1.5)
 
 while i > 0
-MfgConsoleFunc.SetModifier(PlayerRef, 10,i)
+CondiExp_util.SetModifier(PlayerRef, 10,i)
 i = i - 5
 if (i < 0)
 i = 0

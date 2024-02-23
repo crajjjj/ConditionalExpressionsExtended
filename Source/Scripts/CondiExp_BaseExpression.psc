@@ -1,8 +1,6 @@
 scriptname CondiExp_BaseExpression extends ReferenceAlias
 import CondiExp_log
 import CondiExp_util
-import mfgconsolefunc
-import CondiExp_log
 import PapyrusUtil
 
 string property Name auto
@@ -107,7 +105,7 @@ function _ApplyPresetFloats(Actor ActorRef, float[] Preset, int exprPower)
 	int m
 	; Set Phoneme
 	while p <= 15
-		if MfgConsoleFunc.GetPhoneme(ActorRef, p) != Preset[i]
+		if CondiExp_util.GetPhoneme(ActorRef, p) != Preset[i]
 			SmoothSetPhoneme(ActorRef,p,(Preset[i] * 100.0) as int, phStrModifier)
 		endIf
 		i += 1
@@ -115,7 +113,7 @@ function _ApplyPresetFloats(Actor ActorRef, float[] Preset, int exprPower)
 	endWhile
 
 	while m <= 13
-		if MfgConsoleFunc.GetModifier(ActorRef, m) != Preset[i]
+		if CondiExp_util.GetModifier(ActorRef, m) != Preset[i]
 			;both eyes involved
 			if (m == 0 || m == 2 || m == 4 || m == 6 || m == 12)
 				if Preset[i] == Preset[i+1]

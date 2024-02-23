@@ -31,7 +31,7 @@ Event OnUpdate()
     if OpenMouth == False && PlayerRef.IsinCombat() && Condiexp_ModSuspended.getValue() == 0
       verbose(PlayerRef, "Angry", Condiexp_Verbose.GetValue() as Int)
       PlayerRef.SetExpressionOverride(15,70)
-      MfgConsoleFunc.SetPhoneMe(PlayerRef, 4, 20)
+      CondiExp_util.SetPhoneMe(PlayerRef, 4, 20)
       RegisterForSingleUpdate(1)
     EndIf
 EndEvent
@@ -67,6 +67,6 @@ EndState
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
   Utility.Wait(0.5)
-  MfgConsoleFunc.ResetPhonemeModifier(PlayerRef)
+  CondiExp_util.ResetPhonemeModifier(PlayerRef)
   config.currentExpression = ""
 EndEvent

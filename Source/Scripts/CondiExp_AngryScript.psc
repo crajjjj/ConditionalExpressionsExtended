@@ -63,10 +63,8 @@ State Reacting
   EndEvent
 EndState
 
-
-
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
   Utility.Wait(0.5)
-  CondiExp_util.ResetPhonemeModifier(PlayerRef)
+  CondiExp_util.resetMFG(PlayerRef)
   config.currentExpression = ""
 EndEvent

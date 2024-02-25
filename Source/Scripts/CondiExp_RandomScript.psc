@@ -57,7 +57,7 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(1)
 	trace_line("CondiExp_Random: OnEffectFinish. Suspended: " + Condiexp_ModSuspended.GetValueInt(), Condiexp_Verbose.GetValueInt())
 	If Condiexp_ModSuspended.GetValueInt()
-		resetMFGSmooth(PlayerRef)
+		resetMFG(PlayerRef)
 	elseIf Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
 		resetMFGSmooth(PlayerRef)
 	endif

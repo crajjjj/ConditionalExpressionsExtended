@@ -101,7 +101,7 @@ int Function getSmoothDelay() global
 	return 20
 endfunction
 int Function getSmoothSpeed() global
-	return 4
+	return 5
 endfunction
 int Function getHardDelay() global
 	return 0
@@ -119,11 +119,6 @@ Function SetModifier(Actor act, Int mod1, Int str_dest, float strModifier = 1.0)
 	str_dest = (str_dest * strModifier) as Int
 	PyramidUtils.SetPhonemeModifierSmooth(act, 1, mod1, -1, str_dest, getHardSpeed(), getHardDelay())
 EndFunction
-
-; reset phoneme/modifier. TODO implement proper method without expr reset
-bool function ResetPhonemeModifier(Actor act) global
-	return PyramidUtils.SmoothResetMFG(act,getHardSpeed(),getHardDelay())
-endfunction
 
 ; get phoneme/modifier/expression
 int function GetPhoneme(Actor act, int id) global
@@ -151,18 +146,20 @@ Function SmoothSetPhoneme(Actor act, Int number, Int str_dest, float modifier = 
 	PyramidUtils.SetPhonemeModifierSmooth(act, 0, number, -1, str_dest, getSmoothSpeed(), getSmoothDelay())
 EndFunction
 
-
-
-Function SmoothSetExpression(Actor act, Int aiMood, Int aiStrength, int aiCurrentStrength, float aiModifier = 1.0) global
-	PyramidUtils.SmoothSetExpression(act, aiMood, aiStrength, aiCurrentStrength, aiModifier, getSmoothSpeed(), getSmoothDelay())
+Function ApplyExpressionPreset(Actor akActor, float[] expression, bool openMouth, int exprPower, float exprStrModifier, float modStrModifier, float phStrModifier, float afSpeed, int aiDelay) global
+	 PyramidUtils.ApplyExpressionPreset(akActor, expression, openMouth, exprPower, exprStrModifier, modStrModifier, phStrModifier, afSpeed, aiDelay)
 EndFunction
 
-Function resetMFG(Actor ac) global
-	PyramidUtils.SmoothResetMFG(ac,100,0)
+Function SmoothSetExpression(Actor act, Int aiMood, Int aiStrength, int aiCurrentStrength, float aiModifier = 1.0) global
+	PyramidUtils.SetExpressionSmooth(act, aiMood, aiStrength, aiCurrentStrength, aiModifier, getSmoothSpeed(), getSmoothDelay())
+EndFunction
+
+Function resetMFG(Actor act) global
+	PyramidUtils.SetPhonemeModifierSmooth(act, -1, 0, -1, 0, 0, 0)
 endfunction
 
 Function resetMFGSmooth(Actor ac) global
-	PyramidUtils.SmoothResetMFG(ac,getSmoothSpeed(),getSmoothDelay())
+	PyramidUtils.ResetMFGSmooth(ac,getSmoothSpeed(),getSmoothDelay())
 endfunction
 
 

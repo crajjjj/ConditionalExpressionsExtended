@@ -100,46 +100,8 @@ function _ApplyPresetFloats(Actor ActorRef, float[] Preset, int exprPower)
 	float exprStrModifier = Condiexp_ExpressionStr.GetValue()
 	float modStrModifier = Condiexp_ModifierStr.GetValue()
 	float phStrModifier = Condiexp_PhonemeStr.GetValue()
-	int i
-	int p
-	int m
-	; Set Phoneme
-	while p <= 15
-		if CondiExp_util.GetPhoneme(ActorRef, p) != Preset[i]
-			SmoothSetPhoneme(ActorRef,p,(Preset[i] * 100.0) as int, phStrModifier)
-		endIf
-		i += 1
-		p += 1
-	endWhile
 
-	while m <= 13
-		if CondiExp_util.GetModifier(ActorRef, m) != Preset[i]
-			;both eyes involved
-			if (m == 0 || m == 2 || m == 4 || m == 6 || m == 12)
-				if Preset[i] == Preset[i+1]
-					SmoothSetModifier(ActorRef, m, m+1, (Preset[i] * 100.0) as int, modStrModifier)
-					i += 1
-					m += 1
-				else
-					SmoothSetModifier(ActorRef, m, -1, (Preset[i] * 100.0) as int, modStrModifier)
-				endif 
-			else
-				SmoothSetModifier(ActorRef, m, -1, (Preset[i] * 100.0) as int, modStrModifier)
-			endif
-		endif
-		i += 1
-		m += 1
-	endWhile
-	; Set expression
-	int exprNum = Preset[30] as int
-	int exprStrResult = (Preset[31] * 100.0) as int
-	;dynamic exprPower for non angry expressions
-	if exprNum > 0
-		if exprStrResult == 0 
-			exprStrResult = exprPower
-		endif
-	endif
-	SmoothSetExpression(ActorRef, exprNum, exprStrResult, 0, exprStrModifier)
+	CondiExp_util.ApplyExpressionPreset(ActorRef, Preset, false, exprPower,  exprStrModifier,  modStrModifier,  phStrModifier,  getSmoothSpeed(), getSmoothDelay())
 endFunction
 
 

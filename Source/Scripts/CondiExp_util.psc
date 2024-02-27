@@ -159,7 +159,7 @@ Function resetMFG(Actor act) global
 endfunction
 
 Function resetMFGSmooth(Actor ac) global
-	PyramidUtils.ResetMFGSmooth(ac,getSmoothSpeed(),getSmoothDelay())
+	PyramidUtils.ResetMFGSmooth(ac, -1, getSmoothSpeed(), getSmoothDelay())
 endfunction
 
 

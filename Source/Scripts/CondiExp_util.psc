@@ -110,6 +110,22 @@ int Function getHardSpeed() global
 	return 100
 endfunction
 
+bool function isInDialogue(Actor act, bool isPC) global
+	if isPC
+		if PyramidUtils.GetPlayerSpeechTarget()
+			return true
+		else
+			return false
+		endif
+	else 
+		if act.GetDialogueTarget()
+			return true
+		else
+			return false
+		endif
+	endif
+	return false
+endfunction
 
 Function SetPhoneme(Actor act, Int number, Int str_dest, float modifier = 1.0) global
 	str_dest = (str_dest * modifier) as Int

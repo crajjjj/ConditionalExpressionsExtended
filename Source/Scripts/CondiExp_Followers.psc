@@ -114,13 +114,17 @@ Event OnUpdate()
 	EndIf
 	
 	If (!act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalStamina.GetValueInt() == 1)
-		verbose(act, "Fatigue: Effect: Breathing", verboseInt)
-		Breathe(act, false)
-		Utility.Wait(1)
-		Breathe(act, false)
-		Utility.Wait(1)
-		Breathe(act, true)
-		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+		;random skip 50%
+		Int randomSkip = Utility.RandomInt(1, 10)
+		if randomSkip > 5
+			verbose(act, "Fatigue: Effect: Breathing", verboseInt)
+			Breathe(act, false)
+			Utility.Wait(1)
+			Breathe(act, false)
+			Utility.Wait(1)
+			Breathe(act, true)
+			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+		endif
 		Return
 	EndIf
 

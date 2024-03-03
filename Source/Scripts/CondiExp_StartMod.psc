@@ -298,7 +298,11 @@ Bool function checkIfModShouldBeSuspended(Actor act)
 		log("CondiExp_StartMod: actor is in sl faction. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
 		return true
 	endif
-	
+
+	if (isInDialogue(act, act == PlayerRef ))
+		log("CondiExp_StartMod: actor is in dialogue. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
+		return true
+	endif
 	return false
 endfunction
 

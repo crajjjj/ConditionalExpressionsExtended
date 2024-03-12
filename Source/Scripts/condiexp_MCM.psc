@@ -540,7 +540,7 @@ if (option == Combat_B) && CombatToggle == True
 
 	elseif (option == ArousedModifiers_B) && ArousedModifiersToggle == True
 		ArousedModifiersToggle = False
-		SetToggleOptionValue(ArousedModifiers_B, ArousedModifiersToggle)
+		SetToggleOptionValue(ArousedModifiers_B, ArousedModifiersToggle) 
 		Condiexp_GlobalArousalModifiers.SetValueInt(0)
 	elseif (option == ArousedModifiers_B) && ArousedModifiersToggle == False
 		ArousedModifiersToggle = True

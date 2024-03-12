@@ -101,7 +101,7 @@ function _ApplyPresetFloats(Actor ActorRef, float[] Preset, int exprPower)
 	float modStrModifier = Condiexp_ModifierStr.GetValue()
 	float phStrModifier = Condiexp_PhonemeStr.GetValue()
 
-	CondiExp_util.ApplyExpressionPreset(ActorRef, Preset, false, exprPower,  exprStrModifier,  modStrModifier,  phStrModifier,  getSmoothSpeed(), getSmoothDelay())
+	CondiExp_util.ApplyExpressionPreset(ActorRef, Preset, false, exprPower,  exprStrModifier,  modStrModifier,  phStrModifier)
 endFunction
 
 

@@ -6,6 +6,16 @@ import Utility
 import Math
 import CondiExp_log
 
+int Function getSmoothSpeed() global
+	return 100 ;10
+endfunction
+int Function getSmoothSpeedHalf() global
+	return 100 ;10
+endfunction
+int Function getHardSpeed() global
+	return 100 ;50
+endfunction
+
 Function PlayArousedExpression(Actor act, int aroused, CondiExp_BaseExpression expr) global
 	Int power = aroused
 	if power > 100
@@ -205,7 +215,7 @@ Function LookLeft(int n, Actor act) Global
 	
 	while i < n
 	CondiExp_util.SetModifier(act, 9,i)
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i >n)
 	i = n
 	Endif
@@ -216,7 +226,7 @@ Function LookLeft(int n, Actor act) Global
 	
 	while i > 0
 	CondiExp_util.SetModifier(act, 9,i)
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -231,7 +241,7 @@ Function LookRight(int n, Actor act) Global
 	
 	while i < n
 	CondiExp_util.SetModifier(act, 10,i)
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i > n)
 	i = n
 	Endif
@@ -242,7 +252,7 @@ Function LookRight(int n, Actor act) Global
 	
 	while i > 0
 	CondiExp_util.SetModifier(act, 10,i)
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -258,7 +268,7 @@ Function Squint(Actor act) Global
 	while i < 55
 	CondiExp_util.SetModifier(act, 12, i)
 	CondiExp_util.SetModifier(act, 13, i)
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i >55)
 	i = 55
 	Endif
@@ -270,7 +280,7 @@ Function Squint(Actor act) Global
 	while i > 0
 	CondiExp_util.SetModifier(act, 12, i)
 	CondiExp_util.SetModifier(act, 13, i)
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -285,7 +295,7 @@ Function Frown(int n, Actor act) Global
 	while i < n
 	CondiExp_util.SetModifier(act, 2, i)
 	CondiExp_util.SetModifier(act, 3, i)
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i > n)
 	i = n
 	Endif
@@ -297,7 +307,7 @@ Function Frown(int n, Actor act) Global
 	while i > 0
 	CondiExp_util.SetModifier(act, 2, i)
 	CondiExp_util.SetModifier(act, 3, i)
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -311,7 +321,7 @@ Function Smile(int n, Actor act) Global
 	
 	while i < n
 	CondiExp_util.SetPhoneMe(act, 4, i)
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i >n)
 	i = n
 	Endif
@@ -322,7 +332,7 @@ Function Smile(int n, Actor act) Global
 	
 	while i > 0
 	CondiExp_util.SetPhoneMe(act, 4, i)
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -338,7 +348,7 @@ Function Angry(Actor act) Global
 	CondiExp_util.SetModifier(act, 2, i)
 	CondiExp_util.SetModifier(act, 3, i)
 	CondiExp_util.SetModifier(act, 9,i)
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i > 70)
 	i = 70
 	Endif
@@ -351,7 +361,7 @@ Function Angry(Actor act) Global
 	CondiExp_util.SetModifier(act, 2, i)
 	CondiExp_util.SetModifier(act, 3, i)
 	CondiExp_util.SetModifier(act, 9,i)
-	i = i - 2
+	i = i - getSmoothSpeedHalf()
 	if (i < 0)
 	i = 0
 	Endif
@@ -366,7 +376,7 @@ Function Thinking(int n, Actor act) Global
 	while i < n
 	CondiExp_util.SetModifier(act, 7, i)
 	CondiExp_util.SetPhoneMe(act, 7,i)
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i > n)
 	i = n
 	Endif
@@ -378,7 +388,7 @@ Function Thinking(int n, Actor act) Global
 	while i > 0
 	CondiExp_util.SetModifier(act, 7, i)
 	CondiExp_util.SetPhoneMe(act, 7,i)
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -396,7 +406,7 @@ Function Yawn(Actor act) Global
 	CondiExp_util.SetModifier(act, 6, i)
 	CondiExp_util.SetModifier(act, 7, i)
 	CondiExp_util.SetPhoneMe(act, 1,i)
-	i = i + 3
+	i = i + getSmoothSpeedHalf()
 	if (i > 75)
 	i = 75
 	Endif
@@ -418,7 +428,7 @@ Function Yawn(Actor act) Global
 	CondiExp_util.SetModifier(act, 6, i)
 	CondiExp_util.SetModifier(act, 7, i)
 	CondiExp_util.SetPhoneMe(act, 1,i)
-	i = i - 3
+	i = i - getSmoothSpeedHalf()
 	if (i < 0)
 	i = 0
 	Endif
@@ -432,8 +442,8 @@ Function LookDown(int n, Actor act) Global
 	
 	while i < n
 	CondiExp_util.SetModifier(act, 8,i)
-	i = i + 5
-	if (i >n)
+	i = i + getSmoothSpeed()
+	if (i > n)
 	i = n
 	Endif
 	Utility.Wait(0.05)
@@ -443,7 +453,7 @@ Function LookDown(int n, Actor act) Global
 	
 	while i > 0
 	CondiExp_util.SetModifier(act, 8,i)
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -458,7 +468,7 @@ Function BrowsUp( Actor act) Global
 	while i < 75
 	CondiExp_util.SetModifier(act, 6, i)
 	CondiExp_util.SetModifier(act, 7, i)
-	i = i + 10
+	i = i + getSmoothSpeed()
 	if (i > 75)
 	i = 75
 	Endif
@@ -470,7 +480,7 @@ Function BrowsUp( Actor act) Global
 	while i > 0
 	CondiExp_util.SetModifier(act, 6, i)
 	CondiExp_util.SetModifier(act, 7, i)
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -488,7 +498,7 @@ Function BrowsUpSmile(int n, Actor act) Global
 	CondiExp_util.SetModifier(act, 7, i)
 	CondiExp_util.SetPhoneMe(act, 5, i)
 	
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i > n)
 	i = n
 	Endif
@@ -502,7 +512,7 @@ Function BrowsUpSmile(int n, Actor act) Global
 	CondiExp_util.SetModifier(act, 7, i)
 	CondiExp_util.SetPhoneMe(act, 5, i)
 	
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -517,7 +527,7 @@ Function Disgust(int n, Actor act) Global
 	while i < n
 	act.SetExpressionOverride(14,i)
 	
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i > n)
 	i = n
 	Endif
@@ -529,7 +539,7 @@ Function Disgust(int n, Actor act) Global
 	while i > 0
 	act.SetExpressionOverride(14,i)
 	
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -545,7 +555,7 @@ Function Happy(int n, Actor act) Global
 	while i < n
 	act.SetExpressionOverride(10,i)
 	
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i > n)
 	i = n
 	Endif
@@ -557,7 +567,7 @@ Function Happy(int n, Actor act) Global
 	while i > 0
 	act.SetExpressionOverride(10,i)
 	
-	i = i - 5
+	i = i - getSmoothSpeed()
 	if (i < 0)
 	i = 0
 	Endif
@@ -571,7 +581,7 @@ Function Inhale(int n, int j, Actor act) Global
    
    while i <  j
    CondiExp_util.SetPhoneme(act, 0,i)
-   i = i + 3
+   i = i + getSmoothSpeedHalf()
    If (i >j)
    i = j
    Endif
@@ -585,7 +595,7 @@ Function Exhale(int n, int j, Actor act) Global
    
    while i > j
   	 CondiExp_util.SetPhoneme(act, 0, i)
-  	 i = i - 3
+  	 i = i - getSmoothSpeedHalf()
    	If (i < j)
    		i = j
    	Endif
@@ -600,7 +610,7 @@ Function Puzzled(int n, Actor act) Global
 	while i < n
 	act.SetExpressionOverride(13,i)
 	
-	i = i + 5
+	i = i + getSmoothSpeed()
 	if (i > n)
 	i = n
 	Endif
@@ -612,7 +622,7 @@ Function Puzzled(int n, Actor act) Global
 	while i > 0
 	act.SetExpressionOverride(13,i)
 	
-	i = i - 5
+	i = i - getSmoothSpeedHalf()
 	if (i < 0)
 	i = 0
 	Endif
@@ -627,7 +637,7 @@ Function HumanOuch(Actor act) global
 	
 	while i < 100
 		CondiExp_util.SetPhoneMe(act, 10,i)
-		i = i + 12
+		i = i + getHardSpeed()
 		if (i > 100)
 			i = 100
 		Endif
@@ -638,7 +648,7 @@ Function HumanOuch(Actor act) global
 	
 	while i > 0
 		CondiExp_util.SetPhoneMe(act, 10,i)
-		i = i - 15
+		i = i - getHardSpeed()
 		if (i < 0)
 			i = 0
 		Endif
@@ -655,7 +665,7 @@ Function VampireOuch(Actor act) global
 		CondiExp_util.SetPhoneMe(act, 10,i)
 		CondiExp_util.SetPhoneMe(act, 9,i)
 		CondiExp_util.SetPhoneMe(act, 5,i)
-	i = i + 12
+	i = i + getHardSpeed()
 		if (i > 60)
 			i = 60
 		Endif
@@ -668,10 +678,33 @@ Function VampireOuch(Actor act) global
 		CondiExp_util.SetPhoneMe(act, 10,i)
 		CondiExp_util.SetPhoneMe(act, 9,i)
 		CondiExp_util.SetPhoneMe(act, 5,i)
-		i = i - 15
+		i = i - getHardSpeed()
 		if (i < 0)
 			i = 0
 		Endif
 		Utility.Wait(0.0001)
 	endwhile
 EndFunction
+
+Function Headache(Actor act) global
+    int i = 0
+    while i < 95
+         i = i + getSmoothSpeed()
+         if (i > 95)
+            i = 95
+         Endif
+         act.SetExpressionOverride(3,i)
+         Utility.Wait(0.1)
+    endwhile
+    Utility.Wait(5)
+    i = 95
+    while i > 0
+     i = i - getSmoothSpeed()
+        if (i < 0)
+            i = 0
+        Endif
+        act.SetExpressionOverride(3,i)
+     Utility.Wait(0.1)
+    endwhile
+    Utility.Wait(3)
+endfunction

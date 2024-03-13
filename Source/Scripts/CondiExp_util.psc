@@ -67,6 +67,10 @@ Bool Function isDDintegrationReady() Global
 	Return isDependencyReady("Devious Devices - Integration.esm") 
 EndFunction
 
+Bool Function isDDassetsReady() Global
+	Return isDependencyReady("Devious Devices - Assets.esm") 
+EndFunction
+
 Bool Function isZaZReady() Global
 	Return isDependencyReady("ZaZAnimationPack.esm")
 EndFunction
@@ -232,7 +236,6 @@ Function resetMFGSmooth(Actor act) global
 	endif
 	MfgConsoleFuncExt.ResetMFG(act)
 endfunction
-
 
 Int Function Round(Float f) global
 	Return Floor(f + 0.5)

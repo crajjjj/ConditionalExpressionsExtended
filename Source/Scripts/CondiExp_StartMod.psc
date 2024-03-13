@@ -105,6 +105,7 @@ Quest sexlab
 Faction zbfFactionSlave
 ;Devious Devices
 MagicEffect vZadGagEffect
+Keyword zad_DeviousGag
 ;Toys
 Keyword ToysEffectMouthOpen 
 ;SLA
@@ -142,11 +143,11 @@ function init()
 	if zbfFactionSlave
 		log("CondiExp_StartMod: Found ZaZAnimationPack: " + zbfFactionSlave.GetName() )
 	endif
-	if !vZadGagEffect && isDDintegrationReady()
-		vZadGagEffect = Game.GetFormFromFile(0x02B077, "Devious Devices - Integration.esm") as MagicEffect
+	if !zad_DeviousGag && isDDassetsReady()
+		zad_DeviousGag = Game.GetFormFromFile(0x007EB8, "Devious Devices - Assets.esm") as Keyword 
 	endif
-	if vZadGagEffect
-		log("CondiExp_StartMod: Found Devious Devices - Integration: " + vZadGagEffect.GetName() )
+	if zad_DeviousGag
+		log("CondiExp_StartMod: Found Devious Devices - Assets: " + zad_DeviousGag.GetName() )
 	endif
 	if !sla || !slaArousalFaction || !slaExposureFaction
 		if isSLAReady()
@@ -284,8 +285,8 @@ Bool function checkIfModShouldBeSuspended(Actor act)
 		return true
 	endif
 
-	if (vZadGagEffect && act.HasMagicEffect(vZadGagEffect))
-		log("CondiExp_StartMod: dd gag effect was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
+	if (zad_DeviousGag && act.WornHasKeyword(zad_DeviousGag))
+		log("CondiExp_StartMod: dd gag was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
 		return true
 	endif
 

@@ -108,7 +108,7 @@ Event OnUpdate()
 	;Combat Anger
 	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalCombat.GetValueInt() == 1)
 		verbose(act, "Anger", verboseInt)
-		SmoothSetExpression(act, 15, RandomInt(50, 100), 0, 1.0)
+		SmoothSetExpression(act, 15, RandomInt(50, 100))
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf

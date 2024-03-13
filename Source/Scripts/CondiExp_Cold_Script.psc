@@ -33,30 +33,30 @@ Function ShowExpression()
 				coldExpression = 0
 			endif
 			PlayerRef.SetExpressionOverride(1,50)
-			SetModifier(PlayerRef, 12, coldExpression)
-			SetModifier(PlayerRef, 13, coldExpression)
-			SetModifier(PlayerRef, 4, coldExpression)
+			SetModifierFast(PlayerRef, 12, coldExpression)
+			SetModifierFast(PlayerRef, 13, coldExpression)
+			SetModifierFast(PlayerRef, 4, coldExpression)
 			coldExpression += 5
 		else ; this is Tremble
-			CondiExp_util.SetPhoneMe(PlayerRef, 0,0)
+			CondiExp_util.SetPhonemeFast(PlayerRef, 0,0)
 			Utility.Wait(0.01)
-			CondiExp_util.SetPhoneMe(PlayerRef, 0,6)
+			CondiExp_util.SetPhonemeFast(PlayerRef, 0,6)
 			Utility.Wait(0.01)
-			CondiExp_util.SetPhoneMe(PlayerRef, 0,12)
+			CondiExp_util.SetPhonemeFast(PlayerRef, 0,12)
 			Utility.Wait(0.01)
-			CondiExp_util.SetPhoneMe(PlayerRef, 0,6)
+			CondiExp_util.SetPhonemeFast(PlayerRef, 0,6)
 			Utility.Wait(0.01)
-			CondiExp_util.SetPhoneMe(PlayerRef, 0,6)
+			CondiExp_util.SetPhonemeFast(PlayerRef, 0,6)
 			Utility.Wait(0.01)
-			CondiExp_util.SetPhoneMe(PlayerRef, 0,12)
+			CondiExp_util.SetPhonemeFast(PlayerRef, 0,12)
 			Utility.Wait(0.01)
-			CondiExp_util.SetPhoneMe(PlayerRef, 0,6)
+			CondiExp_util.SetPhonemeFast(PlayerRef, 0,6)
 			Utility.Wait(0.01)
-			CondiExp_util.SetPhoneMe(PlayerRef, 0,6)
+			CondiExp_util.SetPhonemeFast(PlayerRef, 0,6)
 			Utility.Wait(0.01)
-			CondiExp_util.SetPhoneMe(PlayerRef, 0,12)
+			CondiExp_util.SetPhonemeFast(PlayerRef, 0,12)
 			Utility.Wait(0.01)
-			CondiExp_util.SetPhoneMe(PlayerRef, 0,6)
+			CondiExp_util.SetPhonemeFast(PlayerRef, 0,6)
 		endif
 	endwhile
 	
@@ -65,9 +65,9 @@ Function ShowExpression()
 		if (coldExpression > 65)
 			coldExpression = 65
 		endif
-		CondiExp_util.SetModifier(PlayerRef, 12, coldExpression)
-		CondiExp_util.SetModifier(PlayerRef, 13, coldExpression)
-		CondiExp_util.SetModifier(PlayerRef, 4, coldExpression)
+		CondiExp_util.SetModifierFast(PlayerRef, 12, coldExpression)
+		CondiExp_util.SetModifierFast(PlayerRef, 13, coldExpression)
+		CondiExp_util.SetModifierFast(PlayerRef, 4, coldExpression)
 		coldExpression  -= 5
 	endwhile
 	; if the outro is done we clean up and stop
@@ -103,9 +103,9 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 		if (coldExpression > 65)
 			coldExpression = 65
 		endif
-		CondiExp_util.SetModifier(PlayerRef, 12, coldExpression)
-		CondiExp_util.SetModifier(PlayerRef, 13, coldExpression)
-		CondiExp_util.SetModifier(PlayerRef, 4, coldExpression)
+		CondiExp_util.SetModifierFast(PlayerRef, 12, coldExpression)
+		CondiExp_util.SetModifierFast(PlayerRef, 13, coldExpression)
+		CondiExp_util.SetModifierFast(PlayerRef, 4, coldExpression)
 		coldExpression  -= 5
 		Utility.Wait(0.5) ; !!!
 	endwhile

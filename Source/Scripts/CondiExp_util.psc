@@ -12,7 +12,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 106000
+    Return 200000
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -22,7 +22,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "1.6.1"
+    Return "2.0.0"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -99,7 +99,7 @@ EndFunction
 
 bool function isInDialogue(Actor act, bool isPC) global
 	if isPC
-		if PyramidUtils.GetPlayerSpeechTarget()
+		if MfgConsoleFuncExt.GetPlayerSpeechTarget()
 			return true
 		else
 			return false
@@ -116,35 +116,38 @@ endfunction
 
 Function SetPhoneme(Actor act, Int mod1, Int str_dest, float modifier = 1.0) global
 	str_dest = (str_dest * modifier) as Int
-	MfgConsoleFunc.SetPhoneme(act,mod1,str_dest)
-	;PyramidUtils.SetPhonemeModifierSmooth(act, 0, number, -1, str_dest, getHardSpeed(), getHardDelay())
+	MfgConsoleFuncExt.SetPhoneme(act,mod1,str_dest)
 EndFunction
 Function SetModifier(Actor act, Int mod1, Int str_dest, float strModifier = 1.0) global
 	str_dest = (str_dest * strModifier) as Int
+	MfgConsoleFuncExt.SetModifier(act,mod1,str_dest)
+EndFunction
+
+Function SetPhonemeFast(Actor act, Int mod1, Int str_dest, float modifier = 1.0) global
+	str_dest = (str_dest * modifier) as Int
+	MfgConsoleFunc.SetPhoneme(act,mod1,str_dest)
+EndFunction
+Function SetModifierFast(Actor act, Int mod1, Int str_dest, float strModifier = 1.0) global
+	str_dest = (str_dest * strModifier) as Int
 	MfgConsoleFunc.SetModifier(act,mod1,str_dest)
-	;PyramidUtils.SetPhonemeModifierSmooth(act, 1, mod1, -1, str_dest, getHardSpeed(), getHardDelay())
 EndFunction
 
 ; get phoneme/modifier/expression
 int function GetPhoneme(Actor act, int id) global
 	return MfgConsoleFunc.GetPhoneme(act, id)
-	;return PyramidUtils.GetPhonemeValue(act, id)
 endfunction
 int function GetModifier(Actor act, int id) global
 	return MfgConsoleFunc.GetModifier(act, id)
-	;return PyramidUtils.GetModifierValue(act, id)
 endfunction
 
 ; return expression value which is enabled. (enabled only one at a time.)
 int function GetExpressionValue(Actor act) global
 	return MfgConsoleFunc.GetExpressionValue(act)
-	;return PyramidUtils.GetExpressionValue(act)
 endfunction
 
 ; return expression ID which is enabled.
 int function GetExpressionID(Actor act) global
 	return MfgConsoleFunc.GetExpressionID(act)
-	;return PyramidUtils.GetExpressionId(act)
 endfunction
 
 ;mfg modifier
@@ -169,12 +172,10 @@ Function SmoothSetModifier(Actor act, Int mod1, Int mod2, Int str_dest, float st
 		return
 	endif
 	str_dest = (str_dest * strModifier) as Int
-	MfgConsoleFunc.SetModifier(act,mod1,str_dest)
+	MfgConsoleFuncExt.SetModifier(act,mod1,str_dest)
 	if mod2!= -1
-		MfgConsoleFunc.SetModifier(act,mod2,str_dest)
+		MfgConsoleFuncExt.SetModifier(act,mod2,str_dest)
 	endif
-	
-	;PyramidUtils.SetPhonemeModifierSmooth(act, 1, mod1, mod2, str_dest, getSmoothSpeed(), getSmoothDelay())
 EndFunction
 ;Aah 0    BigAah 1
 ;BMP 2    ChjSh 3
@@ -190,16 +191,14 @@ Function SmoothSetPhoneme(Actor act, Int mod1, Int str_dest, float modifier = 1.
 		return
 	endif
 	str_dest = (str_dest * modifier) as Int
-	MfgConsoleFunc.SetPhoneme(act,mod1,str_dest)
-	;PyramidUtils.SetPhonemeModifierSmooth(act, 0, mod1, -1, str_dest, getSmoothSpeed(), getSmoothDelay())
+	MfgConsoleFuncExt.SetPhoneme(act,mod1,str_dest)
 EndFunction
 
 Function ApplyExpressionPreset(Actor act, float[] expression, bool openMouth, int exprPower, float exprStrModifier, float modStrModifier, float phStrModifier) global
 	if !act
 		return
 	endif
-	MfgConsoleFunc.ApplyExpressionPreset(act, expression, openMouth, exprPower, exprStrModifier, modStrModifier, phStrModifier) 
-	;PyramidUtils.ApplyExpressionPreset(akActor, expression, openMouth, exprPower, exprStrModifier, modStrModifier, phStrModifier, afSpeed, aiDelay)
+	MfgConsoleFuncExt.ApplyExpressionPresetSmooth(act, expression, openMouth, exprPower, exprStrModifier, modStrModifier, phStrModifier) 
 EndFunction
 
 ;mfg expression
@@ -212,32 +211,26 @@ EndFunction
 ;4 - Dialogue Surprise 12 - Mood Surprise
 ;5 - Dialogue Puzzled 13 - Mood Puzzled
 ;6 - Dialogue Disgusted 14 - Mood Disgusted
-Function SmoothSetExpression(Actor act, Int aiMood, Int aiStrength, int aiCurrentStrength, float aiModifier = 1.0) global
+Function SmoothSetExpression(Actor act, Int aiMood, Int aiStrength, float aiModifier = 1.0) global
 	if !act
 		return
 	endif
-	MfgConsoleFunc.SetExpression(act,aiMood, aiStrength)
-	
-	;PyramidUtils.SetExpressionSmooth(act, aiMood, aiStrength, aiCurrentStrength, aiModifier, getSmoothSpeed(), getSmoothDelay())
+	aiStrength = (aiStrength * aiModifier) as Int
+	MfgConsoleFuncExt.SetExpression(act, aiMood, aiStrength)
 EndFunction
 
 Function resetMFG(Actor act) global
 	if !act
 		return
 	endif
-
 	MfgConsoleFunc.ResetPhonemeModifier(act)
-	;PyramidUtils.SetPhonemeModifierSmooth(act, -1, 0, -1, 0, 0, 0)
 endfunction
 
 Function resetMFGSmooth(Actor act) global
 	if !act
 		return
 	endif
-
-	MfgConsoleFunc.ResetMFGSmooth(act, -1)
-	
-	;PyramidUtils.ResetMFGSmooth(ac, -1, getSmoothSpeed(), getSmoothDelay())
+	MfgConsoleFuncExt.ResetMFG(act)
 endfunction
 
 

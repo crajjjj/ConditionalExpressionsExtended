@@ -24,7 +24,7 @@ Function High()
     config.currentExpression = "Scooma"
     randomhappy = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 30, 70)
     randomsmile =  RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 10, 50)
-    CondiExp_util.SetModifier(PlayerRef,11,55)
+    CondiExp_util.SetModifier(PlayerRef,11, 55)
     CondiExp_util.SetPhoneme(PlayerRef,4,randomsmile)
     PlayerRef.SetExpressionOverride(2,randomhappy)
     RegisterForSingleUpdate(60.0)
@@ -37,8 +37,6 @@ EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     trace(PlayerRef, "Skooma: OnEffectFinish", config.Condiexp_Verbose.GetValueInt())
-    CondiExp_util.SetModifier(PlayerRef,11,0)
-    CondiExp_util.SetPhoneme(PlayerRef,4,0)
     resetMFGSmooth(PlayerRef)
     Condiexp_CurrentlyBusy.SetValueInt(0)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)

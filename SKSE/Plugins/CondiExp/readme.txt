@@ -1,5 +1,5 @@
 ;==============================================================================================================================
-;                                            Expression Construct Documantation
+;                                            Expression Construct Documentation
 ;==============================================================================================================================
 ;All number are floats in range 0.0-1.0
 ;Only exception is expression[30] where it needs whole number in range 0-16

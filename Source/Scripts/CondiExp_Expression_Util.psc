@@ -6,15 +6,6 @@ import Utility
 import Math
 import CondiExp_log
 
-int Function getSmoothSpeed() global
-	return 100 ;10
-endfunction
-int Function getSmoothSpeedHalf() global
-	return 100 ;10
-endfunction
-int Function getHardSpeed() global
-	return 100 ;50
-endfunction
 
 Function PlayArousedExpression(Actor act, int aroused, CondiExp_BaseExpression expr) global
 	Int power = aroused
@@ -131,14 +122,14 @@ Function PlayPainExpression(Actor act, CondiExp_BaseExpression expr) global
 	expr.Apply(act, Order, 100)
 EndFunction
 
-Function PlayRandomExpression(Actor act, condiexp_MCM config) global
+Function PlayRandomExpression(Actor act, condiexp_MCM config,CondiExp_BaseExpression expr) global
 	verbose(act,"Random emotion", config.Condiexp_Verbose.GetValueInt())
-	RandomEmotion(act, config)
+	RandomEmotion(act, config, expr)
 EndFunction
 
-Function RandomEmotion(Actor act, condiexp_MCM config) Global
+Function RandomEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression expr) Global
 
-	Int Order = Utility.RandomInt(1, 80)
+	Int Order = Utility.RandomInt(1, 100)
 	
 	If Order == 1 || Order == 33
 		LookLeft(70,act)
@@ -207,35 +198,38 @@ Function RandomEmotion(Actor act, condiexp_MCM config) Global
 	Smile(15,act)
 	Elseif Order == 32 || Order == 79
 	Smile(35,act)
+	Else
+	Int exprNumber = Utility.RandomInt(1, 7)
+		expr.Apply(act, exprNumber, 100)
 	Endif
 EndFunction
 
 Function LookLeft(int n, Actor act) Global
-	CondiExp_util.SetModifier(act, 9,n)
+	CondiExp_util.SetModifier(act, 9,n, 1, 1)
 
-	Utility.Wait(0.8)
+	Utility.Wait(2.0)
 
-	CondiExp_util.SetModifier(act, 9,0)
+	CondiExp_util.SetModifier(act, 9,0, 1, 1)
 endfunction
 	
 	
 Function LookRight(int n, Actor act) Global
-	CondiExp_util.SetModifier(act, 10,n)
+	CondiExp_util.SetModifier(act, 10,n,1,1)
 	
 	Utility.Wait(2.0)
 	
-	CondiExp_util.SetModifier(act, 10,0)
+	CondiExp_util.SetModifier(act, 10,0,1,1)
 endfunction
 	
 	
 Function Squint(Actor act) Global
-	CondiExp_util.SetModifier(act, 12, 55)
-	CondiExp_util.SetModifier(act, 13, 55)
+	CondiExp_util.SetModifier(act, 12, 55,1,1)
+	CondiExp_util.SetModifier(act, 13, 55,1,1)
 
 	Utility.Wait(4.5)
 	
-	CondiExp_util.SetModifier(act, 12, 0)
-	CondiExp_util.SetModifier(act, 13, 0)
+	CondiExp_util.SetModifier(act, 12, 0,1,1)
+	CondiExp_util.SetModifier(act, 13, 0,1,1)
 endfunction
 	
 Function Frown(int n, Actor act) Global

@@ -118,13 +118,13 @@ bool function isInDialogue(Actor act, bool isPC) global
 	return false
 endfunction
 
-Function SetPhoneme(Actor act, Int mod1, Int str_dest, float modifier = 1.0) global
+Function SetPhoneme(Actor act, Int mod1, Int str_dest, float modifier = 1.0, float speed = 0.75) global
 	str_dest = (str_dest * modifier) as Int
-	MfgConsoleFuncExt.SetPhoneme(act,mod1,str_dest)
+	MfgConsoleFuncExt.SetPhoneme(act,mod1,str_dest, speed)
 EndFunction
-Function SetModifier(Actor act, Int mod1, Int str_dest, float strModifier = 1.0) global
+Function SetModifier(Actor act, Int mod1, Int str_dest, float strModifier = 1.0, float speed = 0.75) global
 	str_dest = (str_dest * strModifier) as Int
-	MfgConsoleFuncExt.SetModifier(act,mod1,str_dest)
+	MfgConsoleFuncExt.SetModifier(act,mod1,str_dest, speed)
 EndFunction
 
 Function SetPhonemeFast(Actor act, Int mod1, Int str_dest, float modifier = 1.0) global

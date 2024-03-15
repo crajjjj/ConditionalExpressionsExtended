@@ -83,6 +83,7 @@ CondiExp_BaseExpression Property arousalExpr Auto
 CondiExp_BaseExpression Property traumaExpr Auto
 CondiExp_BaseExpression Property dirtyExpr Auto
 CondiExp_BaseExpression Property painExpr Auto
+CondiExp_BaseExpression Property randomExpr Auto
 
 ;Bathing mod
 MagicEffect DirtinessStage2Effect 
@@ -219,6 +220,7 @@ function init()
 	traumaExpr.Initialize()
 	dirtyExpr.Initialize()
 	painExpr.Initialize()
+	randomExpr.Initialize()
 endfunction
 
 Event OnUpdate()

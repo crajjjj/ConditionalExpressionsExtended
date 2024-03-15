@@ -102,13 +102,16 @@ Bool Function isDependencyReady(String modname) Global
 EndFunction
 
 bool function isInDialogue(Actor act, bool isPC) global
+	if !act
+		return false
+	endif
 	if isPC
 		if MfgConsoleFuncExt.GetPlayerSpeechTarget()
 			return true
 		else
 			return false
 		endif
-	else 
+	else
 		if act.GetDialogueTarget()
 			return true
 		else
@@ -118,20 +121,34 @@ bool function isInDialogue(Actor act, bool isPC) global
 	return false
 endfunction
 
-Function SetPhoneme(Actor act, Int mod1, Int str_dest, float modifier = 1.0) global
+Function SetPhoneme(Actor act, Int mod1, Int str_dest, float modifier = 1.0, float speed = 0.75) global
+	if !act
+		return
+	endif
 	str_dest = (str_dest * modifier) as Int
-	MfgConsoleFuncExt.SetPhoneme(act,mod1,str_dest)
+	MfgConsoleFuncExt.SetPhoneme(act,mod1,str_dest, speed)
 EndFunction
-Function SetModifier(Actor act, Int mod1, Int str_dest, float strModifier = 1.0) global
+
+Function SetModifier(Actor act, Int mod1, Int str_dest, float strModifier = 1.0, float speed = 0.75) global
+	if !act
+		return
+	endif
 	str_dest = (str_dest * strModifier) as Int
-	MfgConsoleFuncExt.SetModifier(act,mod1,str_dest)
+	MfgConsoleFuncExt.SetModifier(act,mod1,str_dest, speed)
 EndFunction
 
 Function SetPhonemeFast(Actor act, Int mod1, Int str_dest, float modifier = 1.0) global
+	if !act
+		return
+	endif
 	str_dest = (str_dest * modifier) as Int
 	MfgConsoleFunc.SetPhoneme(act,mod1,str_dest)
 EndFunction
+
 Function SetModifierFast(Actor act, Int mod1, Int str_dest, float strModifier = 1.0) global
+	if !act
+		return
+	endif
 	str_dest = (str_dest * strModifier) as Int
 	MfgConsoleFunc.SetModifier(act,mod1,str_dest)
 EndFunction
@@ -140,6 +157,7 @@ EndFunction
 int function GetPhoneme(Actor act, int id) global
 	return MfgConsoleFunc.GetPhoneme(act, id)
 endfunction
+
 int function GetModifier(Actor act, int id) global
 	return MfgConsoleFunc.GetModifier(act, id)
 endfunction
@@ -198,11 +216,11 @@ Function SmoothSetPhoneme(Actor act, Int mod1, Int str_dest, float modifier = 1.
 	MfgConsoleFuncExt.SetPhoneme(act,mod1,str_dest)
 EndFunction
 
-Function ApplyExpressionPreset(Actor act, float[] expression, bool openMouth, int exprPower, float exprStrModifier, float modStrModifier, float phStrModifier) global
+Function ApplyExpressionPreset(Actor act, float[] expression, bool openMouth, int exprPower, float exprStrModifier, float modStrModifier, float phStrModifier, float speed = 0.75) global
 	if !act
 		return
 	endif
-	MfgConsoleFuncExt.ApplyExpressionPresetSmooth(act, expression, openMouth, exprPower, exprStrModifier, modStrModifier, phStrModifier) 
+	MfgConsoleFuncExt.ApplyExpressionPresetSmooth(act, expression, openMouth, exprPower, exprStrModifier, modStrModifier, phStrModifier, speed) 
 EndFunction
 
 ;mfg expression

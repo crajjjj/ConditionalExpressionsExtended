@@ -26,13 +26,13 @@ Function ShowExpression()
 	verbose(PlayerRef, "Cold", Condiexp_Verbose.GetValueInt())
 	while isCold()
 		Utility.Wait(0.2)
-		PlayerRef.SetExpressionOverride(1,50)
+		CondiExp_util.SmoothSetExpression(PlayerRef,1,50)
 		 ; cold intro
 		if (coldExpression <= 65) 
 			if (coldExpression < 0)
 				coldExpression = 0
 			endif
-			PlayerRef.SetExpressionOverride(1,50)
+			CondiExp_util.SmoothSetExpression(PlayerRef,1,50)
 			SetModifierFast(PlayerRef, 12, coldExpression)
 			SetModifierFast(PlayerRef, 13, coldExpression)
 			SetModifierFast(PlayerRef, 4, coldExpression)

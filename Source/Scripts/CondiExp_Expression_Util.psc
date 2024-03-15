@@ -6,15 +6,6 @@ import Utility
 import Math
 import CondiExp_log
 
-int Function getSmoothSpeed() global
-	return 100 ;10
-endfunction
-int Function getSmoothSpeedHalf() global
-	return 100 ;10
-endfunction
-int Function getHardSpeed() global
-	return 100 ;50
-endfunction
 
 Function PlayArousedExpression(Actor act, int aroused, CondiExp_BaseExpression expr) global
 	Int power = aroused
@@ -138,7 +129,7 @@ EndFunction
 
 Function RandomEmotion(Actor act, condiexp_MCM config) Global
 
-	Int Order = Utility.RandomInt(1, 80)
+	Int Order = Utility.RandomInt(1, 100)
 	
 	If Order == 1 || Order == 33
 		LookLeft(70,act)
@@ -207,35 +198,40 @@ Function RandomEmotion(Actor act, condiexp_MCM config) Global
 	Smile(15,act)
 	Elseif Order == 32 || Order == 79
 	Smile(35,act)
+	Else
+	Smile(35,act)
 	Endif
 EndFunction
 
 Function LookLeft(int n, Actor act) Global
-	CondiExp_util.SetModifier(act, 9,n)
+	CondiExp_util.SetModifier(act, 9,n, 1, 1)
 
-	Utility.Wait(0.8)
+	Utility.Wait(2.0)
 
-	CondiExp_util.SetModifier(act, 9,0)
+	CondiExp_util.SetModifier(act, 9,0, 1, 1)
+	Utility.Wait(1.0)
 endfunction
 	
 	
 Function LookRight(int n, Actor act) Global
-	CondiExp_util.SetModifier(act, 10,n)
+	CondiExp_util.SetModifier(act, 10,n,1,1)
 	
 	Utility.Wait(2.0)
 	
-	CondiExp_util.SetModifier(act, 10,0)
+	CondiExp_util.SetModifier(act, 10,0,1,1)
+	Utility.Wait(1.0)
 endfunction
 	
 	
 Function Squint(Actor act) Global
-	CondiExp_util.SetModifier(act, 12, 55)
-	CondiExp_util.SetModifier(act, 13, 55)
+	CondiExp_util.SetModifier(act, 12, 55,1,1)
+	CondiExp_util.SetModifier(act, 13, 55,1,1)
 
 	Utility.Wait(4.5)
 	
-	CondiExp_util.SetModifier(act, 12, 0)
-	CondiExp_util.SetModifier(act, 13, 0)
+	CondiExp_util.SetModifier(act, 12, 0,1,1)
+	CondiExp_util.SetModifier(act, 13, 0,1,1)
+	Utility.Wait(1.0)
 endfunction
 	
 Function Frown(int n, Actor act) Global
@@ -246,6 +242,7 @@ Function Frown(int n, Actor act) Global
 	
 	CondiExp_util.SetModifier(act, 2, 0)
 	CondiExp_util.SetModifier(act, 3, 0)
+	Utility.Wait(1.0)
 endfunction
 	
 Function Smile(int n, Actor act) Global
@@ -254,6 +251,7 @@ Function Smile(int n, Actor act) Global
 	Utility.Wait(4)
 
 	CondiExp_util.SetPhoneMe(act, 4, 0)
+	Utility.Wait(1.0)
 endfunction
 	
 Function Angry(Actor act) Global
@@ -266,6 +264,7 @@ Function Angry(Actor act) Global
 	CondiExp_util.SetModifier(act, 2, 0)
 	CondiExp_util.SetModifier(act, 3, 0)
 	CondiExp_util.SetModifier(act, 9,0)
+	Utility.Wait(1.0)
 endfunction
 	
 Function Thinking(int n, Actor act) Global
@@ -276,6 +275,7 @@ Function Thinking(int n, Actor act) Global
 	
 	CondiExp_util.SetModifier(act, 7, 0)
 	CondiExp_util.SetPhoneMe(act, 7,0)
+	Utility.Wait(1.0)
 endfunction
 	 
 Function Yawn(Actor act) Global
@@ -299,12 +299,14 @@ Function Yawn(Actor act) Global
 	CondiExp_util.SetModifier(act, 6, 0)
 	CondiExp_util.SetModifier(act, 7, 0)
 	CondiExp_util.SetPhoneMe(act, 1, 0)
+	Utility.Wait(1.0)
 endfunction
 	
 Function LookDown(int n, Actor act) Global
 	CondiExp_util.SetModifier(act, 8,n)
 	Utility.Wait(1.5)
 	CondiExp_util.SetModifier(act, 8,0)
+	Utility.Wait(1.0)
 endfunction
 	
 Function BrowsUp( Actor act) Global
@@ -313,6 +315,7 @@ Function BrowsUp( Actor act) Global
 	Utility.Wait(2)
 	CondiExp_util.SetModifier(act, 6, 0)
 	CondiExp_util.SetModifier(act, 7, 0)
+	Utility.Wait(1.0)
 endfunction
 	
 	
@@ -325,6 +328,7 @@ Function BrowsUpSmile(int n, Actor act) Global
 	CondiExp_util.SetModifier(act, 6, 0)
 	CondiExp_util.SetModifier(act, 7, 0)
 	CondiExp_util.SetPhoneMe(act, 5, 0)
+	Utility.Wait(1.0)
 endfunction
 	
 	
@@ -340,6 +344,7 @@ Function Happy(int n, Actor act) Global
 	Utility.Wait(4.5)
 	CondiExp_util.SmoothSetExpression(act,10,0)
 	act.ClearExpressionOverride()
+	Utility.Wait(1.0)
 endfunction
 
 Function Inhale(int n, int j, Actor act) Global

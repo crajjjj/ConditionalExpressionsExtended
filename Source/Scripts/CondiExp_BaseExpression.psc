@@ -100,8 +100,8 @@ function _ApplyPresetFloats(Actor ActorRef, float[] Preset, int exprPower)
 	float exprStrModifier = Condiexp_ExpressionStr.GetValue()
 	float modStrModifier = Condiexp_ModifierStr.GetValue()
 	float phStrModifier = Condiexp_PhonemeStr.GetValue()
-
-	CondiExp_util.ApplyExpressionPreset(ActorRef, Preset, false, exprPower,  exprStrModifier,  modStrModifier,  phStrModifier)
+	float randomSpeed= Utility.RandomFloat(0.65, 1.0)
+	CondiExp_util.ApplyExpressionPreset(ActorRef, Preset, false, exprPower,  exprStrModifier,  modStrModifier,  phStrModifier, randomSpeed)
 endFunction
 
 

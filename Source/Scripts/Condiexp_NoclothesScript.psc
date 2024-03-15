@@ -16,7 +16,7 @@ EndEvent
 
 Function Blush()
     verbose(PlayerRef, "No Clothes", Condiexp_Verbose.GetValueInt())
-    PlayerRef.SetExpressionOverride(4,90)
+    CondiExp_util.SmoothSetExpression(PlayerRef,4,90)
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)

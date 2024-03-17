@@ -47,6 +47,7 @@ CondiExp_BaseExpression Property arousalExpr Auto
 CondiExp_BaseExpression Property traumaExpr Auto
 CondiExp_BaseExpression Property dirtyExpr Auto
 CondiExp_BaseExpression Property painExpr Auto
+CondiExp_BaseExpression Property randomExpr Auto
 
 int Combat_B
 int Drunk_B
@@ -166,11 +167,12 @@ Event OnConfigOpen()
 	PhaseList[5] = "6"
 	PhaseList[6] = "7"
 
-	ExpressionTypeList = new string[4]
+	ExpressionTypeList = new string[5]
 	ExpressionTypeList[0] = "Pain"
 	ExpressionTypeList[1] = "Arousal"
 	ExpressionTypeList[2] = "Trauma"
 	ExpressionTypeList[3] = "Dirty"
+	ExpressionTypeList[4] = "Random"
 EndEvent
 
 Event OnPageReset(string page)
@@ -282,6 +284,9 @@ State TEST_EXPRESSIONS_STATE
 		elseIf (ExpressionTypeListIndex == 3)
 			Notification("Dirty expression:" + phaseNum)
 			DirtyExpr.apply(PlayerRef, phaseNum, 100)
+		elseIf (ExpressionTypeListIndex == 4)
+			Notification("Random expression:" + phaseNum)
+			randomExpr.apply(PlayerRef, phaseNum, 100)
 		endif
 
 		SetTextOptionValueST("Applied")

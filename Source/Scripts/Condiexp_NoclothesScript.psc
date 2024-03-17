@@ -12,6 +12,7 @@ GlobalVariable Property Condiexp_Verbose Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
+    Utility.Wait(1)
 EndEvent
 
 Function Blush()

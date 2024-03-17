@@ -2,8 +2,6 @@ skyrimse.ppj
 .vscode
 SkyrimSE.code-workspace
 meta.ini
-SKSE/Plugins/*
-!*.dll
 # This file specifies files / folders which will be ignored by git.
 #
 # If you want to add one of these files to git, either remove the matching line from this

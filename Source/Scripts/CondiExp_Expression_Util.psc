@@ -122,12 +122,12 @@ Function PlayPainExpression(Actor act, CondiExp_BaseExpression expr) global
 	expr.Apply(act, Order, 100)
 EndFunction
 
-Function PlayRandomExpression(Actor act, condiexp_MCM config) global
+Function PlayRandomExpression(Actor act, condiexp_MCM config, CondiExp_BaseExpression expr) global
 	verbose(act,"Random emotion", config.Condiexp_Verbose.GetValueInt())
-	RandomEmotion(act, config)
+	RandomEmotion(act, config, expr)
 EndFunction
 
-Function RandomEmotion(Actor act, condiexp_MCM config) Global
+Function RandomEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression expr) Global
 
 	Int Order = Utility.RandomInt(1, 100)
 	
@@ -199,7 +199,8 @@ Function RandomEmotion(Actor act, condiexp_MCM config) Global
 	Elseif Order == 32 || Order == 79
 	Smile(35,act)
 	Else
-	Smile(35,act)
+		Int exprNumber = Utility.RandomInt(1, 7)
+		expr.Apply(act, exprNumber, 100)
 	Endif
 EndFunction
 

@@ -155,7 +155,7 @@ Event OnUpdate()
 	EndIf
 	
 	If (config.Condiexp_GlobalRandom.GetValueInt() == 1)
-		PlayRandomExpression(act, config)
+		PlayRandomExpression(act, config, config.randomExpr)
 		Int Seconds = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 5)
 		Utility.Wait(Seconds)
 	EndIf

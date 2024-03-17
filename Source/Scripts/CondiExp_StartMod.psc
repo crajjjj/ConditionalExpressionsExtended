@@ -120,16 +120,6 @@ Event OnInit()
 	RegisterForSingleUpdate(10)
 EndEvent
 
-Event onPlayerLoadGame()
-	log("CondiExp_StartMod: Game reload event")
-	;to avoid expressions during load sequence
-	if (PlayerRef)
-		PlayerRef.RemoveSpell(CondiExp_Fatigue1)
-	endif
-	_checkPlugins = 1
-	RegisterForSingleUpdate(5)
-endEvent
-
 function init()
 	if !ActorsQuest && isAprReady()
 		ActorsQuest = Game.GetFormFromFile(0x02902C, "Apropos2.esp") as Quest	
@@ -476,41 +466,6 @@ Event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
 	EndIf
  EndEvent
  
-
- Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
-	If (!isModEnabled() || _checkPlugins != 0)
-		return
-	EndIf
-	If CondiExp_Drugs.HasForm(akBaseObject)
-		CondiExp_PlayerIsHigh.SetValueInt(1)
-	
-	elseif  CondiExp_Drinks.HasForm(akBaseObject)
-			CondiExp_PlayerIsDrunk.SetValueInt(1)
-	
-	elseif akBaseObject.HasKeyWord(VendorItemFood)
-			CondiExp_PlayerJustAte.SetValueInt(1)
-			utility.wait(5)
-			CondiExp_PlayerJustAte.SetValueInt(0)
-	
-	elseif akBaseObject.HasKeyword(VendorItemIngredient)
-	
-		If  Condiexp_GlobalEating.GetValueInt() == 2
-				CondiExp_PlayerJustAte.SetValueInt(1)
-				utility.wait(5)
-				CondiExp_PlayerJustAte.SetValueInt(0)
-	
-		elseif Condiexp_GlobalEating.GetValueInt() == 1
-	
-				Condiexp_GlobalEating.SetValueInt(2)
-				CondiExp_PlayerJustAte.SetValueInt(1)
-				utility.wait(5)
-				CondiExp_PlayerJustAte.SetValueInt(0)
-				Condiexp_GlobalEating.SetValueInt(1)
-		endif
-	Endif
-EndEvent
-
-
 Function StopMod()
 	Condiexp_ModSuspended.SetValueInt(1)
 	utility.wait(3)
@@ -578,11 +533,7 @@ Function resolveAutoColdMethod()
 	endif
 endfunction
 
-Event OnRaceSwitchComplete()
-	If CondiExp_Sounds.GetValueInt() > 0
-		NewRace()
-	Endif
-EndEvent
+
 
 Event OnKeyDown(Int KeyCode)
 	if _checkPlugins !=0

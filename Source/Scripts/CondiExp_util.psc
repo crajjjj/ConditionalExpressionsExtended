@@ -12,7 +12,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 200000
+    Return 200001
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -22,7 +22,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "2.0.0"
+    Return "2.0.1"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -142,7 +142,7 @@ Function SetPhonemeFast(Actor act, Int mod1, Int str_dest, float modifier = 1.0)
 		return
 	endif
 	str_dest = (str_dest * modifier) as Int
-	MfgConsoleFunc.SetPhoneme(act,mod1,str_dest)
+	MfgConsoleFuncExt.SetPhoneme(act,mod1, str_dest, 0.01)
 EndFunction
 
 Function SetModifierFast(Actor act, Int mod1, Int str_dest, float strModifier = 1.0) global
@@ -150,7 +150,7 @@ Function SetModifierFast(Actor act, Int mod1, Int str_dest, float strModifier = 
 		return
 	endif
 	str_dest = (str_dest * strModifier) as Int
-	MfgConsoleFunc.SetModifier(act,mod1,str_dest)
+	MfgConsoleFuncExt.SetModifier(act,mod1,str_dest,0.01)
 EndFunction
 
 ; get phoneme/modifier/expression
@@ -253,6 +253,13 @@ Function resetMFGSmooth(Actor act) global
 		return
 	endif
 	MfgConsoleFuncExt.ResetMFG(act)
+endfunction
+
+Function resetPhonemesSmooth(Actor act) global
+	if !act
+		return
+	endif
+	MfgConsoleFuncExt.ResetPhonemes(act)
 endfunction
 
 Int Function Round(Float f) global

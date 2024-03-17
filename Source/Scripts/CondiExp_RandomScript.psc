@@ -16,6 +16,7 @@ GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_GlobalRandom Auto
 GlobalVariable Property Condiexp_Verbose Auto
 GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
+CondiExp_BaseExpression Property randomExpr Auto
 bool playing = false
 int resetCounter = 0
 condiexp_MCM Property config auto
@@ -30,7 +31,7 @@ EndEvent
 Event OnUpdate()
 	If isRandomEnabled()
 		config.currentExpression = "Random"
-   		PlayRandomExpression(PlayerRef, config)
+   		PlayRandomExpression(PlayerRef, config, randomExpr)
 		resetCounter += 1
 		if resetCounter > 4
 			resetMFGSmooth(PlayerRef)

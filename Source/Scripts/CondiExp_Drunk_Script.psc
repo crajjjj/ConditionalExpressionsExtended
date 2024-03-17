@@ -24,7 +24,7 @@ EndEvent
 Function Drunk()
     Condiexp_CurrentlyBusy.SetValueInt(1)
     verbose(PlayerRef, "Drunk", config.Condiexp_Verbose.GetValueInt())
-    PlayerRef.SetExpressionOverride(2,80)
+    CondiExp_util.SmoothSetExpression(PlayerRef,2,80)
     RegisterForSingleUpdate(10.0)
 EndFunction
 

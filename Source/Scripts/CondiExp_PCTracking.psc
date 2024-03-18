@@ -26,11 +26,7 @@ Keyword property Vampire Auto
 
 Event onPlayerLoadGame()
 	log("CondiExp_Tracking: Game reload event")
-	;to avoid expressions during load sequence
-	if (PlayerRef)
-		sm.StopMod()
-        sm.StartMod()
-	endif
+	sm.RegisterForSingleUpdate(5)
 endEvent
 
 

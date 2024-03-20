@@ -12,7 +12,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 200002
+    Return 200003
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -22,7 +22,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "2.0.2"
+    Return "2.0.3"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -85,6 +85,20 @@ EndFunction
 
 Bool Function isToysReady() Global
 	Return isDependencyReady("Toys.esm")
+EndFunction
+
+Bool Function isSunHelmReady() Global
+	Return isDependencyReady("SunHelmSurvival.esp") 
+EndFunction
+Bool Function isFrostFallReady() Global
+	Return isDependencyReady("Frostfall.esp") 
+EndFunction
+Bool Function isFrostbiteReady() Global
+	Return isDependencyReady("Frostbite.esp") 
+EndFunction
+
+Bool Function isSLSurvivalReady() Global
+	Return isDependencyReady("SL Survival.esp") 
 EndFunction
 
 ;do not use. Breaks LE

@@ -81,25 +81,8 @@ int arousalExprRegistered
 int traumaExprRegistered
 int dirtyExprRegistered
 int painExprRegistered
+int randomExprRegistered
 
-bool CombatToggle = true
-bool DrunkToggle = true
-bool ClothesToggle = true
-bool PainToggle = true
-bool RandomToggle = true
-bool ColdToggle = true
-bool SkoomaToggle = true
-bool SneakingToggle = true
-bool StaminaToggle = true
-bool WaterToggle = true
-bool HeadacheToggle = True
-bool SoundsToggle = True
-bool TraumaToggle = true
-bool DirtyToggle = true
-bool ArousedToggle = true
-bool ArousedModifiersToggle = true
-bool ArousedModifiersNotificationsToggle = true
-bool VerboseToggle = false 
 bool FollowersToggle = false 
 
 int EatingFastSlow_M
@@ -200,24 +183,24 @@ Function Expressions()
 	AddEmptyOption()
 	EatingFastSlow_M = AddMenuOption("$CEE_B8", EatingFastSlowList[EatingFastSlowIndex])
 	If PlayerRef.IsInCombat()
-		Combat_B = AddToggleOption("$CEE_B9", CombatToggle, OPTION_FLAG_DISABLED)
+		Combat_B = AddToggleOption("$CEE_B9", _isTG(Condiexp_GlobalCombat), OPTION_FLAG_DISABLED)
 		else
-		Combat_B = AddToggleOption("$CEE_B9", CombatToggle)
+		Combat_B = AddToggleOption("$CEE_B9", _isTG(Condiexp_GlobalCombat))
 	endif
-	Random_B = AddToggleOption("$CEE_C1", RandomToggle)
-	Cold_B = AddToggleOption("$CEE_C2", ColdToggle)
-	Stamina_B = AddToggleOption("$CEE_C3", StaminaToggle)
+	Random_B = AddToggleOption("$CEE_C1", _isTG(Condiexp_GlobalRandom))
+	Cold_B = AddToggleOption("$CEE_C2", _isTG(Condiexp_GlobalCold))
+	Stamina_B = AddToggleOption("$CEE_C3", _isTG(Condiexp_GlobalStamina))
 	coldmethod_M = AddMenuOption("$CEE_C4", ColdMethodList[ColdMethodIndex]) 
-	Pain_B = AddToggleOption("$CEE_C5", PainToggle)
-	Drunk_B = AddToggleOption("$CEE_C6", DrunkToggle)
-	Skooma_B = AddToggleOption("$CEE_C7", SkoomaToggle)
-	Clothes_B = AddToggleOption("$CEE_C8", ClothesToggle)
-	Sneaking_B = AddToggleOption("$CEE_C9", SneakingToggle)
-	Water_B = AddToggleOption("$CEE_D1", WaterToggle)
-	Headache_B = AddToggleOption("$CEE_D2", HeadacheToggle)
-	Trauma_B = AddToggleOption("$CEE_D3", TraumaToggle)
-	Dirty_B = AddToggleOption("$CEE_D4", DirtyToggle)
-	Aroused_B = AddToggleOption("$CEE_D5", ArousedToggle)
+	Pain_B = AddToggleOption("$CEE_C5", _isTG(Condiexp_GlobalPain))
+	Drunk_B = AddToggleOption("$CEE_C6", _isTG(Condiexp_GlobalDrunk))
+	Skooma_B = AddToggleOption("$CEE_C7", _isTG(Condiexp_GlobalSkooma))
+	Clothes_B = AddToggleOption("$CEE_C8", _isTG(Condiexp_GlobalNoClothes))
+	Sneaking_B = AddToggleOption("$CEE_C9", _isTG(Condiexp_GlobalSneaking))
+	Water_B = AddToggleOption("$CEE_D1", _isTG(Condiexp_GlobalWater))
+	Headache_B = AddToggleOption("$CEE_D2", _isTG(Condiexp_GlobalMana))
+	Trauma_B = AddToggleOption("$CEE_D3", _isTG(Condiexp_GlobalTrauma))
+	Dirty_B = AddToggleOption("$CEE_D4", _isTG(Condiexp_GlobalDirty))
+	Aroused_B = AddToggleOption("$CEE_D5", _isTG(Condiexp_GlobalAroused))
 EndFunction
 
 
@@ -225,13 +208,13 @@ Function Settings()
 	SetCursorFillMode(TOP_TO_BOTTOM)
 	AddHeaderOption("$CEE_D6")
 	AddEmptyOption()
-	Sounds_B = AddToggleOption("$CEE_D7", SoundsToggle)
+	Sounds_B = AddToggleOption("$CEE_D7", _isTG(Condiexp_Sounds))
 	_update_interval_slider = AddSliderOption("$CEE_D8", Condiexp_UpdateInterval.GetValueInt(), "{0}", OPTION_FLAG_NONE)
 	_expression_strength_slider = AddSliderOption("$CEE_D9", Condiexp_ExpressionStr.GetValue(), "{2}", OPTION_FLAG_NONE)
 	_modifier_strength_slider = AddSliderOption("$CEE_E1", Condiexp_ModifierStr.GetValue(), "{2}", OPTION_FLAG_NONE)
 	_phoneme_strength_slider = AddSliderOption("$CEE_E2", Condiexp_PhonemeStr.GetValue(), "{2}", OPTION_FLAG_NONE)
-	ArousedModifiers_B = AddToggleOption("Aroused Modifiers", ArousedModifiersToggle)
-	ArousedModifiersNotifications_B = AddToggleOption("Aroused Modifiers Notifications", ArousedModifiersNotificationsToggle)
+	ArousedModifiers_B = AddToggleOption("Aroused Modifiers", _isTG(Condiexp_GlobalArousalModifiers))
+	ArousedModifiersNotifications_B = AddToggleOption("Aroused Modifiers Notifications", _isTG(Condiexp_GlobalArousalModifiersNotifications))
 	AddHeaderOption("$CEE_E3")
 	Followers_B =  AddToggleOption("$CEE_E4", CondiExpFollowerQuest.IsRunning())
 	_update_interval_followers_slider = AddSliderOption("$CEE_E5", Condiexp_FollowersUpdateInterval.GetValueInt(), "{0}", _getFlag(FollowersToggle))
@@ -248,7 +231,7 @@ Function Maintenance()
 	restore = AddTextOption("Reset Current Expression: " + currentExpression, "")
 
 	Uninstall = AddTextOption("$CEE_F1", "")
-	Verbose_B =  AddToggleOption("$CEE_F2", VerboseToggle)
+	Verbose_B =  AddToggleOption("$CEE_F2", _isTG(Condiexp_Verbose))
 
 	oidHKPause = AddKeyMapOption("Pause-Unpause mod  key", Condiexp_HKPause.GetValueInt())
 	AddEmptyOption()
@@ -264,7 +247,11 @@ Function Maintenance()
 
  	dirtyExprRegistered = AddTextOption("Dirty Expressions:", dirtyExpr.PhasesMale + dirtyExpr.PhasesFemale)
 	AddTextOptionST("TEST_EXPRESSIONS_STATE","Test Expression","GO", OPTION_FLAG_NONE)
+
  	painExprRegistered = AddTextOption("Pain Expressions:", painExpr.PhasesMale + painExpr.PhasesFemale)
+	AddEmptyOption()
+	
+	randomExprRegistered = AddTextOption("Random Expressions:", randomExpr.PhasesMale + randomExpr.PhasesFemale)
 EndFunction
 
 State TEST_EXPRESSIONS_STATE
@@ -418,156 +405,121 @@ EndEvent
 
 event OnOptionSelect(int option)
 
-if (option == Combat_B) && CombatToggle == True
-		CombatToggle = False
-		SetToggleOptionValue(Combat_B, CombatToggle)
+if (option == Combat_B) && _isTG(Condiexp_GlobalCombat) == True
+		SetToggleOptionValue(Combat_B, False)
 		Condiexp_GlobalCombat.SetValueInt(0)
-	elseif (option == Combat_B) && CombatToggle == False
-		CombatToggle = True
-		SetToggleOptionValue(Combat_B, CombatToggle)
+	elseif (option == Combat_B) && _isTG(Condiexp_GlobalCombat) == False
+		SetToggleOptionValue(Combat_B, True)
 		Condiexp_GlobalCombat.SetValueInt(1)
 
-	elseif (option == Random_B) && RandomToggle == True
-		RandomToggle = False
-		SetToggleOptionValue(Random_B, RandomToggle)
+	elseif (option == Random_B) && _isTG(Condiexp_GlobalRandom) == True
+		SetToggleOptionValue(Random_B, False)
 		Condiexp_GlobalRandom.SetValueInt(0)
-	elseif (option == Random_B) && RandomToggle == False
-		RandomToggle = True
-		SetToggleOptionValue(Random_B, RandomToggle)
+	elseif (option == Random_B) && _isTG(Condiexp_GlobalRandom) == False
+		SetToggleOptionValue(Random_B, True)
 		Condiexp_GlobalRandom.SetValueInt(1)
-	elseif (option == Cold_B) && ColdToggle == True
-		ColdToggle = False
-		SetToggleOptionValue(Cold_B, ColdToggle)
+	elseif (option == Cold_B) && _isTG(Condiexp_GlobalCold) == True
+		SetToggleOptionValue(Cold_B, False)
 		Condiexp_GlobalCold.SetValueInt(0)
-	elseif (option == Cold_B) && ColdToggle == False
-		ColdToggle = True
-		SetToggleOptionValue(Cold_B, ColdToggle)
+	elseif (option == Cold_B) && _isTG(Condiexp_GlobalCold) == False
+		SetToggleOptionValue(Cold_B, True)
 		Condiexp_GlobalCold.SetValueInt(1)
 
-	elseif (option == Stamina_B) && StaminaToggle == True
-		StaminaToggle = False
-		SetToggleOptionValue(Stamina_B, StaminaToggle)
+	elseif (option == Stamina_B) && _isTG(Condiexp_GlobalStamina) == True
+		SetToggleOptionValue(Stamina_B, False)
 		Condiexp_GlobalStamina.SetValueInt(0)
-	elseif (option == Stamina_B) && StaminaToggle == False
-		StaminaToggle = True
-		SetToggleOptionValue(Stamina_B, StaminaToggle)
+	elseif (option == Stamina_B) && _isTG(Condiexp_GlobalStamina) == False
+		SetToggleOptionValue(Stamina_B, True)
 		Condiexp_GlobalStamina.SetValueInt(1)
 
-	elseif (option == Pain_B) && PainToggle == True
-		PainToggle = False
-		SetToggleOptionValue(Pain_B, PainToggle)
+	elseif (option == Pain_B) && _isTG(Condiexp_GlobalPain) == True
+		SetToggleOptionValue(Pain_B, False)
 		Condiexp_GlobalPain.SetValueInt(0)
-	elseif (option == Pain_B) && PainToggle == False
-		PainToggle = True
-		SetToggleOptionValue(Pain_B, PainToggle)
+	elseif (option == Pain_B) && _isTG(Condiexp_GlobalPain) == False
+		SetToggleOptionValue(Pain_B, True)
 		Condiexp_GlobalPain.SetValueInt(1)
 
-	elseif (option == Drunk_B) && DrunkToggle == True
-		DrunkToggle = False
-		SetToggleOptionValue(Drunk_B, DrunkToggle)
+	elseif (option == Drunk_B) && _isTG(Condiexp_GlobalDrunk) == True
+		SetToggleOptionValue(Drunk_B, False)
 		Condiexp_GlobalDrunk.SetValueInt(0)
-	elseif (option == Drunk_B) && DrunkToggle == False
-		DrunkToggle = True
-		SetToggleOptionValue(Drunk_B, DrunkToggle)
+	elseif (option == Drunk_B) && _isTG(Condiexp_GlobalDrunk) == False
+		SetToggleOptionValue(Drunk_B, True)
 		Condiexp_GlobalDrunk.SetValueInt(1)
 
-	elseif (option == Skooma_B) && SkoomaToggle == True
-		SkoomaToggle = False
-		SetToggleOptionValue(Skooma_B, SkoomaToggle)
+	elseif (option == Skooma_B) && _isTG(Condiexp_GlobalSkooma) == True
+		SetToggleOptionValue(Skooma_B, False)
 		Condiexp_GlobalSkooma.SetValueInt(0)
-	elseif (option == Skooma_B) && SkoomaToggle == False
-		SkoomaToggle = True
-		SetToggleOptionValue(Skooma_B, SkoomaToggle)
+	elseif (option == Skooma_B) && _isTG(Condiexp_GlobalSkooma) == False
+		SetToggleOptionValue(Skooma_B, True)
 		Condiexp_GlobalSkooma.SetValueInt(1)
 
-	elseif (option == Clothes_B) && ClothesToggle == True
-		ClothesToggle = False
-		SetToggleOptionValue(Clothes_B, ClothesToggle )
+	elseif (option == Clothes_B) &&  _isTG(Condiexp_GlobalNoClothes) == True
+		SetToggleOptionValue(Clothes_B, False)
 		Condiexp_GlobalNoClothes.SetValueInt(0)
-	elseif (option == Clothes_B) && ClothesToggle == False
-		ClothesToggle = True
-		SetToggleOptionValue(Clothes_B, ClothesToggle )
+	elseif (option == Clothes_B) &&  _isTG(Condiexp_GlobalNoClothes) == False
+		SetToggleOptionValue(Clothes_B, True )
 		Condiexp_GlobalNoClothes.SetValueInt(1)
 
-	elseif (option == Sneaking_B) && SneakingToggle == True
-		SneakingToggle = False
-		SetToggleOptionValue(Sneaking_B, SneakingToggle)
+	elseif (option == Sneaking_B) &&  _isTG(Condiexp_GlobalSneaking) == True
+		SetToggleOptionValue(Sneaking_B, False)
 		Condiexp_GlobalSneaking.SetValueInt(0)
-	elseif (option == Sneaking_B) && SneakingToggle == False
-		SneakingToggle = True
-		SetToggleOptionValue(Sneaking_B, SneakingToggle)
+	elseif (option == Sneaking_B) &&  _isTG(Condiexp_GlobalSneaking) == False
+		SetToggleOptionValue(Sneaking_B, True)
 		Condiexp_GlobalSneaking.SetValueInt(1)
 
-	elseif (option == Water_B) && WaterToggle == True
-		WaterToggle = False
-		SetToggleOptionValue(Water_B, WaterToggle)
+	elseif (option == Water_B) &&  _isTG(Condiexp_GlobalWater) == True
+		SetToggleOptionValue(Water_B, False)
 		Condiexp_GlobalWater.SetValueInt(0)
-	elseif (option == Water_B) && WaterToggle == False
-		WaterToggle = True
-		SetToggleOptionValue(Water_B, WaterToggle)
+	elseif (option == Water_B) &&  _isTG(Condiexp_GlobalWater) == False
+		SetToggleOptionValue(Water_B, True)
 		Condiexp_GlobalWater.SetValueInt(1)
 
-	elseif (option == Headache_B) && HeadacheToggle == True
-		HeadacheToggle = False
-		SetToggleOptionValue(Headache_B, HeadacheToggle)
+	elseif (option == Headache_B) &&  _isTG(Condiexp_GlobalMana) == True
+		SetToggleOptionValue(Headache_B, False)
 		Condiexp_GlobalMana.SetValueInt(0)
-	elseif (option == Headache_B) && HeadacheToggle == False
-		HeadacheToggle = True
-		SetToggleOptionValue(Headache_B, HeadacheToggle)
+	elseif (option == Headache_B) &&  _isTG(Condiexp_GlobalMana) == False
+		SetToggleOptionValue(Headache_B, True)
 		Condiexp_GlobalMana.SetValueInt(1)
 
-	elseif (option == Trauma_B) && TraumaToggle == True
-		TraumaToggle = False
-		SetToggleOptionValue(Trauma_B, TraumaToggle)
+	elseif (option == Trauma_B) &&  _isTG(Condiexp_GlobalTrauma) == True
+		SetToggleOptionValue(Trauma_B, False)
 		Condiexp_GlobalTrauma.SetValueInt(0)
-	elseif (option == Trauma_B) && TraumaToggle == False
-		TraumaToggle = True
-		SetToggleOptionValue(Trauma_B, TraumaToggle)
+	elseif (option == Trauma_B) &&  _isTG(Condiexp_GlobalTrauma) == False
+		SetToggleOptionValue(Trauma_B, True)
 		Condiexp_GlobalTrauma.SetValueInt(1)
 
-	elseif (option == Dirty_B) && DirtyToggle == True
-		DirtyToggle = False
-		SetToggleOptionValue(Dirty_B, DirtyToggle)
+	elseif (option == Dirty_B) &&  _isTG(Condiexp_GlobalDirty) == True
+		SetToggleOptionValue(Dirty_B, False)
 		Condiexp_GlobalDirty.SetValueInt(0)
-	elseif (option == Dirty_B) && DirtyToggle == False
-		DirtyToggle = True
-		SetToggleOptionValue(Dirty_B, DirtyToggle)
+	elseif (option == Dirty_B) &&  _isTG(Condiexp_GlobalDirty) == False
+		SetToggleOptionValue(Dirty_B, True)
 		Condiexp_GlobalDirty.SetValueInt(1)
 
-	elseif (option == Aroused_B) && ArousedToggle == True
-		ArousedToggle = False
-		SetToggleOptionValue(Aroused_B, ArousedToggle)
+	elseif (option == Aroused_B) &&  _isTG(Condiexp_GlobalAroused) == True
+		SetToggleOptionValue(Aroused_B, False)
 		Condiexp_GlobalAroused.SetValueInt(0)
-	elseif (option == Aroused_B) && ArousedToggle == False
-		ArousedToggle = True
-		SetToggleOptionValue(Aroused_B, ArousedToggle)
+	elseif (option == Aroused_B) &&  _isTG(Condiexp_GlobalAroused) == False
+		SetToggleOptionValue(Aroused_B, True)
 		Condiexp_GlobalAroused.SetValueInt(1)
 
-	elseif (option == ArousedModifiers_B) && ArousedModifiersToggle == True
-		ArousedModifiersToggle = False
-		SetToggleOptionValue(ArousedModifiers_B, ArousedModifiersToggle) 
+	elseif (option == ArousedModifiers_B) && _isTG(Condiexp_GlobalArousalModifiers) == True
+		SetToggleOptionValue(ArousedModifiers_B, False) 
 		Condiexp_GlobalArousalModifiers.SetValueInt(0)
-	elseif (option == ArousedModifiers_B) && ArousedModifiersToggle == False
-		ArousedModifiersToggle = True
-		SetToggleOptionValue(ArousedModifiers_B, ArousedModifiersToggle)
+	elseif (option == ArousedModifiers_B) && _isTG(Condiexp_GlobalArousalModifiers) == False
+		SetToggleOptionValue(ArousedModifiers_B, True)
 		Condiexp_GlobalArousalModifiers.SetValueInt(1)
 
-	elseif (option == ArousedModifiersNotifications_B) && ArousedModifiersNotificationsToggle == True
-		ArousedModifiersNotificationsToggle = False
-		SetToggleOptionValue(ArousedModifiersNotifications_B, ArousedModifiersNotificationsToggle)
+	elseif (option == ArousedModifiersNotifications_B) && _isTG(Condiexp_GlobalArousalModifiersNotifications) == True
+		SetToggleOptionValue(ArousedModifiersNotifications_B, false)
 		Condiexp_GlobalArousalModifiersNotifications.SetValueInt(0)
-	elseif (option == ArousedModifiersNotifications_B) && ArousedModifiersNotificationsToggle == False
-		ArousedModifiersNotificationsToggle = True
-		SetToggleOptionValue(ArousedModifiersNotifications_B, ArousedModifiersNotificationsToggle)
+	elseif (option == ArousedModifiersNotifications_B) && _isTG(Condiexp_GlobalArousalModifiersNotifications) == False
+		SetToggleOptionValue(ArousedModifiersNotifications_B, true)
 		Condiexp_GlobalArousalModifiersNotifications.SetValueInt(1)
-
-	elseif (option == Verbose_B) && VerboseToggle == True
-		VerboseToggle = False
-		SetToggleOptionValue(Verbose_B, VerboseToggle)
+	elseif (option == Verbose_B) &&  _isTG(Condiexp_Verbose) == True
+		SetToggleOptionValue(Verbose_B, False)
 		Condiexp_Verbose.SetValueInt(0)
-	elseif (option == Verbose_B) && VerboseToggle == False
-		VerboseToggle = True
-		SetToggleOptionValue(Verbose_B, VerboseToggle)
+	elseif (option == Verbose_B) &&  _isTG(Condiexp_Verbose) == False
+		SetToggleOptionValue(Verbose_B, True)
 		Condiexp_Verbose.SetValueInt(1)
 
 	elseif (option == Followers_B) && FollowersToggle == True
@@ -579,14 +531,11 @@ if (option == Combat_B) && CombatToggle == True
 		SetToggleOptionValue(Followers_B, FollowersToggle)
 		ResetQuest(CondiExpFollowerQuest)
 
-
-	elseif (option == Sounds_B) && SoundsToggle == True
-		SoundsToggle = False
-		SetToggleOptionValue(Sounds_B, SoundsToggle)
+	elseif (option == Sounds_B) && _isTG(Condiexp_Sounds) == True
+		SetToggleOptionValue(Sounds_B, False)
 		Condiexp_Sounds.SetValueInt(0)
-	elseif (option == Sounds_B) && SoundsToggle == False
-		SoundsToggle = True
-		SetToggleOptionValue(Sounds_B, SoundsToggle)
+	elseif (option == Sounds_B) && _isTG(Condiexp_Sounds) == False
+		SetToggleOptionValue(Sounds_B, True)
 		DetectRace()
 	
 	elseif option == restore
@@ -743,6 +692,14 @@ int Function _getFlag(Bool cond = true)
    		return OPTION_FLAG_DISABLED  
 	Else
    		return OPTION_FLAG_NONE
+	EndIf  
+EndFunction
+
+bool Function _isTG(GlobalVariable gvar)
+	If  gvar.GetValueInt() == 0
+   		return false  
+	Else
+   		return true
 	EndIf  
 EndFunction
 

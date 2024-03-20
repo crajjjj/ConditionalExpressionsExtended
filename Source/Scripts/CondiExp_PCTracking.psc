@@ -18,16 +18,116 @@ GlobalVariable Property Condiexp_ModSuspended Auto
 GlobalVariable Property Condiexp_Sounds Auto
 Keyword Property VendorItemFood Auto
 Keyword Property VendorItemIngredient Auto
+Keyword Property VendorItemFoodRaw Auto
 Race Property KhajiitRace Auto
 Race Property KhajiitRaceVampire Auto
 Race Property OrcRace Auto
 Race Property OrcRaceVampire Auto
 Keyword property Vampire Auto
 
+;Devious Devices
+MagicEffect vZadGagEffect
+Keyword zad_DeviousGag
+;Toys
+Keyword ToysEffectMouthOpen 
+;Sunhelm keywords
+Keyword _SH_LightFoodKeyword
+Keyword _SH_MediumFoodKeyword
+Keyword _SH_HeavyFoodKeyword
+Keyword _SH_SoupKeyword
+Keyword _SH_AlcoholDrinkKeyword
+
+;SLS
+Keyword _SLS_TongueKeyword
+
+Event OnInit()
+	log("CondiExp_Tracking: Init")
+	init()
+EndEvent
+
 Event onPlayerLoadGame()
 	log("CondiExp_Tracking: Game reload event")
+	init()
 	sm.RegisterForSingleUpdate(5)
 endEvent
+
+bool function isSHInitialised()
+	return  _SH_LightFoodKeyword && _SH_MediumFoodKeyword && _SH_HeavyFoodKeyword && _SH_SoupKeyword && _SH_AlcoholDrinkKeyword
+endfunction
+
+function init()
+	if !zad_DeviousGag && isDDassetsReady()
+		zad_DeviousGag = Game.GetFormFromFile(0x007EB8, "Devious Devices - Assets.esm") as Keyword 
+	endif
+	if zad_DeviousGag
+		log("CondiExp_Tracking: Found Devious Devices - Assets: " + zad_DeviousGag.GetName() )
+	endif
+	if !ToysEffectMouthOpen && isToysReady()
+		ToysEffectMouthOpen = Game.GetFormFromFile(0x0008C2, "Toys.esm") as Keyword
+	endif
+	if ToysEffectMouthOpen
+		log("CondiExp_Tracking: Found Toys: " + ToysEffectMouthOpen.GetName())
+	endif
+	if !isSHInitialised() && isSunHelmReady()
+		_SH_LightFoodKeyword = Game.GetFormFromFile(0xF3DD6D, "SunHelmSurvival.esp") as Keyword
+		_SH_MediumFoodKeyword = Game.GetFormFromFile(0xF3DD6E, "SunHelmSurvival.esp") as Keyword 
+		_SH_HeavyFoodKeyword = Game.GetFormFromFile(0xF3DD6F, "SunHelmSurvival.esp") as Keyword 
+		_SH_SoupKeyword = Game.GetFormFromFile(0xF3DD74, "SunHelmSurvival.esp") as Keyword 
+		_SH_AlcoholDrinkKeyword = Game.GetFormFromFile(0xF3DD73, "SunHelmSurvival.esp") as Keyword  
+	endif
+	if isSHInitialised()
+		log("CondiExp_Tracking: Found SunHelm keywords")
+	endif
+
+	if !_SLS_TongueKeyword && isSLSurvivalReady()
+		_SLS_TongueKeyword = Game.GetFormFromFile(0x0B74B5, "SL Survival.esp") as Keyword 
+	endif
+	if _SLS_TongueKeyword
+		log("CondiExp_Tracking: Found SL Survival: " + _SLS_TongueKeyword.GetName())
+	endif
+	
+endfunction
+
+bool function checkFaceWearables(Form akBaseObject)
+	bool result = false
+	if zad_DeviousGag && akBaseObject.HasKeyWord(zad_DeviousGag)
+		result = true
+	endif
+	if ToysEffectMouthOpen && akBaseObject.HasKeyWord(ToysEffectMouthOpen)
+		result = true
+	endif
+	if _SLS_TongueKeyword && akBaseObject.HasKeyWord(_SLS_TongueKeyword)
+		result = true
+	endif
+	return result
+endfunction
+
+bool function checkIfModShouldBeSuspendedByWearables(Actor act)
+	if (zad_DeviousGag && act.WornHasKeyword(zad_DeviousGag))
+		log("CondiExp_StartMod: dd gag was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
+		return true
+	endif
+	if (ToysEffectMouthOpen && act.WornHasKeyword(ToysEffectMouthOpen))
+		log("CondiExp_StartMod: ToysEffectMouthOpen keyword was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
+		return true
+	endif
+	if (_SLS_TongueKeyword && act.WornHasKeyword(_SLS_TongueKeyword))
+		log("CondiExp_StartMod: _SLS_TongueKeyword keyword was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
+		return true
+	endif
+	return false
+endfunction
+
+bool function checkSHFoodKeywords(Form akBaseObject)
+	bool result = false
+	if !isSHInitialised()
+		return result
+	endif
+	if  akBaseObject.HasKeyWord(_SH_LightFoodKeyword) || akBaseObject.HasKeyWord(_SH_MediumFoodKeyword) || akBaseObject.HasKeyWord(_SH_HeavyFoodKeyword) || akBaseObject.HasKeyWord(_SH_SoupKeyword)
+		result = true
+	endif
+	return result
+endfunction
 
 
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
@@ -36,15 +136,23 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 		return
 	EndIf
 	verbose(PlayerRef, "CondiExp_Tracking: OnObjectEquipped triggered: " + akBaseObject.GetName())
+	
+	if checkFaceWearables(akBaseObject)
+		sm.OnUpdateExecute(PlayerRef)
+	endif
+
 	If CondiExp_Drugs.HasForm(akBaseObject)
 		CondiExp_PlayerIsHigh.SetValueInt(1)
 	
-	elseif  CondiExp_Drinks.HasForm(akBaseObject)
+	elseif  CondiExp_Drinks.HasForm(akBaseObject) 
+			log("CondiExp_Tracking: OnObjectEquipped AlcoholDrink: " + akBaseObject.GetName())
 			CondiExp_PlayerIsDrunk.SetValueInt(1)
-	
-	elseif akBaseObject.HasKeyWord(VendorItemFood)
+	elseif _SH_AlcoholDrinkKeyword && akBaseObject.HasKeyWord(_SH_AlcoholDrinkKeyword)
+			log("CondiExp_Tracking: OnObjectEquipped _SH_AlcoholDrink: " + akBaseObject.GetName())
+			CondiExp_PlayerIsDrunk.SetValueInt(1)
+	elseif akBaseObject.HasKeyWord(VendorItemFood) || akBaseObject.HasKeyWord(VendorItemFoodRaw)
 			CondiExp_PlayerJustAte.SetValueInt(1)
-			log("CondiExp_Tracking: OnObjectEquipped VendorItemFood: " + akBaseObject.GetName())
+			log("CondiExp_Tracking: OnObjectEquipped VendorItemFood(Raw): " + akBaseObject.GetName())
 			utility.wait(5)
 	
 	elseif akBaseObject.HasKeyword(VendorItemIngredient)
@@ -61,6 +169,10 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 				utility.wait(5)
 				Condiexp_GlobalEating.SetValueInt(1)
 		endif
+	elseif checkSHFoodKeywords(akBaseObject) 
+		CondiExp_PlayerJustAte.SetValueInt(1)
+		log("CondiExp_Tracking: OnObjectEquipped _SH_Food: " + akBaseObject.GetName())
+		utility.wait(5)
 	Endif
 EndEvent
 

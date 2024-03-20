@@ -47,7 +47,11 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(1)
 	;either 0 or aroused level > Condiexp_MinAroused
 	aroused()
-	resetMFGSmooth(PlayerRef)
+	If Condiexp_ModSuspended.GetValueInt()
+		;do nothing
+	elseIf Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
+		resetMFGSmooth(PlayerRef)
+	endif
 	;verbose(akTarget, "Aroused: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	Utility.Wait(2)
 	config.currentExpression = ""

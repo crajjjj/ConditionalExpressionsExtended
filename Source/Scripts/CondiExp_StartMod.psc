@@ -83,6 +83,9 @@ CondiExp_BaseExpression Property arousalExpr Auto
 CondiExp_BaseExpression Property traumaExpr Auto
 CondiExp_BaseExpression Property dirtyExpr Auto
 CondiExp_BaseExpression Property painExpr Auto
+CondiExp_BaseExpression Property randomExpr Auto
+
+CondiExp_PCTracking Property pctracking Auto
 
 ;Bathing mod
 MagicEffect DirtinessStage2Effect 
@@ -209,6 +212,7 @@ function init()
 	traumaExpr.Initialize()
 	dirtyExpr.Initialize()
 	painExpr.Initialize()
+	randomExpr.Initialize()
 endfunction
 
 Event OnUpdate()
@@ -217,6 +221,13 @@ Event OnUpdate()
 		RegisterForSingleUpdate(5)
 		return
 	endif
+	OnUpdateExecute(PlayerRef)
+	if PlayerRef.HasSpell(CondiExp_Fatigue1) && Condiexp_UpdateInterval.GetValueInt() > 0
+		RegisterForSingleUpdate(Condiexp_UpdateInterval.GetValueInt())
+	endif
+EndEvent
+
+function OnUpdateExecute(Actor act)
 	;postponed module init
 	If _checkPlugins > 0
 		_checkPlugins += 1
@@ -228,7 +239,7 @@ Event OnUpdate()
 	EndIf
 
 	;check if there's a conflicting mod based on custom conditions
-	if checkIfModShouldBeSuspended(PlayerRef)
+	if checkIfModShouldBeSuspended(act)
 		if isModEnabled()
 			log("CondiExp_StartMod: suspended according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(1)
@@ -241,28 +252,23 @@ Event OnUpdate()
 			log("CondiExp_StartMod: resumed according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(0)
 		endif
-		int coldy = getColdStatus(PlayerRef)
+		int coldy = getColdStatus(act)
 		Condiexp_CurrentlyCold.SetValueInt(coldy)
 		If (coldy == 0)
-			if !PlayerRef.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 2 
-				OnCondiExpSLAEvent(30, 100, "is not feeling very aroused because it's raining", "CondiExpRaining", PlayerRef)
+			if !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 2 
+				OnCondiExpSLAEvent(30, 100, "is not feeling very aroused because it's raining", "CondiExpRaining", act)
 			endif
 		EndIf
-		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(PlayerRef))
-		Condiexp_CurrentlyDirty.SetValueInt(getDirtyStatus(PlayerRef))
-		Condiexp_CurrentlyAroused.SetValueInt(getArousalStatus(PlayerRef))
+		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(act))
+		Condiexp_CurrentlyDirty.SetValueInt(getDirtyStatus(act))
+		Condiexp_CurrentlyAroused.SetValueInt(getArousalStatus(act))
  	endif
 
 	if Condiexp_Verbose.GetValueInt() == 1
 		String msg = "Status: CondiExp_CurrentlyBusy:" + CondiExp_CurrentlyBusy.GetValueInt() + ":::" + "Condiexp_CurrentlyBusyImmediate:" + Condiexp_CurrentlyBusyImmediate.GetValueInt()
-		trace(PlayerRef,msg, 1)
+		trace(act, msg, 1)
 	endif
-
-	if PlayerRef.HasSpell(CondiExp_Fatigue1) && Condiexp_UpdateInterval.GetValueInt() > 0
-		RegisterForSingleUpdate(Condiexp_UpdateInterval.GetValueInt())
-	endif
-	
-EndEvent
+endfunction
 
 Bool function checkIfModShouldBeSuspended(Actor act)
 	if isSuspendedByDhlpEvent()
@@ -275,7 +281,7 @@ Bool function checkIfModShouldBeSuspended(Actor act)
 		return true
 	endif
 
-	if (zad_DeviousGag && act.WornHasKeyword(zad_DeviousGag))
+	if (pctracking.checkIfModShouldBeSuspendedByWearables(act))
 		log("CondiExp_StartMod: dd gag was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
 		return true
 	endif
@@ -513,15 +519,15 @@ endfunction
 
 Function resolveAutoColdMethod()
 	If Condiexp_GlobalCold.GetValueInt() == 1 && Condiexp_ColdMethod.GetValueInt() == 5
-		If Game.IsPluginInstalled("Frostfall.esp")
+		If isFrostFallReady()
 		;Frostfall Installed
 			Condiexp_ColdMethod.SetValueInt(1)
 			trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): 1 - Frostfall", Condiexp_Verbose.GetValueInt())
-		elseif Game.IsPluginInstalled("Frostbite.esp")
+		elseif isFrostbiteReady()
 		;Frostbite Installed
 			Condiexp_ColdMethod.SetValueInt(2)
 			trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): 2 - Frostbite", Condiexp_Verbose.GetValueInt())
-		elseif Game.IsPluginInstalled("SunHelmSurvival.esp")
+		elseif isSunHelmReady()
 		;SunHelmSurvival Installed
 			Condiexp_ColdMethod.SetValueInt(3)
 			trace_line("CondiExp_StartMod: Condiexp_ColdMethod(): 3 - SunHelmSurvival", Condiexp_Verbose.GetValueInt())
@@ -532,8 +538,6 @@ Function resolveAutoColdMethod()
 		endif
 	endif
 endfunction
-
-
 
 Event OnKeyDown(Int KeyCode)
 	if _checkPlugins !=0

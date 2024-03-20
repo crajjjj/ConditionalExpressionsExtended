@@ -44,7 +44,11 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(1)
 	dirty()
 	Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
-	resetMFGSmooth(PlayerRef)
+	If Condiexp_ModSuspended.GetValueInt()
+		;do nothing
+	elseIf Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
+		resetMFGSmooth(PlayerRef)
+	endif
 	;verbose(PlayerRef, "Dirty: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	Utility.Wait(2)
 	config.currentExpression = ""

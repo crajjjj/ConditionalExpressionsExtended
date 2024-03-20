@@ -111,7 +111,11 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	endwhile
 	Utility.Wait(1)
 	trace(PlayerRef, "Cold: OnEffectFinish", Condiexp_Verbose.GetValueInt())
-	resetMFGSmooth(PlayerRef)
+	If Condiexp_ModSuspended.GetValueInt()
+		;do nothing
+	elseIf Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
+		resetMFGSmooth(PlayerRef)
+	endif
 	config.currentExpression=""
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

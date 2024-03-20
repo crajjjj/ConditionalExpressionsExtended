@@ -198,11 +198,11 @@ endFunction
 
 int function ValidatePreset(float[] Preset)
 	if Preset.Length == 32 ; Must be appropiate size
-		int i = 30
+		int i = 31
 		while i
 			i -= 1
 			if Preset[i] > 0.0
-				return 1 ; Must have alteast one phoneme or modifier value
+				return 1 ; Must have alteast one phoneme or modifier value or expression
 			endIf
 		endWhile
 	endIf

@@ -65,6 +65,6 @@ EndState
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
   Utility.Wait(0.5)
-  CondiExp_util.resetMFG(PlayerRef)
+  CondiExp_util.resetMFGSmooth(PlayerRef)
   config.currentExpression = ""
 EndEvent

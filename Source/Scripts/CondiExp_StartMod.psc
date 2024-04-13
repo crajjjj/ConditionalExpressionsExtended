@@ -244,6 +244,7 @@ function OnUpdateExecute(Actor act)
 			log("CondiExp_StartMod: suspended according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(1)
 			resetStatuses()
+			CondiExp_util.resetMFGSmooth(act)
 			Condiexp_CurrentlyBusy.SetValueInt(0)
 			Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 		endif

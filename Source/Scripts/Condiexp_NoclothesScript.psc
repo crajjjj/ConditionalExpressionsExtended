@@ -16,14 +16,28 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function Blush()
-    verbose(PlayerRef, "No Clothes", Condiexp_Verbose.GetValueInt())
-    CondiExp_util.SmoothSetExpression(PlayerRef,4,90)
+    Int randomLook = Utility.RandomInt(1, 10)
+    verbose(PlayerRef, "No Clothes" + randomLook, Condiexp_Verbose.GetValueInt())
+
+    if randomLook >= 5
+        Surprised(90,PlayerRef, 10)
+    Else
+        Fear(95,PlayerRef, 10)
+    endif
+
+    If randomLook == 2
+		LookLeft(50, PlayerRef)
+	ElseIf randomLook == 4
+		LookRight(50, PlayerRef)
+	ElseIf randomLook == 8
+		LookDown(50, PlayerRef)
+	endif
+
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     config.currentExpression = "No Clothes"
     Blush()
-    Utility.Wait(10)
   ;  verbose(PlayerRef, "No Clothes: OnEffectFinish.  " , Condiexp_Verbose.GetValueInt() )
     resetMFGSmooth(PlayerRef)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)

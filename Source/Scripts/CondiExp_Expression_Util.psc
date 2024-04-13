@@ -123,14 +123,13 @@ Function PlayPainExpression(Actor act, CondiExp_BaseExpression expr) global
 EndFunction
 
 Function PlayRandomExpression(Actor act, condiexp_MCM config, CondiExp_BaseExpression expr) global
-	verbose(act,"Random emotion", config.Condiexp_Verbose.GetValueInt())
-	RandomEmotion(act, config, expr)
+	Int Order = Utility.RandomInt(1, 110)
+	verbose(act,"Random emotion. Order: " + Order, config.Condiexp_Verbose.GetValueInt())
+	RandomEmotion(act, config, expr, order)
 EndFunction
 
-Function RandomEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression expr) Global
+Function RandomEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression expr, int Order) Global
 
-	Int Order = Utility.RandomInt(1, 100)
-	
 	If Order == 1 || Order == 33
 		LookLeft(70,act)
 		LookRight(70, act)
@@ -146,7 +145,7 @@ Function RandomEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression e
 	Elseif Order == 6 || Order == 38 || Order == 65
 	Smile(60,act)
 	elseif Order == 7 || Order == 39 || Order == 66
-	Puzzled(25,act)
+	Puzzled(25,act, 4.0)
 	Elseif Order == 8 || Order == 40 || Order == 67
 	BrowsUpSmile(45,act)
 	Elseif Order == 9 || Order == 47 || Order == 68
@@ -182,7 +181,7 @@ Function RandomEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression e
 	elseif Order == 24 || Order == 54
 	Disgust(25,act)
 	elseif Order == 25 || Order == 55
-	Puzzled(50,act)
+	Puzzled(50,act, 4.0)
 	elseif Order == 26 || Order == 56
 	Happy(40,act)
 	elseif Order == 27 || Order == 77
@@ -200,24 +199,25 @@ Function RandomEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression e
 	Smile(35,act)
 	Else
 		Int exprNumber = Utility.RandomInt(1, 7)
-		expr.Apply(act, exprNumber, 100)
+		verbose(act,"Expression_Random. Number: " + exprNumber, config.Condiexp_Verbose.GetValueInt())
+		expr.Apply(act, exprNumber, 60)
 	Endif
 EndFunction
 
-Function LookLeft(int n, Actor act) Global
+Function LookLeft(int n, Actor act, float time = 2.0) Global
 	CondiExp_util.SetModifier(act, 9,n, 1, 1)
 
-	Utility.Wait(2.0)
+	Utility.Wait(time)
 
 	CondiExp_util.SetModifier(act, 9,0, 1, 1)
 	Utility.Wait(1.0)
 endfunction
 	
 	
-Function LookRight(int n, Actor act) Global
+Function LookRight(int n, Actor act, float time = 2.0) Global
 	CondiExp_util.SetModifier(act, 10,n,1,1)
 	
-	Utility.Wait(2.0)
+	Utility.Wait(time)
 	
 	CondiExp_util.SetModifier(act, 10,0,1,1)
 	Utility.Wait(1.0)
@@ -303,9 +303,9 @@ Function Yawn(Actor act) Global
 	Utility.Wait(1.0)
 endfunction
 	
-Function LookDown(int n, Actor act) Global
+Function LookDown(int n, Actor act, float time = 1.5) Global
 	CondiExp_util.SetModifier(act, 8,n)
-	Utility.Wait(1.5)
+	Utility.Wait(time)
 	CondiExp_util.SetModifier(act, 8,0)
 	Utility.Wait(1.0)
 endfunction
@@ -372,9 +372,29 @@ Function Exhale(int n, int j, Actor act) Global
    endwhile
 EndFunction
 
-Function Puzzled(int n, Actor act) Global
+Function Fear(int n, Actor act, float time) Global
+	CondiExp_util.SmoothSetExpression(act,9,n)
+	CondiExp_util.SetPhoneme(act, 4, 15)
+	Utility.Wait(time)
+	CondiExp_util.SmoothSetExpression(act,9,0)
+	Utility.Wait(1)
+	CondiExp_util.resetPhonemesSmooth(act)
+	act.ClearExpressionOverride()
+endfunction
+
+Function Surprised(int n, Actor act, float time) Global
+	CondiExp_util.SmoothSetExpression(act,12,n)
+	CondiExp_util.SetPhoneme(act, 11, 20)
+	Utility.Wait(time)
+	CondiExp_util.SmoothSetExpression(act,12,0)
+	Utility.Wait(1)
+	CondiExp_util.resetPhonemesSmooth(act)
+	act.ClearExpressionOverride()
+endfunction
+
+Function Puzzled(int n, Actor act, float time) Global
 	CondiExp_util.SmoothSetExpression(act,13,n)
-	Utility.Wait(4.0)
+	Utility.Wait(time)
 	CondiExp_util.SmoothSetExpression(act,13,0)
 	Utility.Wait(1)
 	act.ClearExpressionOverride()

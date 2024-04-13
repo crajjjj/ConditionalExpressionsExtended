@@ -12,7 +12,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 200003
+    Return 200004
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -22,7 +22,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "2.0.3"
+    Return "2.0.4"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -101,6 +101,14 @@ Bool Function isSLSurvivalReady() Global
 	Return isDependencyReady("SL Survival.esp") 
 EndFunction
 
+GlobalVariable Function getCurrentlyBusyVar() Global
+	Return Game.GetFormFromFile(0x21381B, "Conditional Expressions.esp") as GlobalVariable
+EndFunction
+
+GlobalVariable Function getModSuspendedVar() Global
+	Return Game.GetFormFromFile(0x21381E, "Conditional Expressions.esp") as GlobalVariable
+EndFunction
+
 ;do not use. Breaks LE
 ;Bool Function isDependencyReady(String modname) Global
 	;Return Game.IsPluginInstalled(modname)
@@ -126,7 +134,7 @@ bool function isInDialogue(Actor act, bool isPC) global
 			return false
 		endif
 	else
-		if act.GetDialogueTarget()
+		if act.IsInDialogueWithPlayer()
 			return true
 		else
 			return false

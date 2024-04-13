@@ -12,8 +12,8 @@ Import CondiExp_Expression_Util
 Import CondiExp_util
 Import CondiExp_log
 
-
 int additionalLagSmall = 3
+int distanceCounter = 5
 int additionalLag = 10
 int additionalLagBig = 30
 
@@ -58,14 +58,23 @@ Event OnUpdate()
 	
 	float dist = act.GetDistance(PlayerRef)
 
-	If (dist > 1500)
-		verbose(act, "Actor is too far - removing" , verboseInt)
-		self.Clear()
-		act = None
-		return
+	If (dist > 2000)
+		if (distanceCounter <= 0)
+			verbose(act, "Actor is too far. Removing", verboseInt)
+			self.Clear()
+			act = None
+			return
+		else
+			verbose(act, "Actor is too far. Counter:" + distanceCounter, verboseInt)
+			distanceCounter = distanceCounter - 1
+			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLag)
+			return
+		endif
+	Else
+		distanceCounter = 5
 	EndIf
 
-	If (sm.checkIfModShouldBeSuspended(act) || act.IsInDialogueWithPlayer())
+	If (sm.checkIfModShouldBeSuspended(act))
 		verbose(act, "Suspending on condition" , verboseInt)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLag)
 		return

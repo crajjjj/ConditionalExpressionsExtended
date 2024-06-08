@@ -48,6 +48,9 @@ EndEvent
 Event onPlayerLoadGame()
 	log("CondiExp_Tracking: Game reload event")
 	init()
+	If CondiExp_Sounds.GetValueInt() > 0
+		sm.NewRace()
+	Endif
 	sm.RegisterForSingleUpdate(5)
 endEvent
 

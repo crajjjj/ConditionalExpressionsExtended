@@ -55,7 +55,7 @@ Function PlayTraumaExpression(Actor act, int trauma, CondiExp_BaseExpression exp
 		else
 			bottomMargin = 4
 			topMargin = 10
-		endif 
+		endif
 		Int randomEffect = Utility.RandomInt(bottomMargin, topMargin)
 		;verbose(act,"Trauma: Trauma: " + trauma + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValueInt())
 		;_traumaVariants(randomEffect, act, power, config)
@@ -349,26 +349,26 @@ Function Happy(int n, Actor act) Global
 endfunction
 
 Function Inhale(int n, int j, Actor act) Global
-	int i = n
+   int i = n
    while i <  j
-   CondiExp_util.SetPhonemeFast(act, 0,i)
-   i = i + 5
-   If (i >j)
-   i = j
-   Endif
-   Utility.Wait(0.04)
+  	 CondiExp_util.SetPhonemeFast(act, 0, i)
+  	 i = i + 5
+   	 If (i > j)
+   		i = j
+     Endif
+     Utility.Wait(0.04)
    endwhile
 EndFunction
  
 Function Exhale(int n, int j, Actor act) Global
 	int i = n
-   while i > j
-  	 CondiExp_util.SetPhonemeFast(act, 0, i)
-  	 i = i - 5
-   	If (i < j)
+    while i > j
+  	  CondiExp_util.SetPhonemeFast(act, 0, i)
+  	  i = i - 5
+   	  If (i < j)
    		i = j
-   	Endif
-  	 Utility.Wait(0.02)
+   	  Endif
+  	  Utility.Wait(0.02)
    endwhile
 EndFunction
 

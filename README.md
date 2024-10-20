@@ -21,8 +21,8 @@ This is a remastered extension of the Conditional Expressions - Subtle Face Anim
  
 ## Hard dependencies
 
-- MFG fix
-- PapyrusUtil 
+- MFG fix NG
+- PapyrusUtil
  
 ## Installation
 
@@ -55,12 +55,12 @@ Move Conditional Expressions.esp higher in the load order. You can also try usin
 All animation mods should be compatible. Only mods that might cause issues are those that change the players facial expressions, which there shouldn't be many.
 
 Details:  
-Random Emotions - (incompatible) similar feature with random expressions is included
+Random Emotions - (patch available) can replace random expressions if patch is installed
 SL Emotions - compatible
 Ostim - compatible
 Death Expressions (compatible)
 PC Head Tracking (compatible - better to disable expressions in mcm)
-Blush When Aroused - (compatible - patched version in downloads section) -  CEExtended has built in aroused expressions support.
+Blush When Aroused - (compatible - patched version in downloads section in LL) -  CEExtended has built in aroused expressions support.
 Devious Devices - (compatible) - gags are compatible
 Toys framework - (compatible) - gags are compatible
 SL animations (compatible) - sl faction check (osmel patch + additional checks) 

@@ -13,7 +13,7 @@ CondiExp_BaseExpression Property painExpr Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
-    SendSLAModEvent(0, 200, "not feeling aroused because of very strong pain", PlayerRef, "CondiExpPain")
+    SendSLAModEvent(config.Go.arousalPainThreshold, config.Go.arousalPain, "not feeling aroused because of very strong pain", PlayerRef, "CondiExpPain")
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)

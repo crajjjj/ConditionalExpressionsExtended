@@ -116,6 +116,31 @@ Quest sla
 Faction slaArousalFaction
 Faction slaExposureFaction
 
+Int property arousalChillyThreshold = 40 auto hidden
+Int property arousalChilly = 80 auto hidden
+Int property arousalColdThreshold = 20 auto hidden
+Int property arousalCold = 120 auto hidden
+Int property arousalFreezingThreshold = 0 auto hidden
+Int property arousalFreezing = 200 auto hidden
+
+Int property arousalPainThreshold = 0 auto hidden
+Int property arousalPain = 200 auto hidden
+
+Int property arousalTraumaMinorThreshold = 30 auto hidden
+Int property arousalTraumaMinor = 100 auto hidden
+
+Int property arousalTraumaMajorThreshold = 0 auto hidden
+Int property arousalTraumaMajor = 200 auto hidden
+
+Int property arousalSwimThreshold = 40 auto hidden
+Int property arousalSwim = 60 auto hidden
+
+Int property arousalRainThreshold = 40 auto hidden
+Int property arousalRain = 100 auto hidden
+
+Int property arousalHeadacheThreshold = 40 auto hidden
+Int property arousalHeadache = 60 auto hidden
+
 int _checkPlugins = 0
 
 Event OnInit()
@@ -257,7 +282,7 @@ function OnUpdateExecute(Actor act)
 		Condiexp_CurrentlyCold.SetValueInt(coldy)
 		If (coldy == 0)
 			if !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 2 
-				OnCondiExpSLAEvent(30, 100, "is not feeling very aroused because it's raining", "CondiExpRaining", act)
+				OnCondiExpSLAEvent(arousalRainThreshold, arousalRain, "is not feeling very aroused because it's raining", "CondiExpRaining", act)
 			endif
 		EndIf
 		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(act))
@@ -311,7 +336,7 @@ int function getColdStatus(Actor act )
 	If Condiexp_ColdMethod.GetValueInt() == 1
 		If Temp.GetValueInt() > 2
 			trace(act,"CondiExp_StartMod: getColdStatus frostfall:  is cold", Condiexp_Verbose.GetValueInt())
-			OnCondiExpSLAEvent(0, 150, "is not feeling aroused because of cold", "CondiExpCold", act)
+			OnCondiExpSLAEvent(arousalColdThreshold, arousalCold, "is not feeling aroused because of cold", "CondiExpCold", act)
 			return 1
 			else
 			return 0
@@ -319,15 +344,15 @@ int function getColdStatus(Actor act )
 	elseIf Condiexp_ColdMethod.GetValueInt() == 2 || Condiexp_ColdMethod.GetValueInt() == 3
 		If act.HasSpell(Cold1)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is chilly", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(40, 80, "is not feeling very aroused because it's chilly", "CondiExpChilly", act)
+				OnCondiExpSLAEvent(arousalChillyThreshold, arousalChilly, "is not feeling very aroused because it's chilly", "CondiExpChilly", act)
 				return 1
 			ElseIf act.HasSpell(Cold2)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is cold", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(20, 120, "is not feeling aroused because it's cold", "CondiExpCold", act)
+				OnCondiExpSLAEvent(arousalColdThreshold, arousalCold, "is not feeling aroused because it's cold", "CondiExpCold", act)
 				return 1
 			elseif act.HasSpell(Cold3)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is freezing", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(0, 200, "is not feeling aroused because it's freezing", "CondiExpFreezing", act)
+				OnCondiExpSLAEvent(arousalFreezingThreshold, arousalFreezing, "is not feeling aroused because it's freezing", "CondiExpFreezing", act)
 				return 1
 			else
 				return 0
@@ -335,7 +360,7 @@ int function getColdStatus(Actor act )
 	elseIf Condiexp_ColdMethod.GetValueInt() == 4
 		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
 			trace(act,"CondiExp_StartMod: getColdStatus vanilla: is cold", Condiexp_Verbose.GetValueInt())
-			OnCondiExpSLAEvent(0, 120, "is not feeling aroused because of cold", "CondiExpCold", act)
+			OnCondiExpSLAEvent(arousalColdThreshold, arousalCold, "is not feeling aroused because of cold", "CondiExpCold", act)
 			return 1
 		else
 			return 0
@@ -405,10 +430,10 @@ int function getTraumaStatus(Actor act)
 			int AROUSAL_BLOCKING_TRAUMA_MINOR = 3
 			if trauma >= AROUSAL_BLOCKING_TRAUMA_MAJOR
 				trace(act, "CondiExp_StartMod: blocking arousal cause of high trauma", Condiexp_Verbose.GetValueInt())
-				OnCondiExpSLAEvent(0, trauma*30, " not feeling aroused because of strong trauma", "CondiExpTraumaStrong", act)
+				OnCondiExpSLAEvent(arousalTraumaMajorThreshold, arousalTraumaMajor, " not feeling aroused because of strong trauma", "CondiExpTraumaStrong", act)
 				;setArousaToValue(act, sla, slaArousalFaction, 0)
 			elseif trauma >= AROUSAL_BLOCKING_TRAUMA_MINOR
-				OnCondiExpSLAEvent(30, trauma*10, " not feeling very aroused because of trauma", "CondiExpTrauma", act)
+				OnCondiExpSLAEvent(arousalTraumaMinorThreshold, arousalTraumaMinor, " not feeling very aroused because of trauma", "CondiExpTrauma", act)
 			endif
 			return trauma
 		endif

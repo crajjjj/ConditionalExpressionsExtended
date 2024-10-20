@@ -12,7 +12,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     config.currentExpression = "Water squint"
     verbose(PlayerRef, "Water squint", config.Condiexp_Verbose.GetValueInt())
     if PlayerRef.IsSwimming()
-         SendSLAModEvent(20, 60, "not feeling very aroused because of swimming", PlayerRef, "CondiExpSwimming")
+         SendSLAModEvent(config.Go.arousalSwimThreshold, config.Go.arousalSwim, "not feeling very aroused because of swimming", PlayerRef, "CondiExpSwimming")
     endif
     Squint()
 EndEvent

@@ -14,7 +14,7 @@ condiexp_MCM Property config auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
-    SendSLAModEvent(20, 60, "not feeling very aroused because of headache", PlayerRef, "CondiExpHeadache")
+    SendSLAModEvent(config.Go.arousalHeadacheThreshold, config.Go.arousalHeadache, "not feeling very aroused because of headache", PlayerRef, "CondiExpHeadache")
 EndEvent
 
 

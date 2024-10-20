@@ -31,6 +31,7 @@ GlobalVariable Property Condiexp_ExpressionStr Auto
 GlobalVariable Property Condiexp_ModifierStr Auto
 GlobalVariable Property Condiexp_PhonemeStr Auto
 String Property currentExpression Auto
+String status_string=""
 
 
 Race Property OrcRace Auto
@@ -61,6 +62,7 @@ int Stamina_B
 int Water_B
 int headache_B
 int restore
+int status
 int update
 int uninstall
 int Sounds_B
@@ -82,6 +84,31 @@ int traumaExprRegistered
 int dirtyExprRegistered
 int painExprRegistered
 int randomExprRegistered
+
+Int  arousalChillyThreshold_slider 
+Int  arousalChilly_slider 
+Int  arousalColdThreshold_slider 
+Int  arousalCold_slider  
+Int  arousalFreezingThreshold_slider 
+Int  arousalFreezing_slider 
+
+Int  arousalPainThreshold_slider
+Int  arousalPain_slider
+
+Int  arousalTraumaMinorThreshold_slider
+Int  arousalTraumaMinor_slider
+
+Int  arousalTraumaMajorThreshold_slider
+Int  arousalTraumaMajor_slider
+
+Int  arousalSwimThreshold_slider
+Int  arousalSwim_slider
+
+Int  arousalRainThreshold_slider
+Int  arousalRain_slider
+
+Int  arousalHeadacheThreshold_slider
+Int  arousalHeadache_slider
 
 bool FollowersToggle = false 
 
@@ -124,10 +151,11 @@ event OnVersionUpdate(int a_version)
 endEvent
 
 Event OnConfigOpen()
-	Pages = New String[3]
+	Pages = New String[4]
 	Pages[0] = "$CEE_A3"
 	Pages[1] = "$CEE_A4"
 	Pages[2] = "$CEE_A5"
+	Pages[3] = "$CEE_A51"
 
 	EatingFastSlowList = new string[3]
 	EatingFastSlowList[0] = "$CEE_A6"
@@ -156,6 +184,7 @@ Event OnConfigOpen()
 	ExpressionTypeList[2] = "Trauma"
 	ExpressionTypeList[3] = "Dirty"
 	ExpressionTypeList[4] = "Random"
+	FollowersToggle = CondiExpFollowerQuest.IsRunning()
 EndEvent
 
 Event OnPageReset(string page)
@@ -171,6 +200,8 @@ Event OnPageReset(string page)
 		Settings()
 	elseIf (page == "$CEE_A5")
 		Maintenance()
+	elseIf (page == "$CEE_A51")
+		ArousedModifiers()
 	endIf
 EndEvent
 
@@ -213,8 +244,6 @@ Function Settings()
 	_expression_strength_slider = AddSliderOption("$CEE_D9", Condiexp_ExpressionStr.GetValue(), "{2}", OPTION_FLAG_NONE)
 	_modifier_strength_slider = AddSliderOption("$CEE_E1", Condiexp_ModifierStr.GetValue(), "{2}", OPTION_FLAG_NONE)
 	_phoneme_strength_slider = AddSliderOption("$CEE_E2", Condiexp_PhonemeStr.GetValue(), "{2}", OPTION_FLAG_NONE)
-	ArousedModifiers_B = AddToggleOption("Aroused Modifiers", _isTG(Condiexp_GlobalArousalModifiers))
-	ArousedModifiersNotifications_B = AddToggleOption("Aroused Modifiers Notifications", _isTG(Condiexp_GlobalArousalModifiersNotifications))
 	AddHeaderOption("$CEE_E3")
 	Followers_B =  AddToggleOption("$CEE_E4", CondiExpFollowerQuest.IsRunning())
 	_update_interval_followers_slider = AddSliderOption("$CEE_E5", Condiexp_FollowersUpdateInterval.GetValueInt(), "{0}", _getFlag(FollowersToggle))
@@ -226,7 +255,17 @@ Function Maintenance()
 	SetCursorFillMode(LEFT_TO_RIGHT)
 	AddHeaderOption("$CEE_E7")
 	AddEmptyOption()
-
+	status_string="active"
+	if !go.isModEnabled()
+		status_string = "suspended according to conditions check" 
+		If (go.isSuspendedByDhlpEvent())
+			status_string = "suspended according to dhlp event" 
+		ElseIf (go.isSuspendedByKey())
+			status_string = "suspended by key" 
+		EndIf
+	endif
+	Status = AddTextOption("Status: " + status_string, "")
+	AddEmptyOption()
 	Update = AddTextOption("$CEE_E8", "")
 	restore = AddTextOption("Reset Current Expression: " + currentExpression, "")
 
@@ -243,7 +282,7 @@ Function Maintenance()
 	ExpressionType_M = AddMenuOption("ExpressionType", ExpressionTypeList[ExpressionTypeListIndex])
 
  	traumaExprRegistered = AddTextOption("Trauma Expressions:", traumaExpr.PhasesMale + traumaExpr.PhasesFemale)
-	 Phase_M = AddMenuOption("Phase", PhaseList[PhaseListIndex])
+	Phase_M = AddMenuOption("Phase", PhaseList[PhaseListIndex])
 
  	dirtyExprRegistered = AddTextOption("Dirty Expressions:", dirtyExpr.PhasesMale + dirtyExpr.PhasesFemale)
 	AddTextOptionST("TEST_EXPRESSIONS_STATE","Test Expression","GO", OPTION_FLAG_NONE)
@@ -252,6 +291,41 @@ Function Maintenance()
 	AddEmptyOption()
 	
 	randomExprRegistered = AddTextOption("Random Expressions:", randomExpr.PhasesMale + randomExpr.PhasesFemale)
+EndFunction
+
+Function ArousedModifiers()
+	SetCursorFillMode(LEFT_TO_RIGHT)
+	AddHeaderOption("$CEE_A51")
+	AddEmptyOption()
+	ArousedModifiers_B = AddToggleOption("Aroused Modifiers", _isTG(Condiexp_GlobalArousalModifiers))
+	ArousedModifiersNotifications_B = AddToggleOption("Aroused Modifiers Notifications", _isTG(Condiexp_GlobalArousalModifiersNotifications))
+	AddEmptyOption()
+	AddEmptyOption()
+  arousalChillyThreshold_slider = AddSliderOption("Chilled threshold", Go.arousalChillyThreshold, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalChilly_slider = AddSliderOption("Chilled cap", Go.arousalChilly, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalColdThreshold_slider = AddSliderOption("Cold threshold", Go.arousalColdThreshold, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalCold_slider = AddSliderOption("Cold cap", Go.arousalCold, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalFreezingThreshold_slider = AddSliderOption("Freezing threshold", Go.arousalFreezingThreshold, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalFreezing_slider = AddSliderOption("Freezing cap", Go.arousalFreezing, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+
+  arousalPainThreshold_slider = AddSliderOption("Pain threshold", Go.arousalPainThreshold, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalPain_slider = AddSliderOption("Pain cap", Go.arousalPain, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+
+  arousalTraumaMinorThreshold_slider = AddSliderOption("TraumaMinor threshold", Go.arousalTraumaMinorThreshold, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalTraumaMinor_slider = AddSliderOption("TraumaMinor cap", Go.arousalTraumaMinor, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+
+  arousalTraumaMajorThreshold_slider = AddSliderOption("TraumaMajor threshold", Go.arousalTraumaMajorThreshold, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalTraumaMajor_slider = AddSliderOption("TraumaMajor cap", Go.arousalTraumaMajor, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+
+  arousalSwimThreshold_slider = AddSliderOption("Swim threshold", Go.arousalSwimThreshold, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalSwim_slider = AddSliderOption("Swim cap", Go.arousalSwim, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+
+  arousalRainThreshold_slider = AddSliderOption("Rain threshold", Go.arousalRainThreshold, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalRain_slider = AddSliderOption("Rain cap", Go.arousalRain, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+
+  arousalHeadacheThreshold_slider = AddSliderOption("Headache threshold", Go.arousalHeadacheThreshold, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+  arousalHeadache_slider = AddSliderOption("Headache cap", Go.arousalHeadache, "{0}", _getFlagGV(Condiexp_GlobalArousalModifiers))
+
 EndFunction
 
 State TEST_EXPRESSIONS_STATE
@@ -311,7 +385,98 @@ Event OnOptionSliderOpen(Int mcm_option)
 		SetSliderDialogRange(0, 2.0)
 		SetSliderDialogInterval(0.01)
 		SetSliderDialogDefaultValue(1.0)
+	elseif (mcm_option == arousalChillyThreshold_slider)
+		SetSliderDialogStartValue(Go.arousalChillyThreshold)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(40)
+	elseif (mcm_option == arousalColdThreshold_slider)
+		SetSliderDialogStartValue(Go.arousalColdThreshold)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(20)
+	elseif (mcm_option == arousalFreezingThreshold_slider)
+		SetSliderDialogStartValue(Go.arousalFreezingThreshold)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(0)
+	elseif (mcm_option == arousalChilly_slider)
+		SetSliderDialogStartValue(Go.arousalChilly)
+		SetSliderDialogRange(0, 300)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(40)
+	elseif (mcm_option == arousalCold_slider)
+		SetSliderDialogStartValue(Go.arousalCold)
+		SetSliderDialogRange(0, 300)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(70)
+	elseif (mcm_option == arousalFreezing_slider)
+		SetSliderDialogStartValue(Go.arousalFreezing)
+		SetSliderDialogRange(0, 300)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(150)
+	elseif (mcm_option == arousalPainThreshold_slider)
+		SetSliderDialogStartValue(Go.arousalPainThreshold)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(0)
+	elseif (mcm_option == arousalTraumaMinorThreshold_slider)
+		SetSliderDialogStartValue(Go.arousalTraumaMinorThreshold)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(30)
+	elseif (mcm_option == arousalTraumaMajorThreshold_slider)
+		SetSliderDialogStartValue(Go.arousalTraumaMajorThreshold)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(0)
+	elseif (mcm_option == arousalSwimThreshold_slider)
+		SetSliderDialogStartValue(Go.arousalSwimThreshold)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(50)
+	elseif (mcm_option == arousalRainThreshold_slider)
+		SetSliderDialogStartValue(Go.arousalRainThreshold)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(50)
+	elseif (mcm_option == arousalHeadacheThreshold_slider)
+		SetSliderDialogStartValue(Go.arousalHeadacheThreshold)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(40)
+	elseif (mcm_option == arousalPain_slider)
+		SetSliderDialogStartValue(Go.arousalPain)
+		SetSliderDialogRange(0, 300)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(50)
+	elseif (mcm_option == arousalTraumaMinor_slider)
+		SetSliderDialogStartValue(Go.arousalTraumaMinor)
+		SetSliderDialogRange(0, 300)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(50)
+	elseif (mcm_option == arousalTraumaMajor_slider)
+		SetSliderDialogStartValue(Go.arousalTraumaMajor)
+		SetSliderDialogRange(0, 300)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(1.0)
+	elseif (mcm_option == arousalSwim_slider)
+		SetSliderDialogStartValue(Go.arousalSwim)
+		SetSliderDialogRange(0, 300)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(50)
+	elseif (mcm_option == arousalRain_slider)
+		SetSliderDialogStartValue(Go.arousalRain)
+		SetSliderDialogRange(0, 300)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(50)
+	elseif (mcm_option == arousalHeadache_slider)
+		SetSliderDialogStartValue(Go.arousalHeadache)
+		SetSliderDialogRange(0, 300)
+		SetSliderDialogInterval(1)
+		SetSliderDialogDefaultValue(50)
 	endIf
+
 EndEvent
 
 Event OnOptionSliderAccept(Int mcm_option, Float Value)
@@ -330,6 +495,60 @@ Event OnOptionSliderAccept(Int mcm_option, Float Value)
 	elseif (mcm_option == _phoneme_strength_slider)
 		Condiexp_PhonemeStr.SetValue(Value)
 		SetSliderOptionValue(mcm_option, Value, "{2}")
+	elseif (mcm_option == arousalChillyThreshold_slider)
+		Go.arousalChillyThreshold = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalColdThreshold_slider)
+		Go.arousalColdThreshold = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalFreezingThreshold_slider)
+		Go.arousalFreezingThreshold = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalChilly_slider)
+		Go.arousalChilly = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalCold_slider)
+		Go.arousalCold = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalFreezing_slider)
+		Go.arousalFreezing = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalPainThreshold_slider)
+		Go.arousalPainThreshold = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalTraumaMinorThreshold_slider)
+		Go.arousalTraumaMinorThreshold = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalTraumaMajorThreshold_slider)
+		Go.arousalTraumaMajorThreshold = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalSwimThreshold_slider)
+		Go.arousalSwimThreshold = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalRainThreshold_slider)
+		Go.arousalRainThreshold = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalHeadacheThreshold_slider)
+		Go.arousalHeadacheThreshold = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalPain_slider)
+		Go.arousalPain = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalTraumaMinor_slider)
+		Go.arousalTraumaMinor = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalTraumaMajor_slider)
+		Go.arousalTraumaMajor = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalSwim_slider)
+		Go.arousalSwim = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalRain_slider)
+		Go.arousalRain = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
+	elseif (mcm_option == arousalHeadache_slider)
+		Go.arousalHeadache = Value as Int
+		SetSliderOptionValue(mcm_option, Value, "{0}")
 	endIf
 EndEvent
 
@@ -629,6 +848,18 @@ elseif (option == _modifier_strength_slider)
 	SetInfoText("$CEE_G34")
 elseif (option == _phoneme_strength_slider)
 	SetInfoText("$CEE_G35")	
+elseif (option == arousalChillyThreshold_slider || option == arousalFreezingThreshold_slider || option == arousalColdThreshold_slider || option == arousalRainThreshold_slider )
+	SetInfoText("Arousal thresholds for weather. Caps or decrease won't be applied if arousal is lower than threshold")
+elseif (option == arousalTraumaMinorThreshold_slider || option == arousalTraumaMajorThreshold_slider || option == arousalPainThreshold_slider )
+	SetInfoText("Arousal thresholds for pain or trauma. Caps or decrease won't be applied if arousal is lower than threshold")
+elseif (option == arousalHeadacheThreshold_slider || option == arousalSwimThreshold_slider)
+	SetInfoText("Arousal thresholds for misc conditions. Caps or decrease won't be applied if arousal is lower than threshold")
+elseif (option == arousalChilly_slider || option == arousalCold_slider || option == arousalFreezing_slider || option == arousalRain_slider)
+	SetInfoText("Arousal caps or decrease for weather. Arousal will be substracted or capped depending on SLA version")
+elseif (option == arousalPain_slider || option == arousalTraumaMinor_slider || option == arousalTraumaMajor_slider )
+	SetInfoText("Arousal caps or decrease for pain or trauma. Arousal will be substracted or capped depending on SLA version")
+elseif (option == arousalSwim_slider || option == arousalHeadache_slider)
+	SetInfoText("Arousal caps or decrease for misc conditions. Arousal will be substracted or capped depending on SLA version")
 endif
 endevent
 
@@ -695,6 +926,14 @@ int Function _getFlag(Bool cond = true)
 	EndIf  
 EndFunction
 
+int Function _getFlagGV(GlobalVariable gvar)
+	If  !_isTG(gvar) 	
+   		return OPTION_FLAG_DISABLED  
+	Else
+   		return OPTION_FLAG_NONE
+	EndIf  
+EndFunction
+
 bool Function _isTG(GlobalVariable gvar)
 	If  gvar.GetValueInt() == 0
    		return false  
@@ -707,6 +946,7 @@ int Function _restart()
 	Go.StopMod()
 	Go.StartMod()
 	currentExpression = ""
+	status_string="active"
 	if (CondiExpFollowerQuest.IsRunning())
 		ResetQuest(CondiExpFollowerQuest)
 	endIf

@@ -28,7 +28,39 @@ Function PlayArousedExpression(Actor act, int aroused, CondiExp_BaseExpression e
 	Else
 		CondiExp_log.trace(act, "Aroused: Arousal: " + aroused + ".Effect: skip ")
 	endif
+	RandomLook(act)
+EndFunction
 
+Function PlayDrunkExpression(Actor act) global
+	
+	Int randomSmile = Utility.RandomInt(1, 100)
+	Int randomDelay = Utility.RandomInt(1, 10)
+	
+	SmoothSetExpression(act, 2, 50, 1.0) ; Dialogue Happy (sloppy, content drunkenness)
+	SmoothSetPhoneme(act, 0, 50, 1.0)   ; Aah (open mouth, mid-ramble or laughter)
+	SmoothSetModifier(act, 6, 7, 50, 1.0) ; Brow Up L + Brow Up R (raised eyebrows, goofy expression)
+	
+	RandomLook(act)
+	if randomSmile > 30
+		Smile(80, act)
+	endif
+	Utility.Wait(5 + randomDelay)
+	resetMFGSmooth(act)
+	SmoothSetExpression(act, 9, 40, 1.0) ; Mood Fear (dazed, unfocused)
+	SmoothSetPhoneme(act, 11, 40, 1.0)   ; Oh (loose lips, slightly open mouth)
+	SmoothSetModifier(act, 8, 9, 40, 1.0) ; LookDown + LookLeft (drowsy, unfocused gaze)
+	Utility.Wait(5 + randomDelay)
+	RandomLook(act)
+	resetMFGSmooth(act)
+	SmoothSetExpression(act, 2, 50, 1.0)  ; Dialogue Happy (drunken smirk)
+	SmoothSetPhoneme(act, 11, 40, 1.0)   ; Oh (lips loosely open, derpy look)
+	SmoothSetModifier(act, 4, 5, 40, 1.0) ; Brow In L + Brow In R (slightly confused expression)
+	SmoothSetModifier(act, 12, 13, 30, 1.0) ; SquintL + SquintR (half-closed, sleepy drunk eyes)
+	RandomLook(act)
+	Utility.Wait(5 + randomDelay)
+EndFunction
+
+Function RandomLook(Actor act) global
 	Int randomLook = Utility.RandomInt(1, 10)
 	If randomLook == 2
 		LookLeft(50, act)
@@ -65,14 +97,7 @@ Function PlayTraumaExpression(Actor act, int trauma, CondiExp_BaseExpression exp
 	endif
 	Utility.Wait(1)
 
-	Int randomLook = Utility.RandomInt(1, 10)
-	If randomLook == 2
-		LookLeft(50, act)
-	ElseIf randomLook == 4
-		LookRight(50, act)
-	ElseIf randomLook == 8
-		LookDown(50, act)
-	endif 
+	RandomLook(act)
 	Utility.Wait(5)
 EndFunction
 
@@ -94,16 +119,7 @@ Function PlayDirtyExpression(Actor act, int dirty, CondiExp_BaseExpression expr)
 		CondiExp_log.trace(act, "Dirty: Dirty: " + dirty + ".Effect: skip ")
 	endif
 
-	Int randomLook = Utility.RandomInt(1, 10)
-	If randomLook == 2
-		LookLeft(50, act)
-	ElseIf randomLook == 4
-		LookRight(50, act)
-	ElseIf randomLook == 8
-		LookDown(50, act)
-	Elseif randomLook == 9
-		Disgust(60, act)
-	endif
+	RandomLook(act)
 EndFunction
 
 Function Breathe(Actor act, bool final = true) global

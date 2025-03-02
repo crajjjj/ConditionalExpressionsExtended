@@ -268,7 +268,6 @@ function OnUpdateExecute(Actor act)
 		if isModEnabled()
 			log("CondiExp_StartMod: suspended according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(1)
-			resetStatuses()
 			CondiExp_util.resetMFGSmooth(act)
 			Condiexp_CurrentlyBusy.SetValueInt(0)
 			Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
@@ -278,17 +277,28 @@ function OnUpdateExecute(Actor act)
 			log("CondiExp_StartMod: resumed according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(0)
 		endif
-		int coldy = getColdStatus(act)
-		Condiexp_CurrentlyCold.SetValueInt(coldy)
-		If (coldy == 0)
-			if !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 2 
-				OnCondiExpSLAEvent(arousalRainThreshold, arousalRain, "is not feeling very aroused because it's raining", "CondiExpRaining", act)
-			endif
-		EndIf
-		Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(act))
-		Condiexp_CurrentlyDirty.SetValueInt(getDirtyStatus(act))
-		Condiexp_CurrentlyAroused.SetValueInt(getArousalStatus(act))
  	endif
+
+	Condiexp_CurrentlyCold.SetValueInt(getColdStatus(act))
+	Condiexp_CurrentlyTrauma.SetValueInt(getTraumaStatus(act))
+	Condiexp_CurrentlyDirty.SetValueInt(getDirtyStatus(act))
+	Condiexp_CurrentlyAroused.SetValueInt(getArousalStatus(act))
+
+	if !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 2 
+		OnCondiExpSLAEvent(arousalRainThreshold, arousalRain, "is not feeling very aroused because it's raining", "CondiExpRaining", act)
+	endif
+	
+	if act.GetActorValuePercentage("Health") < 0.5
+		OnCondiExpSLAEvent(arousalPainThreshold, arousalPain, "not feeling aroused because of very strong pain", "CondiExpPain", act)
+	endif
+
+	if act.GetActorValuePercentage("Magicka") < 0.3
+		OnCondiExpSLAEvent(arousalHeadacheThreshold, arousalHeadache, "not feeling very aroused because of headache", "CondiExpHeadache", act)
+	endif
+	
+	if act.IsSwimming()
+		OnCondiExpSLAEvent(arousalSwimThreshold, arousalSwim, "not feeling very aroused because of swimming", "CondiExpSwimming", act)
+    endif
 
 	if Condiexp_Verbose.GetValueInt() == 1
 		String msg = "Status: CondiExp_CurrentlyBusy:" + CondiExp_CurrentlyBusy.GetValueInt() + ":::" + "Condiexp_CurrentlyBusyImmediate:" + Condiexp_CurrentlyBusyImmediate.GetValueInt()

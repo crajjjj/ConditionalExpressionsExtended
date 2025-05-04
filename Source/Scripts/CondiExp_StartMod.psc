@@ -150,7 +150,8 @@ EndEvent
 
 function init()
 	if !ActorsQuest && isAprReady()
-		ActorsQuest = Game.GetFormFromFile(0x02902C, "Apropos2.esp") as Quest	
+		ActorsQuest = Quest.GetQuest("Apropos2Actors")
+		;ActorsQuest = Game.GetFormFromFile(0x02902C, "Apropos2.esp") as Quest	
 	endif
 	if ActorsQuest
 		log("CondiExp_StartMod: Found Apropos: " + ActorsQuest.GetName() )

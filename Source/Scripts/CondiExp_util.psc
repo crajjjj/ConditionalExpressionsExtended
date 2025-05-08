@@ -315,15 +315,15 @@ MagicEffect function GetBISDirtinessStage4Effect() global
 endFunction
 ; Bathing In Skyrim Revised
 MagicEffect function GetBISRDirtinessStage2Effect() global
-    return Game.GetFormFromFile(0x27C, "Bathing in Skyrim.esp") as MagicEffect
+    return Game.GetFormFromFile(0x27, "Bathing in Skyrim.esp") as MagicEffect
 endFunction
 
 MagicEffect function GetBISRDirtinessStage3Effect() global
-    return Game.GetFormFromFile(0x28D, "Bathing in Skyrim.esp") as MagicEffect
+    return Game.GetFormFromFile(0x28, "Bathing in Skyrim.esp") as MagicEffect
 endFunction
 
 MagicEffect function GetBISRDirtinessStage4Effect() global
-    return Game.GetFormFromFile(0x29E, "Bathing in Skyrim.esp") as MagicEffect
+    return Game.GetFormFromFile(0x29, "Bathing in Skyrim.esp") as MagicEffect
 endFunction
 ; Dirt and Blood
 MagicEffect function GetDABDirtinessStage2Effect() global

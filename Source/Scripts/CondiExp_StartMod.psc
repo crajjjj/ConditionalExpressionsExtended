@@ -225,6 +225,11 @@ function init()
 		DirtinessStage2Effect = GetBISDirtinessStage2Effect()
 		DirtinessStage3Effect = GetBISDirtinessStage3Effect()
 		DirtinessStage4Effect = GetBISDirtinessStage4Effect()
+	elseif (isDependencyReady("Bathing in Skyrim.esp") && GetBISRDirtinessStage2Effect() != none) ; if Bathing in Skyrim - Renewed is loaded
+		LoadedBathMod = "Bathing in Skyrim Renewed"
+		DirtinessStage2Effect = GetBISRDirtinessStage2Effect()
+		DirtinessStage3Effect = GetBISRDirtinessStage3Effect()
+		DirtinessStage4Effect = GetBISRDirtinessStage4Effect()
 	elseif (isDependencyReady("Keep It Clean.esp") && GetKICDirtinessStage2Effect() != none) ; if Keep it clean is loaded
 		LoadedBathMod = "Keep It Clean"
 		DirtinessStage2Effect = GetKICDirtinessStage2Effect()

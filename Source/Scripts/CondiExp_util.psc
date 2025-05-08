@@ -12,7 +12,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 200008
+    Return 200009
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -22,7 +22,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "2.0.8"
+    Return "2.0.9"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -313,7 +313,18 @@ endFunction
 MagicEffect function GetBISDirtinessStage4Effect() global
     return Game.GetFormFromFile(0xE55E, "Bathing in Skyrim - Main.esp") as MagicEffect
 endFunction
+; Bathing In Skyrim Revised
+MagicEffect function GetBISRDirtinessStage2Effect() global
+    return Game.GetFormFromFile(0x27C, "Bathing in Skyrim.esp") as MagicEffect
+endFunction
 
+MagicEffect function GetBISRDirtinessStage3Effect() global
+    return Game.GetFormFromFile(0x28D, "Bathing in Skyrim.esp") as MagicEffect
+endFunction
+
+MagicEffect function GetBISRDirtinessStage4Effect() global
+    return Game.GetFormFromFile(0x29E, "Bathing in Skyrim.esp") as MagicEffect
+endFunction
 ; Dirt and Blood
 MagicEffect function GetDABDirtinessStage2Effect() global
     return Game.GetFormFromFile(0x80D, "Dirt and Blood - Dynamic Visuals.esp") as MagicEffect

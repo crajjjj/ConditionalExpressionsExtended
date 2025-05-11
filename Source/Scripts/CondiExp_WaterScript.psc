@@ -14,7 +14,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     if PlayerRef.IsSwimming()
          SendSLAModEvent(config.Go.arousalSwimThreshold, config.Go.arousalSwim, "not feeling very aroused because of swimming", PlayerRef, "CondiExpSwimming")
     endif
-    Squint()
+    Squint() 
 EndEvent
 
 Function Squint()

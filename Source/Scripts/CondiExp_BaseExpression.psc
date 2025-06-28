@@ -73,7 +73,7 @@ function Apply(Actor ActorRef, int PhaseNum, int exprPower)
 		Log("Expressions not loaded. Cannot apply: "+ Name)
 		return
 	EndIf
-	verbose(ActorRef,  Name + " .Effect: " + PhaseNum, Condiexp_Verbose.GetValueInt())
+	trace(ActorRef,  Name + " .Effect: " + PhaseNum, Condiexp_Verbose.GetValueInt())
 	int Gender = ActorRef.GetActorBase().GetSex()
 	_ApplyPhase(ActorRef, PickPhase(PhaseNum, Gender), exprPower)
 endFunction

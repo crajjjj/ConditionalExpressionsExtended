@@ -17,7 +17,6 @@ int distanceCounter = 6
 int additionalLag = 7
 int additionalLagBig = 30
 bool firstRun = true
-bool isPlaying = false
 Actor act
 
 ;only for player actor
@@ -61,11 +60,6 @@ Event OnUpdate()
 			Return
 		endif
 	EndIf
-	
-	if (isPlaying)
-		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagSmall)
-		return
-	endif
 
 	float dist = act.GetDistance(PlayerRef)
 	If (dist > 1024)
@@ -200,37 +194,4 @@ Event OnUpdate()
 	EndIf
 	
 	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
-EndEvent
-
-
-Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
-	int verboseInt = Condiexp_Verbose.GetValueInt()
-	If (!sm.isModEnabled() || !act || act == PlayerRef || isPlaying)
-		trace(act,"CondiExp_Followers: OnObjectEquipped skipped: " + akBaseObject.GetName(), verboseInt)
-		return
-	EndIf
-	
-	trace(act, "CondiExp_Followers: OnObjectEquipped triggered: " + akBaseObject.GetName(), verboseInt)
-
-	If sm.CondiExp_Drugs.HasForm(akBaseObject)
-		isPlaying = true
-		PlayScoomaExpression(act)
-	elseif  sm.CondiExp_Drinks.HasForm(akBaseObject)
-			isPlaying = true
-		    PlayDrunkExpression(act)
-			log("CondiExp_Followers: OnObjectEquipped AlcoholDrink: " + akBaseObject.GetName())
-	elseif akBaseObject.HasKeyWord(sm.VendorItemFood) || akBaseObject.HasKeyWord(sm.pctracking.VendorItemFoodRaw)|| akBaseObject.HasKeyWord(sm.pctracking.VendorItemIngredient)
-        	isPlaying = true	
-			Utility.Wait(3.8)
-			PlayEatingExpression(act)
-			log("CondiExp_Followers: OnObjectEquipped Food: " + akBaseObject.GetName())
-			utility.wait(5)
-	elseif sm.pctracking.checkSHFoodKeywords(akBaseObject) 
-		isPlaying = true
-		Utility.Wait(3.8)
-		PlayEatingExpression(act)
-		log("CondiExp_Followers: OnObjectEquipped _SH_Food: " + akBaseObject.GetName())
-		utility.wait(5)
-	Endif
-	isPlaying = false
 EndEvent

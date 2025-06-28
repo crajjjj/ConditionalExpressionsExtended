@@ -18,9 +18,9 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     verbose(PlayerRef, "Eating", config.Condiexp_Verbose.GetValueInt())
     If Condiexp_GlobalEating.GetValueInt() == 1
         Utility.Wait(3.8)
-            elseif Condiexp_GlobalEating.GetValueInt() == 2
-             Utility.Wait(0.8)
-        endif
+    elseif Condiexp_GlobalEating.GetValueInt() == 2
+        Utility.Wait(0.8)
+    endif
     PlayEatingExpression(PlayerRef)
     Utility.Wait(1)
     CondiExp_PlayerJustAte.SetValueInt(0)

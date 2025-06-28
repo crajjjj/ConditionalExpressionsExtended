@@ -240,8 +240,7 @@ Function RandomEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression e
 	Lookleft(50,act)
 	elseif Order == 30 || Order == 60
 	Squint(act)
-	Lookleft(25,act) || Order == 78
-	Elseif Order == 31
+	Elseif Order == 31 || Order == 78
 	Smile(15,act)
 	Elseif Order == 32 || Order == 79
 	Smile(35,act)

@@ -30,7 +30,7 @@ EndFunction
 Event OnUpdate()
     if OpenMouth == False && PlayerRef.IsinCombat() && Condiexp_ModSuspended.getValue() == 0
       verbose(PlayerRef, "Angry", Condiexp_Verbose.GetValue() as Int)
-      PlayerRef.SetExpressionOverride(15,70)
+      PlayerRef.SetExpressionOverride(15, RandomNumber(Condiexp_PO3ExtenderInstalled.GetValueInt() == 1, 35, 80))
       CondiExp_util.SetPhoneMe(PlayerRef, 4, 20)
       RegisterForSingleUpdate(1)
     EndIf

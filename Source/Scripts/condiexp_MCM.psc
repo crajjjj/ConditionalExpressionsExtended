@@ -147,6 +147,7 @@ EndEvent
 event OnVersionUpdate(int a_version)
     if (a_version > 1)
       DetectRace()
+	  _restart()
 	endIf
 endEvent
 
@@ -248,7 +249,7 @@ Function Settings()
 	Followers_B =  AddToggleOption("$CEE_E4", CondiExpFollowerQuest.IsRunning())
 	_update_interval_followers_slider = AddSliderOption("$CEE_E5", Condiexp_FollowersUpdateInterval.GetValueInt(), "{0}", _getFlag(FollowersToggle))
 	registerFollowers = AddTextOption("$CEE_E6", "")
-	oidHKRegisterFollowers = AddKeyMapOption("Register followers key", Condiexp_HKRegisterFollowers.GetValueInt())
+	oidHKRegisterFollowers = AddKeyMapOption("$CEE_E10", Condiexp_HKRegisterFollowers.GetValueInt())
 EndFunction
 
 Function Maintenance()

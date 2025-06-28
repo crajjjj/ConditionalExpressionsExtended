@@ -217,8 +217,112 @@ Function RandomEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression e
 		Int exprNumber = Utility.RandomInt(1, 7)
 		verbose(act,"Expression_Random. Number: " + exprNumber, config.Condiexp_Verbose.GetValueInt())
 		expr.Apply(act, exprNumber, 60)
+		int exprDuration = Utility.RandomInt(1,3)
+		Utility.Wait(exprDuration)
+		resetMFGSmooth(act)
 	Endif
 EndFunction
+
+Function RelationshipRankEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression expr, int relationshipRank) Global
+	;
+	;int verboseInt = config.Condiexp_Verbose.GetValueInt()
+	;verbose(act, "Relationship rank: " + rel, verboseInt)
+
+	int exprType = 0 ; 0 = Neutral, 1 = Friendly, 2 = Hostile
+	int roll = Utility.RandomInt(1, 100)
+
+	if relationshipRank >= 2
+		if roll <= 70
+			exprType = 1 ; friendly
+		else
+			exprType = 0 ; neutral
+		endif
+	elseif relationshipRank <= -2
+		if roll <= 70
+			exprType = 2 ; hostile
+		else
+			exprType = 0 ; neutral
+		endif
+	else
+		exprType = 0 ; neutral
+	endif
+
+	if exprType == 1
+		; FRIENDLY expressions
+		int mood = Utility.RandomInt(1, 6)
+		if mood == 1
+			Smile(Utility.RandomInt(25, 60), act)
+		elseif mood == 2
+			Happy(Utility.RandomInt(25, 60), act)
+		elseif mood == 3
+			BrowsUpSmile(Utility.RandomInt(30, 50), act)
+		elseif mood == 4
+			Smile(35, act)
+			LookLeft(50, act)
+		elseif mood == 5
+			BrowsUpSmile(45, act)
+			Squint(act)
+		elseif mood == 6
+			LookLeft(40, act)
+			LookRight(40, act)
+			Smile(25, act)
+		endif
+
+	elseif exprType == 2
+		; HOSTILE expressions
+		int mood = Utility.RandomInt(1, 6)
+		if mood == 1
+			Angry(act)
+		elseif mood == 2
+			Disgust(Utility.RandomInt(25, 60), act)
+		elseif mood == 3
+			Frown(Utility.RandomInt(50, 80), act)
+		elseif mood == 4
+			Frown(60, act)
+			Squint(act)
+		elseif mood == 5
+			LookRight(70, act)
+			Angry(act)
+		elseif mood == 6
+			LookLeft(40, act)
+			LookRight(40, act)
+			Frown(50, act)
+		endif
+	else
+		; NEUTRAL expressions
+		int mood = Utility.RandomInt(1, 10)
+		if mood == 1
+			Puzzled(Utility.RandomInt(25, 50), act, 4.0)
+		elseif mood == 2
+			Thinking(Utility.RandomInt(15, 50), act)
+		elseif mood == 3
+			LookLeft(Utility.RandomInt(40, 70), act)
+		elseif mood == 4
+			LookRight(Utility.RandomInt(40, 70), act)
+		elseif mood == 5
+			Squint(act)
+			LookLeft(25, act)
+		elseif mood == 6
+			Thinking(30, act)
+			BrowsUp(act)
+		elseif mood == 7
+			if Utility.RandomInt(0, 1) == 0
+  			 LookLeft(35, act)
+   			 LookRight(35, act)
+			else
+   			 LookRight(35, act)
+   			 LookLeft(35, act)
+			endif
+		else
+			Int exprNumber = Utility.RandomInt(1, 7)
+			verbose(act,"Expression_Random. Number: " + exprNumber, config.Condiexp_Verbose.GetValueInt())
+			expr.Apply(act, exprNumber, 60)
+		endif
+	endif
+EndFunction
+
+
+
 
 Function LookLeft(int n, Actor act, float time = 2.0) Global
 	CondiExp_util.SetModifier(act, 9,n, 1, 1)
@@ -252,13 +356,13 @@ Function Squint(Actor act) Global
 endfunction
 	
 Function Frown(int n, Actor act) Global
-	CondiExp_util.SetModifier(act, 2, n)
-	CondiExp_util.SetModifier(act, 3, n)
+	CondiExp_util.SetModifier(act, 2, n, 1)
+	CondiExp_util.SetModifier(act, 3, n, 1)
 
 	Utility.Wait(2.5)
 	
-	CondiExp_util.SetModifier(act, 2, 0)
-	CondiExp_util.SetModifier(act, 3, 0)
+	CondiExp_util.SetModifier(act, 2, 0, 1)
+	CondiExp_util.SetModifier(act, 3, 0, 1)
 	Utility.Wait(1.0)
 endfunction
 	

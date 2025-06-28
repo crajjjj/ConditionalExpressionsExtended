@@ -324,12 +324,7 @@ Bool function checkIfModShouldBeSuspended(Actor act)
 	endif
 
 	if (pctracking.checkIfModShouldBeSuspendedByWearables(act))
-		log("CondiExp_StartMod: dd gag was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
-		return true
-	endif
-
-	if (ToysEffectMouthOpen && act.WornHasKeyword(ToysEffectMouthOpen))
-		log("CondiExp_StartMod: ToysEffectMouthOpen effect was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
+		log("CondiExp_StartMod: wearable was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
 		return true
 	endif
 

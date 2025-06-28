@@ -13,10 +13,10 @@ Import CondiExp_util
 Import CondiExp_log
 
 int additionalLagSmall = 3
-int distanceCounter = 5
-int additionalLag = 10
+int distanceCounter = 6
+int additionalLag = 7
 int additionalLagBig = 30
-
+bool firstRun = true
 Actor act
 
 ;only for player actor
@@ -26,12 +26,7 @@ Event OnPlayerLoadGame()
 EndEvent
 
 Event OnInit()
-	If (act)
-		log("CondiExp_Followers OnInit. Actor: " + act.GetLeveledActorBase().GetName())
-	else
-		log("CondiExp_Followers OnInit. Actor empty", 1)
-	endif
-	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + 10)
+	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagSmall)
 EndEvent
 
 Event OnUpdate()
@@ -39,39 +34,48 @@ Event OnUpdate()
 	act = self.GetActorReference()
 	If (!act)
 		trace_line("Actor was removed" , verboseInt)
-		self.Clear()
+		TryToClear()
 		act = None
 		Return
 	EndIf
-	
-	If act == PlayerRef
-		verbose(act, "FollowersQuest: started" , verboseInt)
-		Return
-	EndIf
-	
+	;trace(act, "CondiExp_Followers OnUpdate" , verboseInt)
+	; log("CondiExp_Followers OnUpdate. Actor: " + act.GetLeveledActorBase().GetName())
 	If (config.CondiExpFollowerQuest.IsStopped())
 		verbose(act, "Followers quest was stopped" , verboseInt)
-		self.Clear()
+		TryToClear()
 		act = None
 		Return
 	EndIf
-	
+	;restart flow for player reference only
+	If act == PlayerRef
+		if firstRun
+			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
+			firstRun = false
+			verbose(act, "FollowersQuest: init" , verboseInt)
+			Return
+		else
+			verbose(act, "FollowersQuest: restart" , verboseInt)
+			firstRun = true
+			ResetQuest(this_quest)
+			Return
+		endif
+	EndIf
 	float dist = act.GetDistance(PlayerRef)
 
-	If (dist > 2000)
+	If (dist > 1024)
 		if (distanceCounter <= 0)
-			verbose(act, "Actor is too far. Removing", verboseInt)
-			self.Clear()
+			verbose(act, "Actor is too far for too long. Removing", verboseInt)
+			TryToClear()
 			act = None
 			return
 		else
-			verbose(act, "Actor is too far. Counter:" + distanceCounter, verboseInt)
+			trace(act, "Actor is too far. Counter:" + distanceCounter, verboseInt)
 			distanceCounter = distanceCounter - 1
-			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLag)
+			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagSmall)
 			return
 		endif
 	Else
-		distanceCounter = 5
+		distanceCounter = 6
 	EndIf
 
 	If (sm.checkIfModShouldBeSuspended(act))
@@ -81,6 +85,7 @@ Event OnUpdate()
 	endif
 	
 	resetMFGSmooth(act)
+	bool isMale = (act.GetLeveledActorBase().GetSex() == 0)
 
 	If (act.IsDead())
 		If (RandomInt(0, 1))
@@ -94,7 +99,7 @@ Event OnUpdate()
 			SmoothSetModifier(act, 0, 1, 90)
 		EndIf
 		verbose(act, "Dead", verboseInt)
-		self.Clear()
+		TryToClear()
 		act = None
 		Return
 	EndIf
@@ -117,7 +122,7 @@ Event OnUpdate()
 	;Combat Anger
 	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalCombat.GetValueInt() == 1)
 		verbose(act, "Anger", verboseInt)
-		SmoothSetExpression(act, 15, RandomInt(50, 100))
+		SmoothSetExpression(act, 15, RandomInt(35, 80))
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf
@@ -137,13 +142,16 @@ Event OnUpdate()
 		Return
 	EndIf
 
-	int trauma = sm.getTraumaStatus(act)
-	If (trauma > 0)
-		PlayTraumaExpression( act, trauma, config.traumaExpr)
-		resetMFGSmooth(act)
-		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
-		Return
-	EndIf
+	if !isMale
+		int trauma = sm.getTraumaStatus(act)
+		If (trauma > 0)
+			PlayTraumaExpression( act, trauma, config.traumaExpr)
+			resetMFGSmooth(act)
+			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+			Return
+		EndIf
+	endif
+	
 
 	int dirty = sm.getDirtyStatus(act)
 	If (dirty > 0)
@@ -154,19 +162,23 @@ Event OnUpdate()
 		Return
 	EndIf
 
-	int aroused = sm.getArousalStatus(act)
-	If (aroused > 0)
-		PlayArousedExpression( act, aroused, config.arousalExpr)
-		Utility.Wait(5)
-		resetMFGSmooth(act)
-		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
-		Return
-	EndIf
-	
+	if !isMale
+		int aroused = sm.getArousalStatus(act)
+		If (aroused > 0 && !isMale)
+			PlayArousedExpression( act, aroused, config.arousalExpr)
+			Utility.Wait(5)
+			resetMFGSmooth(act)
+			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+			Return
+		EndIf
+	endif
+	;act.GetRelationshipRank(PlayerRef)
 	If (config.Condiexp_GlobalRandom.GetValueInt() == 1)
-		PlayRandomExpression(act, config, config.randomExpr)
-		Int Seconds = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 5)
+		int rel = act.GetRelationshipRank(PlayerRef)
+		RelationshipRankEmotion(act, config, config.randomExpr,rel)
+		Int Seconds = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1, 5)
 		Utility.Wait(Seconds)
+		resetMFGSmooth(act)
 	EndIf
 	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 EndEvent

@@ -77,7 +77,7 @@ Strength 80%
 expression[30] = 2: Dialogue Happy
 Strength 80%
 
-https://steamcommunity.com/sharedfiles/filedetails/?l=english&id=187155077 - detailed description
+https://steamcommunity.com/sharedfiles/filedetails/?l=english&id=187155077 - detailed description with pictures
 
 
 

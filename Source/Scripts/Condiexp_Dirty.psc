@@ -34,6 +34,8 @@ Function dirty()
         config.currentExpression = dirtyExpr.Name
 		Int dirty = Condiexp_CurrentlyDirty.GetValueInt() as Int
 		PlayDirtyExpression(PlayerRef, dirty, dirtyExpr)
+		Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
+		resetMFGSmooth(PlayerRef)
     else
 		log("CondiExp_Dirty: cancelled effect")
 	endif
@@ -43,14 +45,7 @@ EndFunction
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(1)
 	dirty()
-	Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
-	If Condiexp_ModSuspended.GetValueInt()
-		;do nothing
-	elseIf Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
-		resetMFGSmooth(PlayerRef)
-	endif
 	;verbose(PlayerRef, "Dirty: OnEffectFinish", Condiexp_Verbose.GetValueInt())
-	Utility.Wait(2)
 	config.currentExpression = ""
 	playing = false
 	Condiexp_CurrentlyBusy.SetValueInt(0)

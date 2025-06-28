@@ -1,6 +1,6 @@
 Scriptname CondiExp_Expression_Util Hidden
 
-Import Debug
+; Import Debug
 Import CondiExp_util
 import Utility
 import Math
@@ -58,7 +58,39 @@ Function PlayDrunkExpression(Actor act) global
 	SmoothSetModifier(act, 12, 13, 30, 1.0) ; SquintL + SquintR (half-closed, sleepy drunk eyes)
 	RandomLook(act)
 	Utility.Wait(5 + randomDelay)
+	resetMFGSmooth(act)
 EndFunction
+
+Function PlayScoomaExpression(Actor act) global
+	Int randomDelay = Utility.RandomInt(1, 10)
+	; Phase 1: Blissed-out euphoria
+	SmoothSetExpression(act, 2, 80, 1.0) ; Dialogue Happy (mellow euphoria)
+	SmoothSetModifier(act, 6, 7, 40, 1.0) ; Brows Up (relaxed, spaced out)
+	SmoothSetPhoneme(act, 0, 30, 1.0) ; Aah (open mouth, slight breathiness)
+	RandomLook(act)
+	Utility.Wait(5 + randomDelay)
+	resetMFGSmooth(act)
+
+	; Phase 2: Slow detachment or dissociation
+    int randomhappy = Utility.RandomInt(30, 70)
+    int randomsmile = Utility.RandomInt(10, 50)
+    SetModifier(act,11, 55)
+    SetPhoneme(act,4,randomsmile)
+    SmoothSetExpression(act,2,randomhappy)
+	LookDown(30, act)
+	Utility.Wait(2 + randomDelay)
+	resetMFGSmooth(act)
+
+	; Phase 3: Hyper-focus or minor paranoia hit
+	SmoothSetExpression(act, 4, 50, 1.0) ; Mood Surprise/Alert
+	SmoothSetModifier(act, 4, 5, 50, 1.0) ; Brow In L + R (internal pressure)
+	SmoothSetPhoneme(act, 7, 50, 1.0) ; EE (tight mouth, internal tension)
+	RandomLook(act)
+	Utility.Wait(4 + randomDelay)
+	RandomLook(act)
+	resetMFGSmooth(act)
+EndFunction
+
 
 Function RandomLook(Actor act) global
 	Int randomLook = Utility.RandomInt(1, 10)
@@ -315,7 +347,7 @@ Function RelationshipRankEmotion(Actor act, condiexp_MCM config, CondiExp_BaseEx
 			endif
 		else
 			Int exprNumber = Utility.RandomInt(1, 7)
-			verbose(act,"Expression_Random. Number: " + exprNumber, config.Condiexp_Verbose.GetValueInt())
+			trace(act,"Expression_Random (Rel). Number: " + exprNumber, config.Condiexp_Verbose.GetValueInt())
 			expr.Apply(act, exprNumber, 60)
 		endif
 	endif
@@ -438,7 +470,15 @@ Function BrowsUp( Actor act) Global
 	CondiExp_util.SetModifier(act, 7, 0)
 	Utility.Wait(1.0)
 endfunction
-	
+
+Function BrowsDown( Actor act) Global
+	CondiExp_util.SetModifier(act, 2, 75)
+	CondiExp_util.SetModifier(act, 3, 75)
+	Utility.Wait(2)
+	CondiExp_util.SetModifier(act, 2, 0)
+	CondiExp_util.SetModifier(act, 3, 0)
+	Utility.Wait(1.0)
+endfunction
 	
 Function BrowsUpSmile(int n, Actor act) Global
 
@@ -543,7 +583,68 @@ EndFunction
 Function Headache(Actor act) global
     int i = 0
 	CondiExp_util.SmoothSetExpression(act,3,95)
-    Utility.Wait(5)
-	CondiExp_util.SmoothSetExpression(act,3,0)
-    Utility.Wait(3)
+	CondiExp_util.SetModifier(act, 8, 30)
+	CondiExp_util.SetModifier(act, 2, 75)
+	CondiExp_util.SetModifier(act, 3, 75)
+	Utility.Wait(4)
+	resetMFGSmooth(act)
+endfunction
+
+Function PlayEatingExpression(Actor act) global
+	TeethIn(act)
+    YumYum(act)
+    YumYum(act)
+    YumYum(act)
+    YumYum(act)
+    TeethOut(act)
+	resetMFGSmooth(act)
+endfunction
+
+Function YumYum(Actor act) global
+int i = 0
+while i < 44
+    CondiExp_util.SetPhonemeFast(act, 0, i)
+    i = i + 8
+    if (i > 55)
+        i = 44
+    Endif
+    Utility.Wait(0.01)
+endwhile
+
+while i > 0
+    CondiExp_util.SetPhonemeFast(act, 0, i)
+    i = i - 8
+    if (i < 0)
+      i = 0
+    Endif
+    Utility.Wait(0.01)
+endwhile
+endfunction
+
+
+Function TeethIn(Actor act) global
+int i = 0
+while i < 25
+    CondiExp_util.SetPhonemeFast(act, 12, i)
+    i = i + 5
+    if (i >25)
+     i = 25
+    Endif
+Utility.Wait(0.01)
+endwhile
+endfunction
+
+
+Function TeethOut(Actor act) global
+int i = 25
+while i > 0
+    CondiExp_util.SetPhonemeFast(act, 12, i)
+    i = i - 5
+    if (i < 0)
+    i = 0
+    Endif
+    Utility.Wait(0.01)
+endwhile
+CondiExp_util.SetPhonemeFast(act, 12,0)
+CondiExp_util.SetPhonemeFast(act, 0,0)
 endfunction

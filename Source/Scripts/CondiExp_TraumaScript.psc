@@ -43,10 +43,6 @@ EndEvent
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(1)
 	trauma()
-	If Condiexp_ModSuspended.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
-		;clear possible exhale
-		resetMFGSmooth(PlayerRef)
-	endif
 	;verbose(akTarget, "Trauma: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	Utility.Wait(2)
 	config.currentExpression = ""
@@ -74,6 +70,7 @@ Function trauma()
 		PlayTraumaExpression(PlayerRef, trauma, traumaExpr)
 		BreatheAndSob(trauma)
 		Utility.Wait( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
+		resetMFGSmooth(PlayerRef)
     else
 		log("CondiExp_Trauma: cancelled effect")
 	endif

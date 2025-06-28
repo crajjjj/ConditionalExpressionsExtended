@@ -17,6 +17,7 @@ int distanceCounter = 6
 int additionalLag = 7
 int additionalLagBig = 30
 bool firstRun = true
+bool isPlaying = false
 Actor act
 
 ;only for player actor
@@ -54,14 +55,19 @@ Event OnUpdate()
 			verbose(act, "FollowersQuest: init" , verboseInt)
 			Return
 		else
-			verbose(act, "FollowersQuest: restart" , verboseInt)
+			verbose(act, "FollowersQuest: refresh" , verboseInt)
 			firstRun = true
 			ResetQuest(this_quest)
 			Return
 		endif
 	EndIf
-	float dist = act.GetDistance(PlayerRef)
+	
+	if (isPlaying)
+		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagSmall)
+		return
+	endif
 
+	float dist = act.GetDistance(PlayerRef)
 	If (dist > 1024)
 		if (distanceCounter <= 0)
 			verbose(act, "Actor is too far for too long. Removing", verboseInt)
@@ -98,7 +104,7 @@ Event OnUpdate()
 			SmoothSetModifier(act,4, 5, RandomInt(0, 100))
 			SmoothSetModifier(act, 0, 1, 90)
 		EndIf
-		verbose(act, "Dead", verboseInt)
+		trace(act, "Dead", verboseInt)
 		TryToClear()
 		act = None
 		Return
@@ -113,6 +119,7 @@ Event OnUpdate()
 	EndIf
 
 	If (act.GetActorValuePercentage("Health") < 0.40 && config.Condiexp_GlobalPain.GetValueInt() == 1)
+		trace(act, "Pain", verboseInt)
 		PlayPainExpression(act, config.painExpr)
 		SendSLAModEvent(config.Go.arousalPainThreshold, config.Go.arousalPain, "is not feeling aroused because of pain", act, "CondiExpPain")
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + 3)
@@ -120,23 +127,34 @@ Event OnUpdate()
 	EndIf
 	
 	;Combat Anger
-	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalCombat.GetValueInt() == 1)
-		verbose(act, "Anger", verboseInt)
+	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40 && act.GetActorValuePercentage("Stamina") > 0.6 && config.Condiexp_GlobalCombat.GetValueInt() == 1)
+		trace(act, "Anger", verboseInt)
 		SmoothSetExpression(act, 15, RandomInt(35, 80))
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf
 	
-	If (!act.IsInCombat() && act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalStamina.GetValueInt() == 1)
-		;random skip 50%
+	If (act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalStamina.GetValueInt() == 1)
+		;random skip 20%
 		Int randomSkip = Utility.RandomInt(1, 10)
-		if randomSkip > 5
-			verbose(act, "Fatigue: Effect: Breathing", verboseInt)
+		if randomSkip > 2
+			trace(act, "Fatigue: Effect: Breathing", verboseInt)
 			Breathe(act, false)
 			Utility.Wait(1)
 			Breathe(act, false)
 			Utility.Wait(1)
 			Breathe(act, true)
+			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+		endif
+		Return
+	EndIf
+
+	If (act.GetActorValuePercentage("Magicka") < 0.1 && config.Condiexp_GlobalMana.GetValueInt() == 1)
+		;random skip 20%
+		Int randomSkip = Utility.RandomInt(1, 10)
+		if randomSkip > 2
+			trace(act, "Headache Effect", verboseInt)
+			Headache(act)
 			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 		endif
 		Return
@@ -152,16 +170,16 @@ Event OnUpdate()
 		EndIf
 	endif
 	
-
+	
 	int dirty = sm.getDirtyStatus(act)
 	If (dirty > 0)
-		PlayDirtyExpression( act, dirty, config.dirtyExpr)
-		Utility.Wait(5)
-		resetMFGSmooth(act)
-		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
-		Return
+			PlayDirtyExpression( act, dirty, config.dirtyExpr)
+			Utility.Wait(5)
+			resetMFGSmooth(act)
+			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+			Return
 	EndIf
-
+	
 	if !isMale
 		int aroused = sm.getArousalStatus(act)
 		If (aroused > 0 && !isMale)
@@ -172,7 +190,7 @@ Event OnUpdate()
 			Return
 		EndIf
 	endif
-	;act.GetRelationshipRank(PlayerRef)
+	
 	If (config.Condiexp_GlobalRandom.GetValueInt() == 1)
 		int rel = act.GetRelationshipRank(PlayerRef)
 		RelationshipRankEmotion(act, config, config.randomExpr,rel)
@@ -180,9 +198,39 @@ Event OnUpdate()
 		Utility.Wait(Seconds)
 		resetMFGSmooth(act)
 	EndIf
+	
 	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 EndEvent
 
 
+Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
+	int verboseInt = Condiexp_Verbose.GetValueInt()
+	If (!sm.isModEnabled() || !act || act == PlayerRef || isPlaying)
+		trace(act,"CondiExp_Followers: OnObjectEquipped skipped: " + akBaseObject.GetName(), verboseInt)
+		return
+	EndIf
+	
+	trace(act, "CondiExp_Followers: OnObjectEquipped triggered: " + akBaseObject.GetName(), verboseInt)
 
-
+	If sm.CondiExp_Drugs.HasForm(akBaseObject)
+		isPlaying = true
+		PlayScoomaExpression(act)
+	elseif  sm.CondiExp_Drinks.HasForm(akBaseObject)
+			isPlaying = true
+		    PlayDrunkExpression(act)
+			log("CondiExp_Followers: OnObjectEquipped AlcoholDrink: " + akBaseObject.GetName())
+	elseif akBaseObject.HasKeyWord(sm.VendorItemFood) || akBaseObject.HasKeyWord(sm.pctracking.VendorItemFoodRaw)|| akBaseObject.HasKeyWord(sm.pctracking.VendorItemIngredient)
+        	isPlaying = true	
+			Utility.Wait(3.8)
+			PlayEatingExpression(act)
+			log("CondiExp_Followers: OnObjectEquipped Food: " + akBaseObject.GetName())
+			utility.wait(5)
+	elseif sm.pctracking.checkSHFoodKeywords(akBaseObject) 
+		isPlaying = true
+		Utility.Wait(3.8)
+		PlayEatingExpression(act)
+		log("CondiExp_Followers: OnObjectEquipped _SH_Food: " + akBaseObject.GetName())
+		utility.wait(5)
+	Endif
+	isPlaying = false
+EndEvent

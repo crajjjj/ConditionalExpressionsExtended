@@ -22,7 +22,6 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
     config.currentExpression = "Headache"
     verbose(PlayerRef, "Headache", Condiexp_Verbose.GetValueInt())
     Headache(PlayerRef)
-    PlayerRef.ClearExpressionOverride()
     config.currentExpression = ""
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)

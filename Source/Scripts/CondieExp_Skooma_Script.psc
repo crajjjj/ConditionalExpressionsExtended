@@ -1,6 +1,7 @@
 Scriptname CondieExp_Skooma_Script extends activemagiceffect  
 import CondiExp_util
 import CondiExp_log
+import CondiExp_Expression_Util
 Actor Property PlayerRef Auto
 GlobalVariable Property CondiExp_PlayerIsHigh Auto
 GlobalVariable Property Condiexp_CurrentlyBusy Auto
@@ -22,12 +23,9 @@ Function High()
     int randomhappy
     int randomsmile
     config.currentExpression = "Scooma"
-    randomhappy = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 30, 70)
-    randomsmile =  RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 10, 50)
-    CondiExp_util.SetModifier(PlayerRef,11, 55)
-    CondiExp_util.SetPhoneme(PlayerRef,4,randomsmile)
-    CondiExp_util.SmoothSetExpression(PlayerRef,2,randomhappy)
-    RegisterForSingleUpdate(60.0)
+    PlayScoomaExpression(PlayerRef)
+    PlayScoomaExpression(PlayerRef)
+    CondiExp_PlayerIsHigh.SetValueInt(0)
 EndFunction
 
 Event OnUpdate()
@@ -37,7 +35,6 @@ EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     trace(PlayerRef, "Skooma: OnEffectFinish", config.Condiexp_Verbose.GetValueInt())
-    resetMFGSmooth(PlayerRef)
     Condiexp_CurrentlyBusy.SetValueInt(0)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 EndEvent

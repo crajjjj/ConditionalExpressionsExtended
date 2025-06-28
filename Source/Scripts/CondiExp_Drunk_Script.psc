@@ -25,7 +25,10 @@ Function Drunk()
     Condiexp_CurrentlyBusy.SetValueInt(1)
     verbose(PlayerRef, "Drunk", config.Condiexp_Verbose.GetValueInt())
     PlayDrunkExpression(PlayerRef)
-    RegisterForSingleUpdate(60.0)
+    PlayDrunkExpression(PlayerRef)
+    trace(PlayerRef, "Drunk: Ending", config.Condiexp_Verbose.GetValueInt())
+    CondiExp_PlayerIsDrunk.SetValueInt(0)
+    ; RegisterForSingleUpdate(60.0)
 EndFunction
 
 Event OnUpdate()
@@ -36,7 +39,6 @@ EndEvent
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
     trace(PlayerRef, "Drunk: OnEffectFinish ", config.Condiexp_Verbose.GetValueInt())
     config.currentExpression = ""
-    resetMFGSmooth(PlayerRef)
     Condiexp_CurrentlyBusy.SetValueInt(0)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 EndEvent

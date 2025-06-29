@@ -41,7 +41,7 @@ Event OnUpdate()
 	;trace(act, "CondiExp_Followers OnUpdate" , verboseInt)
 	; log("CondiExp_Followers OnUpdate. Actor: " + act.GetLeveledActorBase().GetName())
 	If (config.CondiExpFollowerQuest.IsStopped())
-		verbose(act, "Followers quest was stopped" , verboseInt)
+		trace(act, "Followers quest was stopped" , verboseInt)
 		TryToClear()
 		act = None
 		Return
@@ -51,7 +51,7 @@ Event OnUpdate()
 		if firstRun
 			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
 			firstRun = false
-			verbose(act, "FollowersQuest: init" , verboseInt)
+			trace(act, "FollowersQuest: init" , verboseInt)
 			Return
 		else
 			verbose(act, "FollowersQuest: refresh" , verboseInt)
@@ -80,7 +80,7 @@ Event OnUpdate()
 
 	If (sm.checkIfModShouldBeSuspended(act))
 		verbose(act, "Suspending on condition" , verboseInt)
-		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLag)
+		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 		return
 	endif
 	
@@ -139,8 +139,8 @@ Event OnUpdate()
 			Utility.Wait(1)
 			Breathe(act, true)
 			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+			Return
 		endif
-		Return
 	EndIf
 
 	If (act.GetActorValuePercentage("Magicka") < 0.1 && config.Condiexp_GlobalMana.GetValueInt() == 1)
@@ -150,38 +150,48 @@ Event OnUpdate()
 			trace(act, "Headache Effect", verboseInt)
 			Headache(act)
 			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+			Return
 		endif
-		Return
 	EndIf
 
 	if !isMale
 		int trauma = sm.getTraumaStatus(act)
+		bool traumaPlayed = false
 		If (trauma > 0)
-			PlayTraumaExpression( act, trauma, config.traumaExpr)
-			resetMFGSmooth(act)
-			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
-			Return
+			traumaPlayed = PlayTraumaExpression( act, trauma, config.traumaExpr)
+			if traumaPlayed
+				resetMFGSmooth(act)
+				RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+				Return
+			endif
 		EndIf
 	endif
 	
-	
 	int dirty = sm.getDirtyStatus(act)
+	bool dirtyPlayed = false
 	If (dirty > 0)
-			PlayDirtyExpression( act, dirty, config.dirtyExpr)
+		dirtyPlayed = PlayDirtyExpression( act, dirty, config.dirtyExpr)
+		if dirtyPlayed
 			Utility.Wait(5)
 			resetMFGSmooth(act)
 			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 			Return
+		endif
 	EndIf
 	
 	if !isMale
 		int aroused = sm.getArousalStatus(act)
+		bool arousedPlayed = false
 		If (aroused > 0 && !isMale)
-			PlayArousedExpression( act, aroused, config.arousalExpr)
-			Utility.Wait(5)
-			resetMFGSmooth(act)
-			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
-			Return
+			arousedPlayed = PlayArousedExpression( act, aroused, config.arousalExpr)
+			if arousedPlayed
+				Utility.Wait(2)
+				resetPhonemesSmooth(act)
+				Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 6))
+				resetMFGSmooth(act)
+				RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+				Return
+			endif
 		EndIf
 	endif
 	

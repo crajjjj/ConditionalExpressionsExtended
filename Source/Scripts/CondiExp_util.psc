@@ -147,6 +147,9 @@ Function SetPhoneme(Actor act, Int mod1, Int str_dest, float modifier = 1.0, flo
 	if !act
 		return
 	endif
+	if act == MfgConsoleFuncExt.GetPlayerSpeechTarget()  || act.IsInDialogueWithPlayer()
+		return
+	endif
 	str_dest = (str_dest * modifier) as Int
 	MfgConsoleFuncExt.SetPhoneme(act,mod1,str_dest, speed)
 EndFunction
@@ -271,7 +274,12 @@ Function resetMFG(Actor act) global
 endfunction
 
 Function resetMFGSmooth(Actor act) global
-	if !act
+	if !act 
+		return
+	endif
+	if act == MfgConsoleFuncExt.GetPlayerSpeechTarget() || act.IsInDialogueWithPlayer()
+		;fallback to modifiers only
+		MfgConsoleFuncExt.ResetModifiers(act)
 		return
 	endif
 	MfgConsoleFuncExt.ResetMFG(act)
@@ -279,6 +287,10 @@ endfunction
 
 Function resetPhonemesSmooth(Actor act) global
 	if !act
+		return
+	endif
+	if act == MfgConsoleFuncExt.GetPlayerSpeechTarget() || act.IsInDialogueWithPlayer()
+		;skip phonemes to avoid dialogue clash
 		return
 	endif
 	MfgConsoleFuncExt.ResetPhonemes(act)

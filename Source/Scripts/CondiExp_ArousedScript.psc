@@ -28,7 +28,10 @@ Function aroused()
         config.currentExpression = arousalExpr.Name
 		Int arousal = Condiexp_CurrentlyAroused.GetValueInt()
 		PlayArousedExpression(PlayerRef, arousal, arousalExpr)
-		Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
+		Utility.Wait(2)
+		resetPhonemesSmooth(PlayerRef)
+		Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 6))
+		resetMFGSmooth(PlayerRef)
     else
 		log("CondiExp_Aroused: cancelled effect")
 	endif
@@ -47,11 +50,6 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(1)
 	;either 0 or aroused level > Condiexp_MinAroused
 	aroused()
-	If Condiexp_ModSuspended.GetValueInt()
-		;do nothing
-	elseIf Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
-		resetMFGSmooth(PlayerRef)
-	endif
 	;verbose(akTarget, "Aroused: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	Utility.Wait(2)
 	config.currentExpression = ""

@@ -7,16 +7,16 @@ import Math
 import CondiExp_log
 
 
-Function PlayArousedExpression(Actor act, int aroused, CondiExp_BaseExpression expr) global
+bool Function PlayArousedExpression(Actor act, int aroused, CondiExp_BaseExpression expr) global
 	Int power = aroused
-	if power > 100
-		power = 100
+	if power > 75
+		power = 75
 	endif
 	int i = 0
 	
-	;random skip 20%
+	;random skip 30%
 	Int randomSkip = Utility.RandomInt(1, 10)
-	if randomSkip > 2
+	if randomSkip > 3
 		int topMargin = 3
 		if aroused > 50 &&  aroused <= 80
 			topMargin = 5
@@ -25,10 +25,12 @@ Function PlayArousedExpression(Actor act, int aroused, CondiExp_BaseExpression e
 		endif 
 		Int randomEffect = Utility.RandomInt(1, topMargin)
 		expr.Apply(act, randomEffect, power)
+		RandomLook(act)
+		return true
 	Else
 		CondiExp_log.trace(act, "Aroused: Arousal: " + aroused + ".Effect: skip ")
+		return false
 	endif
-	RandomLook(act)
 EndFunction
 
 Function PlayDrunkExpression(Actor act) global
@@ -103,10 +105,10 @@ Function RandomLook(Actor act) global
 	endif
 EndFunction
 
-Function PlayTraumaExpression(Actor act, int trauma, CondiExp_BaseExpression expr) global
+bool Function PlayTraumaExpression(Actor act, int trauma, CondiExp_BaseExpression expr) global
 	Int power = 10 + trauma * 10
-	if power > 100
-		power = 100
+	if power > 80
+		power = 80
 	endif
 	
 	;random skip 20%
@@ -122,21 +124,21 @@ Function PlayTraumaExpression(Actor act, int trauma, CondiExp_BaseExpression exp
 		endif
 		Int randomEffect = Utility.RandomInt(bottomMargin, topMargin)
 		;verbose(act,"Trauma: Trauma: " + trauma + ".Effect: " + randomEffect, config.Condiexp_Verbose.GetValueInt())
-		;_traumaVariants(randomEffect, act, power, config)
 		expr.Apply(act, randomEffect, power)
+		Utility.Wait(1)
+		RandomLook(act)
+		Utility.Wait(5)
+		return true
 	else
 		CondiExp_log.trace(act, "Trauma: Trauma: " + trauma + ".Effect: skip ")
 	endif
-	Utility.Wait(1)
-
-	RandomLook(act)
-	Utility.Wait(5)
+	return false
 EndFunction
 
-Function PlayDirtyExpression(Actor act, int dirty, CondiExp_BaseExpression expr) global
+bool Function PlayDirtyExpression(Actor act, int dirty, CondiExp_BaseExpression expr) global
 	Int power = 25 + dirty * 25
-	if power > 100
-		power = 100
+	if power > 80
+		power = 80
 	endif
 ;random skip 33%
 	Int randomSkip = Utility.RandomInt(1, 10)
@@ -147,11 +149,13 @@ Function PlayDirtyExpression(Actor act, int dirty, CondiExp_BaseExpression expr)
 		endif 
 		Int randomEffect = Utility.RandomInt(1, topMargin)
 		expr.Apply(act, randomEffect, power)
+		RandomLook(act)
+		Utility.Wait(1)
+		return true
 	else
 		CondiExp_log.trace(act, "Dirty: Dirty: " + dirty + ".Effect: skip ")
 	endif
-
-	RandomLook(act)
+	return false
 EndFunction
 
 Function Breathe(Actor act, bool final = true) global

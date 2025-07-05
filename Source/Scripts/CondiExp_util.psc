@@ -11,7 +11,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 201000
+    Return 201001
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -21,7 +21,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "2.1.0"
+    Return "2.1.1"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -126,7 +126,7 @@ EndFunction
 bool function isInDialogue(Actor act, bool isPC) global
 	if !act
 		return false
-	endif
+	endif 
 	if isPC
 		if MfgConsoleFuncExt.GetPlayerSpeechTarget()
 			return true
@@ -134,10 +134,8 @@ bool function isInDialogue(Actor act, bool isPC) global
 			return false
 		endif
 	else
-		if act.IsInDialogueWithPlayer()
+		if MfgConsoleFuncExt.IsInDialogue(act) || act.IsInDialogueWithPlayer() || act == MfgConsoleFuncExt.GetPlayerSpeechTarget() 
 			return true
-		else
-			return false
 		endif
 	endif
 	return false
@@ -145,9 +143,6 @@ endfunction
 
 Function SetPhoneme(Actor act, Int mod1, Int str_dest, float modifier = 1.0, float speed = 0.75) global
 	if !act
-		return
-	endif
-	if act == MfgConsoleFuncExt.GetPlayerSpeechTarget()  || act.IsInDialogueWithPlayer()
 		return
 	endif
 	str_dest = (str_dest * modifier) as Int
@@ -167,7 +162,7 @@ Function SetPhonemeFast(Actor act, Int mod1, Int str_dest, float modifier = 1.0)
 		return
 	endif
 	str_dest = (str_dest * modifier) as Int
-	MfgConsoleFuncExt.SetPhoneme(act,mod1, str_dest, 0.01)
+	MfgConsoleFuncExt.SetPhoneme(act,mod1, str_dest, 0)
 EndFunction
 
 Function SetModifierFast(Actor act, Int mod1, Int str_dest, float strModifier = 1.0) global
@@ -175,7 +170,7 @@ Function SetModifierFast(Actor act, Int mod1, Int str_dest, float strModifier = 
 		return
 	endif
 	str_dest = (str_dest * strModifier) as Int
-	MfgConsoleFuncExt.SetModifier(act,mod1,str_dest,0.01)
+	MfgConsoleFuncExt.SetModifier(act,mod1,str_dest, 0)
 EndFunction
 
 ; get phoneme/modifier/expression
@@ -266,6 +261,13 @@ Function SmoothSetExpression(Actor act, Int aiMood, Int aiStrength, float aiModi
 	MfgConsoleFuncExt.SetExpression(act, aiMood, aiStrength)
 EndFunction
 
+bool Function isInDialogueMFG(Actor act) global
+	if !act
+		return false
+	endif
+	return MfgConsoleFuncExt.isInDialogue(act)
+endfunction
+
 Function resetMFG(Actor act) global
 	if !act
 		return
@@ -277,20 +279,13 @@ Function resetMFGSmooth(Actor act) global
 	if !act 
 		return
 	endif
-	if act == MfgConsoleFuncExt.GetPlayerSpeechTarget() || act.IsInDialogueWithPlayer()
-		;fallback to modifiers only
-		MfgConsoleFuncExt.ResetModifiers(act)
-		return
+	if !isInDialogue(act,false)
+		MfgConsoleFuncExt.ResetMFG(act)
 	endif
-	MfgConsoleFuncExt.ResetMFG(act)
 endfunction
 
 Function resetPhonemesSmooth(Actor act) global
 	if !act
-		return
-	endif
-	if act == MfgConsoleFuncExt.GetPlayerSpeechTarget() || act.IsInDialogueWithPlayer()
-		;skip phonemes to avoid dialogue clash
 		return
 	endif
 	MfgConsoleFuncExt.ResetPhonemes(act)

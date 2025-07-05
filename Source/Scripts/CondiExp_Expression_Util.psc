@@ -101,7 +101,7 @@ Function RandomLook(Actor act) global
 	ElseIf randomLook == 4
 		LookRight(50, act)
 	ElseIf randomLook == 8
-		LookDown(50, act)
+		LookDown(40, act)
 	endif
 EndFunction
 

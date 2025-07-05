@@ -37,7 +37,11 @@ Event OnUpdate()
 			resetMFGSmooth(PlayerRef)
 			resetCounter = 0
 		endif
-        RegisterForSingleUpdate( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 5))
+		if playing && self != None
+			RegisterForSingleUpdate( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 5))
+		else
+			log("CondiExp_Random: cancelled effect")
+		endif
     else
 		log("CondiExp_Random: cancelled effect")
 		resetCounter = 0
@@ -54,13 +58,8 @@ endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	playing = false
+	resetMFGSmooth(PlayerRef)
 	resetCounter = 0
-	Utility.Wait(1)
 	trace_line("CondiExp_Random: OnEffectFinish. Suspended: " + Condiexp_ModSuspended.GetValueInt(), Condiexp_Verbose.GetValueInt())
-	If Condiexp_ModSuspended.GetValueInt()
-		;do nothing
-	elseIf Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
-		resetMFGSmooth(PlayerRef)
-	endif
 	config.currentExpression = ""
 EndEvent

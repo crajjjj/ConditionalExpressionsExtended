@@ -24,18 +24,17 @@ EndEvent
 Function ShowExpression()
 	config.currentExpression="Cold"
 	verbose(PlayerRef, "Cold", Condiexp_Verbose.GetValueInt())
+	CondiExp_util.SmoothSetExpression(PlayerRef,1,50)
 	while isCold()
 		Utility.Wait(0.2)
-		CondiExp_util.SmoothSetExpression(PlayerRef,1,50)
 		 ; cold intro
-		if (coldExpression <= 65) 
+		if (coldExpression <= 65)
 			if (coldExpression < 0)
 				coldExpression = 0
 			endif
-			CondiExp_util.SmoothSetExpression(PlayerRef,1,50)
-			SetModifierFast(PlayerRef, 12, coldExpression)
-			SetModifierFast(PlayerRef, 13, coldExpression)
-			SetModifierFast(PlayerRef, 4, coldExpression)
+			CondiExp_util.SetModifierFast(PlayerRef, 12, coldExpression)
+			CondiExp_util.SetModifierFast(PlayerRef, 13, coldExpression)
+			CondiExp_util.SetModifierFast(PlayerRef, 4, coldExpression)
 			coldExpression += 5
 		else ; this is Tremble
 			CondiExp_util.SetPhonemeFast(PlayerRef, 0,0)
@@ -74,7 +73,7 @@ Function ShowExpression()
 endFunction
 
 bool Function isCold()
-	bool isCold = Condiexp_CurrentlyCold.GetValueInt() == 1
+	bool bIsCold = Condiexp_CurrentlyCold.GetValueInt() == 1
 
 	bool isSuspended =  Condiexp_ModSuspended.GetValueInt() == 1
 	bool isDisabled = Condiexp_GlobalCold.GetValueInt() == 0
@@ -84,7 +83,7 @@ bool Function isCold()
 	
 	bool isSwimming = PlayerRef.IsSwimming()
 
-	If isSuspended || isDisabled || lowStamina || lowHealth || isSwimming || isImmediateEffect || !isCold
+	If isSuspended || isDisabled || lowStamina || lowHealth || isSwimming || isImmediateEffect || !bIsCold
 		log("CondiExp_Cold: cancelled effect")
 		return false
 	else

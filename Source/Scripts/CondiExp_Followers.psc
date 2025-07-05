@@ -14,19 +14,29 @@ Import CondiExp_log
 
 int additionalLagSmall = 3
 int distanceCounter = 6
-int additionalLag = 7
+int additionalLag = 10
 int additionalLagBig = 30
 bool firstRun = true
 Actor act
+float lastPosX
+float lastPosY
+float lastPosZ
+float restartDistance = 300.0
 
 ;only for player actor
 Event OnPlayerLoadGame()
-	log("CondiExp_Followers OnPlayerLoadGame.Actor: " + act.GetLeveledActorBase().GetName())
-	ResetQuest(this_quest)
+        log("CondiExp_Followers OnPlayerLoadGame.Actor: " + act.GetLeveledActorBase().GetName())
+        lastPosX = PlayerRef.GetPositionX()
+        lastPosY = PlayerRef.GetPositionY()
+        lastPosZ = PlayerRef.GetPositionZ()
+        ResetQuest(this_quest)
 EndEvent
 
 Event OnInit()
-	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagSmall)
+	    lastPosX = PlayerRef.GetPositionX()
+        lastPosY = PlayerRef.GetPositionY()
+        lastPosZ = PlayerRef.GetPositionZ()
+        RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagSmall)
 EndEvent
 
 Event OnUpdate()
@@ -46,20 +56,36 @@ Event OnUpdate()
 		act = None
 		Return
 	EndIf
-	;restart flow for player reference only
-	If act == PlayerRef
-		if firstRun
-			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
-			firstRun = false
-			trace(act, "FollowersQuest: init" , verboseInt)
-			Return
-		else
-			verbose(act, "FollowersQuest: refresh" , verboseInt)
-			firstRun = true
-			ResetQuest(this_quest)
-			Return
-		endif
-	EndIf
+;restart flow for player reference only
+    If act == PlayerRef
+            if firstRun
+                    lastPosX = PlayerRef.GetPositionX()
+                    lastPosY = PlayerRef.GetPositionY()
+                    lastPosZ = PlayerRef.GetPositionZ()
+                    RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
+                    firstRun = false
+                    trace(act, "FollowersQuest: init" , verboseInt)
+                    Return
+            else
+                    float dx = PlayerRef.GetPositionX() - lastPosX
+                    float dy = PlayerRef.GetPositionY() - lastPosY
+                    float dz = PlayerRef.GetPositionZ() - lastPosZ
+                    float distMoved = Math.Sqrt(dx*dx + dy*dy + dz*dz)
+                    if distMoved > restartDistance
+                            verbose(act, "FollowersQuest: refresh" , verboseInt)
+                            firstRun = true
+                            lastPosX = PlayerRef.GetPositionX()
+                            lastPosY = PlayerRef.GetPositionY()
+                            lastPosZ = PlayerRef.GetPositionZ()
+                            ResetQuest(this_quest)
+                            Return
+                    else
+                            RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLag)
+                            Return
+                    endif
+            endif
+    EndIf
+
 
 	float dist = act.GetDistance(PlayerRef)
 	If (dist > 1024)
@@ -80,7 +106,7 @@ Event OnUpdate()
 
 	If (sm.checkIfModShouldBeSuspended(act))
 		verbose(act, "Suspending on condition" , verboseInt)
-		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
+		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
 		return
 	endif
 	

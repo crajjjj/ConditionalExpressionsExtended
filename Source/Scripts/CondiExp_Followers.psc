@@ -25,7 +25,7 @@ float restartDistance = 300.0
 
 ;only for player actor
 Event OnPlayerLoadGame()
-        log("CondiExp_Followers OnPlayerLoadGame.Actor: " + act.GetLeveledActorBase().GetName())
+        log("CondiExp_NPCs OnPlayerLoadGame.Actor: " + act.GetLeveledActorBase().GetName())
         lastPosX = PlayerRef.GetPositionX()
         lastPosY = PlayerRef.GetPositionY()
         lastPosZ = PlayerRef.GetPositionZ()
@@ -51,7 +51,7 @@ Event OnUpdate()
 	;trace(act, "CondiExp_Followers OnUpdate" , verboseInt)
 	; log("CondiExp_Followers OnUpdate. Actor: " + act.GetLeveledActorBase().GetName())
 	If (config.CondiExpFollowerQuest.IsStopped())
-		trace(act, "Followers quest was stopped" , verboseInt)
+		trace(act, "NPCs quest was stopped" , verboseInt)
 		TryToClear()
 		act = None
 		Return
@@ -64,7 +64,7 @@ Event OnUpdate()
                     lastPosZ = PlayerRef.GetPositionZ()
                     RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
                     firstRun = false
-                    trace(act, "FollowersQuest: init" , verboseInt)
+                    trace(act, "NPCsQuest: init" , verboseInt)
                     Return
             else
                     float dx = PlayerRef.GetPositionX() - lastPosX
@@ -72,7 +72,7 @@ Event OnUpdate()
                     float dz = PlayerRef.GetPositionZ() - lastPosZ
                     float distMoved = Math.Sqrt(dx*dx + dy*dy + dz*dz)
                     if distMoved > restartDistance
-                            verbose(act, "FollowersQuest: refresh" , verboseInt)
+                            verbose(act, "NPCsQuest: refresh" , verboseInt)
                             firstRun = true
                             lastPosX = PlayerRef.GetPositionX()
                             lastPosY = PlayerRef.GetPositionY()

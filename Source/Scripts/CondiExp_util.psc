@@ -26,13 +26,13 @@ EndFunction
 
 Function ResetQuest(Quest this_quest) Global
 	StopQuest(this_quest)
-	Wait(0.1)
+	WaitMenuMode(0.1)
 	StartQuest(this_quest)
 EndFunction
 
 Function StopQuest(Quest this_quest) Global
 	While (this_quest.IsStarting() || this_quest.IsStopping())
-		Wait(1.0)
+		WaitMenuMode(1.0)
 	EndWhile
 	If (this_quest.IsRunning())
 		CondiExp_log.log("Stopping Quest:" + this_quest.GetName())
@@ -43,7 +43,7 @@ EndFunction
 
 Function StartQuest(Quest this_quest) Global
 	While (this_quest.IsStarting() || this_quest.IsStopping())
-		Wait(1.0)
+		WaitMenuMode(1.0)
 	EndWhile
 	If (this_quest.IsStopped())
 		CondiExp_log.log("Starting Quest:" + this_quest.GetName())

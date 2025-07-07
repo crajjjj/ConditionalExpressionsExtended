@@ -894,7 +894,12 @@ event OnOptionKeyMapChange(int option, int keyCode, string conflictControl, stri
 endEvent
 
 Function DetectRace()
+
 ActorBase PlayerBase = PlayerRef.GetActorBase()
+
+if Condiexp_Sounds.GetValue() == 0
+		return
+endif
 
 If PlayerBase.GetSex() == 0
 

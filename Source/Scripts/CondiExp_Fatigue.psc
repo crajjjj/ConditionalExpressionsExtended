@@ -31,7 +31,7 @@ EndEvent
 bool function isFatigueActive()
     bool active = config.Condiexp_GlobalStamina.GetValue() == 1
     active = active && PlayerRef.GetActorValuePercentage("Stamina") < 0.5 && PlayerRef.GetActorValuePercentage("Health") > 0.5
-    active = active && !PlayerRef.IsDead() && !PlayerRef.isSwimming() 
+    active = active && !PlayerRef.IsDead() && !PlayerRef.isSwimming() && !isInDialogueMFG(PlayerRef)
 	return  active && Condiexp_CurrentlyBusyImmediate.GetValue() == 1
 endfunction
 

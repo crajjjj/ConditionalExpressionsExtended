@@ -83,7 +83,7 @@ bool Function isCold()
 	
 	bool isSwimming = PlayerRef.IsSwimming()
 
-	If isSuspended || isDisabled || lowStamina || lowHealth || isSwimming || isImmediateEffect || !bIsCold
+	If isSuspended || isDisabled || lowStamina || lowHealth || isSwimming || isImmediateEffect || !bIsCold || isInDialogueMFG(PlayerRef)
 		log("CondiExp_Cold: cancelled effect")
 		return false
 	else

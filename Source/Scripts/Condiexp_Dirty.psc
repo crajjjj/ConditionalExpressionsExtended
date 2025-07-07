@@ -25,7 +25,7 @@ bool function isDirtyEnabled()
 	bool enabled =  !PlayerRef.IsDead() && Condiexp_GlobalDirty.GetValueInt() == 1
 	enabled = enabled && Condiexp_ModSuspended.GetValueInt() == 0  && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
 	enabled = enabled && !PlayerRef.IsRunning() 
-	enabled = enabled && playing
+	enabled = enabled && playing && !isInDialogueMFG(PlayerRef)
 	return enabled 
 endfunction
 

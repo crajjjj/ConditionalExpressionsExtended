@@ -53,8 +53,8 @@ EndEvent
 bool function isTraumaEnabled()
 	bool enabled = !PlayerRef.IsDead() && Condiexp_GlobalTrauma.GetValueInt() == 1
 	enabled = enabled && Condiexp_ModSuspended.GetValueInt() == 0  && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
-	enabled = enabled && !PlayerRef.IsRunning()
-	enabled = enabled && playing
+	enabled = enabled && !PlayerRef.IsRunning() && !isInDialogueMFG(PlayerRef)
+	enabled = enabled && playing 
 	return enabled
 endfunction
 

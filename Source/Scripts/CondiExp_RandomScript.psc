@@ -51,7 +51,7 @@ EndEvent
 bool function isRandomEnabled()
 	bool enabled = !PlayerRef.IsDead() && Condiexp_GlobalRandom.GetValueInt() == 1
 	enabled = enabled && Condiexp_ModSuspended.GetValueInt() == 0 && Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
-	enabled = enabled && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning()
+	enabled = enabled && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning() && !isInDialogueMFG(PlayerRef)
 	enabled = enabled && playing
 	return enabled 
 endfunction

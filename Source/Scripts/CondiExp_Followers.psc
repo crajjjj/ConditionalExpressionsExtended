@@ -71,7 +71,8 @@ Event OnUpdate()
                     float dy = PlayerRef.GetPositionY() - lastPosY
                     float dz = PlayerRef.GetPositionZ() - lastPosZ
                     float distMoved = Math.Sqrt(dx*dx + dy*dy + dz*dz)
-                    if distMoved > restartDistance
+					bool needRestart = distMoved > restartDistance  && !isInDialogueMFG(act) && !sm.checkIfModShouldBeSuspended(act) 
+                    if needRestart
                             verbose(act, "NPCsQuest: refresh" , verboseInt)
                             firstRun = true
                             lastPosX = PlayerRef.GetPositionX()
@@ -105,7 +106,7 @@ Event OnUpdate()
 	EndIf
 
 	If (sm.checkIfModShouldBeSuspended(act))
-		verbose(act, "Suspending on condition" , verboseInt)
+		trace(act, "Suspending on condition" , verboseInt)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
 		return
 	endif

@@ -25,6 +25,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(lock + 1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
     resetMFGSmooth(akTarget)
+    config.currentExpression = "Fatigue"
     trace(PlayerRef, "Fatigue: OnEffectStart.Lock:" + lock, Condiexp_Verbose.GetValueInt())
 EndEvent
 
@@ -66,7 +67,7 @@ Function Breathe()
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    config.currentExpression = "Fatigue"
+    
     int safeguard = 0
     While (isFatigueActive()  && safeguard <= 10)
         Breathe()

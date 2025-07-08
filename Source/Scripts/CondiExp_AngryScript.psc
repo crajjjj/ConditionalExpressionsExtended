@@ -14,6 +14,7 @@ GlobalVariable Property Condiexp_Verbose Auto
 GlobalVariable Property Condiexp_PO3ExtenderInstalled Auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
+  config.currentExpression = "Angry"
   If PlayerRef.HasKeyword(Vampire)
    ; use vanilla
   else
@@ -23,7 +24,7 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function Angry()
-    config.currentExpression = "Angry"
+   
     RegisterForSingleUpdate(1)
 EndFunction
 

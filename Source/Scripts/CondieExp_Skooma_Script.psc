@@ -10,6 +10,7 @@ condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusy.SetValueInt(1)
+     config.currentExpression = "Scooma"
     int lock = Condiexp_CurrentlyBusyImmediate.GetValueInt() as int
     lock = lock + 1
     if lock == 1
@@ -22,7 +23,8 @@ Function High()
     trace(PlayerRef, "Skooma: OnEffectStart", config.Condiexp_Verbose.GetValueInt())
     int randomhappy
     int randomsmile
-    config.currentExpression = "Scooma"
+   
+    verbose(PlayerRef, "Scooma", config.Condiexp_Verbose.GetValueInt())
     PlayScoomaExpression(PlayerRef)
     PlayScoomaExpression(PlayerRef)
     CondiExp_PlayerIsHigh.SetValueInt(0)

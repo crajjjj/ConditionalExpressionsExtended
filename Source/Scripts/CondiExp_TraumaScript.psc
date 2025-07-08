@@ -37,6 +37,7 @@ bool playing = false
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
 	;verbose(PlayerRef, "Trauma: OnEffectStart", Condiexp_Verbose.GetValueInt())
+	config.currentExpression = "Trauma"
 	playing = true
 EndEvent
 
@@ -60,13 +61,14 @@ endfunction
 
 Function trauma()
 	If isTraumaEnabled()
-        config.currentExpression = traumaExpr.Name
+        
 		Int trauma = Condiexp_CurrentlyTrauma.GetValueInt() as Int
 		;disease use case
 		if trauma == 0
 			trace(PlayerRef, "Trauma: disease ", Condiexp_Verbose.GetValueInt())
 			trauma = 6
 		endif
+		verbose(PlayerRef, "Trauma" , Condiexp_Verbose.GetValueInt())
 		PlayTraumaExpression(PlayerRef, trauma, traumaExpr)
 		BreatheAndSob(trauma)
 		Utility.Wait( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
@@ -91,7 +93,7 @@ EndFunction
 Function playBreathOrRandomSob(int trauma)
 	int safeguard = 0
 	bool triggerSound = false
-	verbose(PlayerRef, "Trauma: breathing start" , Condiexp_Verbose.GetValueInt())
+	;verbose(PlayerRef, "Trauma: breathing start" , Condiexp_Verbose.GetValueInt())
 	Inhale(0,20, PlayerRef)
 	Int safeguardMax = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 3, 5)
 	Int sobPoint = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 0, safeguardMax)
@@ -109,7 +111,7 @@ Function playBreathOrRandomSob(int trauma)
 		Utility.Wait(2)
 		safeguard = safeguard + 1
 	EndWhile
-	verbose(PlayerRef, "Trauma: breathing finish after cycle:" + safeguard , Condiexp_Verbose.GetValueInt())
+	;verbose(PlayerRef, "Trauma: breathing finish after cycle:" + safeguard , Condiexp_Verbose.GetValueInt())
 	Utility.Wait(1)
 endfunction
 

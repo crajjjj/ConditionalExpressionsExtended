@@ -13,11 +13,12 @@ CondiExp_BaseExpression Property painExpr Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
+    config.currentExpression = "Pain"
     SendSLAModEvent(config.Go.arousalPainThreshold, config.Go.arousalPain, "not feeling aroused because of very strong pain", PlayerRef, "CondiExpPain")
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    config.currentExpression = painExpr.Name
+    
     PlayPainExpression(PlayerRef, painExpr)
     Utility.Wait(3)
     resetMFGSmooth(PlayerRef)

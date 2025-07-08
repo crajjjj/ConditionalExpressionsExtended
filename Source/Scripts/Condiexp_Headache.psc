@@ -14,12 +14,12 @@ condiexp_MCM Property config auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     Condiexp_CurrentlyBusy.SetValueInt(1)
+     config.currentExpression = "Headache"
     SendSLAModEvent(config.Go.arousalHeadacheThreshold, config.Go.arousalHeadache, "not feeling very aroused because of headache", PlayerRef, "CondiExpHeadache")
 EndEvent
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    config.currentExpression = "Headache"
     verbose(PlayerRef, "Headache", Condiexp_Verbose.GetValueInt())
     Headache(PlayerRef)
     config.currentExpression = ""

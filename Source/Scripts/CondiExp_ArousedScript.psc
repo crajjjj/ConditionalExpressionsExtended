@@ -20,13 +20,14 @@ bool playing = false
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
 	playing = true
+	config.currentExpression = "Aroused"
 	;verbose(akTarget, "Aroused: OnEffectStart", Condiexp_Verbose.GetValueInt())
 EndEvent
 
 Function aroused()
 	If isArousedEnabled()
-        config.currentExpression = arousalExpr.Name
 		Int arousal = Condiexp_CurrentlyAroused.GetValueInt()
+		verbose(PlayerRef, "Aroused", config.Condiexp_Verbose.GetValueInt())
 		PlayArousedExpression(PlayerRef, arousal, arousalExpr)
 		Utility.Wait(2)
 		resetPhonemesSmooth(PlayerRef)

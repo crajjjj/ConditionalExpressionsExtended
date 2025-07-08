@@ -25,12 +25,12 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	;verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValueInt())
 	RegisterForSingleUpdate(1)
 	playing = true
-	
+	config.currentExpression = "Random"
 EndEvent
 
 Event OnUpdate()
+	config.currentExpression = "Random"
 	If isRandomEnabled()
-		config.currentExpression = "Random"
    		PlayRandomExpression(PlayerRef, config, randomExpr)
 		resetCounter += 1
 		if resetCounter > 4
@@ -46,6 +46,7 @@ Event OnUpdate()
 		log("CondiExp_Random: cancelled effect")
 		resetCounter = 0
 	endif
+	config.currentExpression = ""
 EndEvent
 
 bool function isRandomEnabled()

@@ -18,6 +18,7 @@ bool playing = false
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	Condiexp_CurrentlyBusy.SetValueInt(1)
 	playing = true
+	config.currentExpression = "Dirty"
 	;verbose(PlayerRef, "Dirty: OnEffectStart", Condiexp_Verbose.GetValueInt())
 EndEvent
 
@@ -31,8 +32,8 @@ endfunction
 
 Function dirty()
 	If isDirtyEnabled()
-        config.currentExpression = dirtyExpr.Name
 		Int dirty = Condiexp_CurrentlyDirty.GetValueInt() as Int
+		verbose(PlayerRef, "Dirty", Condiexp_Verbose.GetValueInt())
 		PlayDirtyExpression(PlayerRef, dirty, dirtyExpr)
 		Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
 		resetMFGSmooth(PlayerRef)

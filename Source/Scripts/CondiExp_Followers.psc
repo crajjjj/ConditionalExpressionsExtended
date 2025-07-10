@@ -170,17 +170,6 @@ Event OnUpdate()
 		endif
 	EndIf
 
-	If (act.GetActorValuePercentage("Magicka") < 0.1 && config.Condiexp_GlobalMana.GetValueInt() == 1)
-		;random skip 20%
-		Int randomSkip = Utility.RandomInt(1, 10)
-		if randomSkip > 2
-			trace(act, "Headache Effect", verboseInt)
-			Headache(act)
-			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
-			Return
-		endif
-	EndIf
-
 	if !isMale
 		int trauma = sm.getTraumaStatus(act)
 		bool traumaPlayed = false

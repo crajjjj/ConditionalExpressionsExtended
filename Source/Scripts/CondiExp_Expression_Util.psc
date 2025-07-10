@@ -95,10 +95,10 @@ EndFunction
 
 
 Function RandomLook(Actor act) global
-	Int randomLook = Utility.RandomInt(1, 10)
-	If randomLook == 2
+	Int randomLook = Utility.RandomInt(1, 20)
+	If randomLook == 2 || randomLook == 12
 		LookLeft(50, act)
-	ElseIf randomLook == 4
+	ElseIf randomLook == 4 || randomLook == 14
 		LookRight(50, act)
 	ElseIf randomLook == 8
 		LookDown(40, act)

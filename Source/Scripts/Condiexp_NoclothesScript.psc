@@ -17,22 +17,16 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function Blush()
-    Int randomLook = Utility.RandomInt(1, 10)
-    verbose(PlayerRef, "No Clothes" + randomLook, Condiexp_Verbose.GetValueInt())
+    Int irandomLook = Utility.RandomInt(1, 10)
+    verbose(PlayerRef, "No Clothes" + irandomLook, Condiexp_Verbose.GetValueInt())
 
-    if randomLook >= 5
+    if irandomLook >= 5
         Surprised(90,PlayerRef, 10)
     Else
         Fear(95,PlayerRef, 10)
     endif
 
-    If randomLook == 2
-		LookLeft(50, PlayerRef)
-	ElseIf randomLook == 4
-		LookRight(50, PlayerRef)
-	ElseIf randomLook == 8
-		LookDown(50, PlayerRef)
-	endif
+    RandomLook(PlayerRef)
 
 EndFunction
 

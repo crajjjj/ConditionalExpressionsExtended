@@ -297,10 +297,10 @@ Function Maintenance()
 	
 	randomExprRegistered = AddTextOption("Random Expressions:", randomExpr.PhasesMale + randomExpr.PhasesFemale)
 	AddEmptyOption()
-	overrideTrauma = AddToggleOption("Override Trauma Condition", go.traumaOverride)
- 	overrideCold = AddToggleOption("Override Cold Condition", go.coldOverride)
- 	overrideDirt = AddToggleOption("Override Dirty Condition", go.dirtOverride)
- 	overrideAroused = AddToggleOption("Override Aroused Condition", go.arousalOverride)
+	overrideTrauma = AddToggleOption("Simulate Trauma Condition", go.traumaOverride)
+ 	overrideCold = AddToggleOption("Simulate Cold Condition", go.coldOverride)
+ 	overrideDirt = AddToggleOption("Simulate Dirty Condition", go.dirtOverride)
+ 	overrideAroused = AddToggleOption("Simulate Aroused Condition", go.arousalOverride)
 EndFunction
 
 Function ArousedModifiers()

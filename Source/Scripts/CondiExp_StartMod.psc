@@ -274,23 +274,13 @@ function OnUpdateExecute(Actor act)
 		EndIf
 	EndIf
 
-	;dialogue expression. Works for PC here. Skips suspension check
 	Actor playerSpeechTargetAct = MfgConsoleFuncExt.GetPlayerSpeechTarget()
-	bool inDialogue = isInDialogue(act, act == PlayerRef, playerSpeechTargetAct)
-	If (inDialogue && isModEnabled())
-		if playerSpeechTargetAct && (act == PlayerRef || act == playerSpeechTargetAct)
-			log("CondiExp_StartMod: RelationshipRankExpression")
-			RelationshipRankExpression(act, playerSpeechTargetAct)
-			resetStatuses()
-			return
-		endif
-	EndIf
-	
 	;check if there's a conflicting mod based on custom conditions
 	if checkIfModShouldBeSuspended(act, playerSpeechTargetAct)
 		if isModEnabled()
 			log("CondiExp_StartMod: suspended according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(1)
+			bool inDialogue = isInDialogue(act, act == PlayerRef, playerSpeechTargetAct)
 			mfgCleanupWithContext(act, inDialogue)
 			Condiexp_CurrentlyBusy.SetValueInt(0)
 			Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
@@ -373,10 +363,10 @@ Bool function checkIfModShouldBeSuspendedForNPCs(Actor act, Actor playerSpeechTa
 		return true
 	endif
 
-	;  if (isInDialogue(act, act == PlayerRef, playerSpeechTargetAct))
-	;  	log("CondiExp_StartMod: actor is in dialogue. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
-	;  	return true
-	;  endif
+	 if (isInDialogue(act, act == PlayerRef, playerSpeechTargetAct))
+	 	log("CondiExp_StartMod: actor is in dialogue. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
+	 	return true
+	 endif
 	return false
 endfunction
 
@@ -406,6 +396,7 @@ function mfgCleanupWithContext(Actor act, bool inDialogue)
 		EndIf
 		if (cleanExpressions)
 			resetExpressionsSmooth(act)
+			act.ClearExpressionOverride()
 		endif
 	EndIf
 endfunction
@@ -572,8 +563,12 @@ int function getArousalStatus(Actor act)
 	return 0
 endfunction
 
+bool function isSendArousalEventsEnabled()
+	return sla && Condiexp_GlobalArousalModifiers.GetValueInt() == 1
+endfunction
+
 Event OnCondiExpSLAEvent(int arousalCap, int decrease, String notification, String effectName, Form act)
-	If !sla || Condiexp_GlobalArousalModifiers.GetValueInt() == 0
+	If !isSendArousalEventsEnabled()
 		trace_line("Event received but Condiexp_GlobalArousalModifiers is disabled", Condiexp_Verbose.GetValueInt())
 		return
 	endif

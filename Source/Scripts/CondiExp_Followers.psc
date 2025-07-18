@@ -113,13 +113,6 @@ Event OnUpdate()
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
 		return
 	endif
-	
-	if (isInDialogue(act, act == PlayerRef, playerSpeechTargetAct))
-	 	log("CondiExp_StartMod: actor is in dialogue. Will play dialog expressions for actor:" + act.GetLeveledActorBase().GetName())
-		RelationshipRankExpression(act,playerSpeechTargetAct)
-	 	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
-		return
-	endif
 
 	sm.mfgCleanupWithContext(act, inDialogue)
 	bool isMale = (act.GetLeveledActorBase().GetSex() == 0)
@@ -152,7 +145,9 @@ Event OnUpdate()
 	If (act.GetActorValuePercentage("Health") < 0.40 && config.Condiexp_GlobalPain.GetValueInt() == 1)
 		trace(act, "Pain", verboseInt)
 		PlayPainExpression(act, config.painExpr)
-		SendSLAModEvent(config.Go.arousalPainThreshold, config.Go.arousalPain, "is not feeling aroused because of pain", act, "CondiExpPain")
+		If (sm.isSendArousalEventsEnabled())
+			SendSLAModEvent(sm.arousalPainThreshold, sm.arousalPain, "is not feeling aroused because of pain", act, "CondiExpPain")
+		EndIf
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + 3)
 		Return
 	EndIf
@@ -161,6 +156,8 @@ Event OnUpdate()
 	If (act.IsInCombat() && act.GetActorValuePercentage("Health") >= 0.40 && act.GetActorValuePercentage("Stamina") > 0.6 && config.Condiexp_GlobalCombat.GetValueInt() == 1)
 		trace(act, "Anger", verboseInt)
 		SmoothSetExpression(act, 15, RandomInt(35, 80))
+		Utility.Wait(5)
+		resetMFGSmooth(act)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf

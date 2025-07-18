@@ -59,7 +59,10 @@ endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	playing = false
-	resetMFGSmooth(PlayerRef)
+	If (!isInDialogueMFG(PlayerRef))
+		;dialog handled in util
+		resetMFGSmooth(PlayerRef)
+	EndIf
 	resetCounter = 0
 	trace_line("CondiExp_Random: OnEffectFinish. Suspended: " + Condiexp_ModSuspended.GetValueInt(), Condiexp_Verbose.GetValueInt())
 	config.currentExpression = ""

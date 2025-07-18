@@ -87,6 +87,11 @@ CondiExp_BaseExpression Property randomExpr Auto
 
 CondiExp_PCTracking Property pctracking Auto
 
+bool  Property coldOverride  = false Auto
+bool  Property dirtOverride  = false Auto
+bool  Property traumaOverride  = false Auto
+bool  Property arousalOverride  = false Auto
+
 ;Bathing mod
 MagicEffect DirtinessStage2Effect 
 MagicEffect DirtinessStage3Effect
@@ -269,12 +274,24 @@ function OnUpdateExecute(Actor act)
 		EndIf
 	EndIf
 
+	;dialogue expression. Works for PC here. Skips suspension check
+	Actor playerSpeechTargetAct = MfgConsoleFuncExt.GetPlayerSpeechTarget()
+	bool inDialogue = isInDialogue(act, act == PlayerRef, playerSpeechTargetAct)
+	If (inDialogue && isModEnabled())
+		if playerSpeechTargetAct && (act == PlayerRef || act == playerSpeechTargetAct)
+			log("CondiExp_StartMod: RelationshipRankExpression")
+			RelationshipRankExpression(act, playerSpeechTargetAct)
+			resetStatuses()
+			return
+		endif
+	EndIf
+	
 	;check if there's a conflicting mod based on custom conditions
-	if checkIfModShouldBeSuspended(act)
+	if checkIfModShouldBeSuspended(act, playerSpeechTargetAct)
 		if isModEnabled()
 			log("CondiExp_StartMod: suspended according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(1)
-			CondiExp_util.resetMFGSmooth(act)
+			mfgCleanupWithContext(act, inDialogue)
 			Condiexp_CurrentlyBusy.SetValueInt(0)
 			Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 		endif
@@ -312,7 +329,7 @@ function OnUpdateExecute(Actor act)
 	endif
 endfunction
 
-Bool function checkIfModShouldBeSuspended(Actor act)
+Bool function checkIfModShouldBeSuspended(Actor act, Actor playerSpeechTargetAct)
 	if isSuspendedByDhlpEvent()
 		log("CondiExp_StartMod: dhlp event. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
 		return true
@@ -333,14 +350,72 @@ Bool function checkIfModShouldBeSuspended(Actor act)
 		return true
 	endif
 
-	if (isInDialogue(act, act == PlayerRef ))
+	if (isInDialogue(act, act == PlayerRef, playerSpeechTargetAct))
 		log("CondiExp_StartMod: actor is in dialogue. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
 		return true
 	endif
 	return false
 endfunction
 
+Bool function checkIfModShouldBeSuspendedForNPCs(Actor act, Actor playerSpeechTargetAct)
+	if isSuspendedByDhlpEvent()
+		log("CondiExp_StartMod: dhlp event. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
+		return true
+	endif
+
+	if isSuspendedByKey()
+		log("CondiExp_StartMod: key down event. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
+		return true
+	endif
+
+	if (sexlab && IsActorActive(sexlab, act))
+		log("CondiExp_StartMod: actor is in sl faction. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
+		return true
+	endif
+
+	;  if (isInDialogue(act, act == PlayerRef, playerSpeechTargetAct))
+	;  	log("CondiExp_StartMod: actor is in dialogue. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
+	;  	return true
+	;  endif
+	return false
+endfunction
+
+function mfgCleanupWithContext(Actor act, bool inDialogue)
+	If (!act || act.IsDead())
+		return
+	EndIf
+	
+	bool cleanPhonemes = true
+	bool cleanModifiers = true
+	bool cleanExpressions = true
+	If (pctracking.checkIfModShouldBeSuspendedByWearables(act))
+		cleanPhonemes = false
+	EndIf
+	If inDialogue
+		cleanExpressions = false
+	EndIf
+
+	If (cleanPhonemes && cleanModifiers && cleanExpressions)
+		resetMFGSmooth(act)
+	Else
+		If (cleanPhonemes)
+			resetPhonemesSmooth(act)
+		EndIf
+		If (cleanModifiers)
+			resetModifiersSmooth(act)
+		EndIf
+		if (cleanExpressions)
+			resetExpressionsSmooth(act)
+		endif
+	EndIf
+endfunction
+
 int function getColdStatus(Actor act )
+	If (coldOverride)
+		return 1
+	ElseIf (traumaOverride || dirtOverride || arousalOverride)
+			return 0
+	EndIf
 	if Condiexp_GlobalCold.GetValueInt() == 0
 		return 0
 	endif
@@ -384,6 +459,12 @@ int function getColdStatus(Actor act )
 endfunction
 
 int function getDirtyStatus(Actor act)
+	If (dirtOverride)
+		return 3
+	ElseIf (traumaOverride || coldOverride || arousalOverride)
+			return 0
+	EndIf
+
 	If (Condiexp_GlobalDirty.GetValueInt() == 0)
 		return 0
 	EndIf
@@ -426,6 +507,11 @@ int function getDirtyStatus(Actor act)
 endfunction
 
 int function getTraumaStatus(Actor act)
+	If (traumaOverride)
+		return 6
+	ElseIf (dirtOverride || coldOverride || arousalOverride)
+			return 0
+	EndIf
 	if Condiexp_GlobalTrauma.GetValueInt() == 0
 		return 0
 	endif
@@ -464,6 +550,11 @@ int function getTraumaStatus(Actor act)
 endfunction
 
 int function getArousalStatus(Actor act)
+	If (arousalOverride)
+		return 99
+	ElseIf (traumaOverride || coldOverride || dirtOverride)
+			return 0
+	EndIf
 	if Condiexp_GlobalAroused.GetValueInt() == 0
 		return 0
 	endif

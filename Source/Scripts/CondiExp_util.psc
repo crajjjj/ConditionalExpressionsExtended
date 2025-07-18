@@ -11,7 +11,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 201003
+    Return 201004
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -21,7 +21,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "2.1.3"
+    Return "2.1.4"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -123,23 +123,93 @@ Bool Function isDependencyReady(String modname) Global
 	endif
 EndFunction
 
-bool function isInDialogue(Actor act, bool isPC) global
+bool function isInDialogue(Actor act, bool isPC, Actor playerSpeechTargetAct) global
 	if !act
 		return false
-	endif 
+	endif
 	if isPC
-		if MfgConsoleFuncExt.GetPlayerSpeechTarget()
+		if playerSpeechTargetAct
 			return true
 		else
 			return false
 		endif
 	else
-		if MfgConsoleFuncExt.IsInDialogue(act) || act.IsInDialogueWithPlayer() || act == MfgConsoleFuncExt.GetPlayerSpeechTarget() 
+		if MfgConsoleFuncExt.IsInDialogue(act) || act.IsInDialogueWithPlayer() || act == playerSpeechTargetAct
 			return true
 		endif
 	endif
 	return false
 endfunction
+
+Function RelationshipRankExpression(Actor act, Actor targetActor) Global
+
+	; Validation checks
+	if !act || !targetActor || targetActor == act || act.IsDead() || act.IsInCombat()
+		return
+	endif
+
+	int relationship = act.GetRelationshipRank(targetActor)
+	int roll = Utility.RandomInt(1, 100)
+	int exprType = 0 ; 0 = Neutral, 1 = Friendly, 2 = Hostile
+
+	; Relationship-weighted expression type
+	if relationship >= 2
+		If (roll <= 75)
+			exprType = 1
+		else
+			exprType = 0
+		EndIf
+		;exprType = (roll <= 75) ? 1 : 0 ; 75% Friendly
+	elseif relationship <= -2
+		If (roll <= 75)
+			exprType = 2
+		else
+			exprType = 0
+		EndIf
+		;exprType = (roll <= 75) ? 2 : 0 ; 75% Hostile
+	else
+		exprType = 0 ; Default Neutral
+	endif
+
+	int moodID = 0
+	int strength = Utility.RandomInt(40, 100)
+
+	; Choose moodID by type
+	if exprType == 1
+		; FRIENDLY: Happy (4), Surprise (6), Neutral (0)
+		int moodRoll = Utility.RandomInt(1, 100)
+		if moodRoll <= 60
+			moodID = 4 ; Happy
+		elseif moodRoll <= 85
+			moodID = 6 ; Surprise
+		else
+			moodID = 0 ; Neutral fallback
+		endif
+
+	elseif exprType == 2
+		; HOSTILE: Anger (1), Disgust (2), Frown/Sad (5)
+		int moodRoll = Utility.RandomInt(1, 100)
+		if moodRoll <= 50
+			moodID = 1 ; Anger
+		elseif moodRoll <= 85
+			moodID = 2 ; Disgust
+		else
+			moodID = 5 ; Sad/Frown
+		endif
+
+	else
+		; NEUTRAL: Neutral (0), Puzzled (7), Surprise (6)
+		int moodRoll = Utility.RandomInt(1, 100)
+		if moodRoll <= 60
+			moodID = 0 ; Neutral
+		elseif moodRoll <= 85
+			moodID = 7 ; Puzzled
+		else
+			moodID = 6 ; Mild Surprise
+		endif
+	endif
+	SmoothSetExpression(act, moodID, strength, 0.75)
+EndFunction
 
 Function SetPhoneme(Actor act, Int mod1, Int str_dest, float modifier = 1.0, float speed = 0.75) global
 	if !act
@@ -279,7 +349,7 @@ Function resetMFGSmooth(Actor act) global
 	if !act 
 		return
 	endif
-	if !isInDialogue(act,false)
+	if !isInDialogue(act, false, MfgConsoleFuncExt.GetPlayerSpeechTarget())
 		MfgConsoleFuncExt.ResetMFG(act)
 	endif
 endfunction
@@ -289,6 +359,21 @@ Function resetPhonemesSmooth(Actor act) global
 		return
 	endif
 	MfgConsoleFuncExt.ResetPhonemes(act)
+endfunction
+
+Function resetModifiersSmooth(Actor act) global
+	if !act
+		return
+	endif
+	MfgConsoleFuncExt.ResetModifiers(act)
+endfunction
+
+Function resetExpressionsSmooth(Actor act) global
+	if !act
+		return
+	endif
+	;neutral expression
+	MfgConsoleFuncExt.SetExpression(act, 7, 100)
 endfunction
 
 Int Function Round(Float f) global

@@ -439,7 +439,7 @@ Function Yawn(Actor act) Global
 	CondiExp_util.SetModifier(act, 1, 75)
 	CondiExp_util.SetModifier(act, 6, 75)
 	CondiExp_util.SetModifier(act, 7, 75)
-	CondiExp_util.SetPhoneMe(act, 1,75)
+	CondiExp_util.SetPhoneMe(act, 1, 75)
 
 	int yawnduration = Utility.RandomInt(1,3)
 	if yawnduration == 1

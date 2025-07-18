@@ -62,6 +62,10 @@ int Stamina_B
 int Water_B
 int headache_B
 int restore
+int overrideTrauma
+int overrideCold
+int overrideDirt
+int overrideAroused
 int status
 int update
 int uninstall
@@ -286,12 +290,17 @@ Function Maintenance()
 	Phase_M = AddMenuOption("Phase", PhaseList[PhaseListIndex])
 
  	dirtyExprRegistered = AddTextOption("Dirty Expressions:", dirtyExpr.PhasesMale + dirtyExpr.PhasesFemale)
-	AddTextOptionST("TEST_EXPRESSIONS_STATE","Test Expression","GO", OPTION_FLAG_NONE)
+	AddTextOptionST("TEST_EXPRESSIONS_STATE", "Test Expression", "GO", OPTION_FLAG_NONE)
 
  	painExprRegistered = AddTextOption("Pain Expressions:", painExpr.PhasesMale + painExpr.PhasesFemale)
 	AddEmptyOption()
 	
 	randomExprRegistered = AddTextOption("Random Expressions:", randomExpr.PhasesMale + randomExpr.PhasesFemale)
+	AddEmptyOption()
+	overrideTrauma = AddToggleOption("Override Trauma Condition", go.traumaOverride)
+ 	overrideCold = AddToggleOption("Override Cold Condition", go.coldOverride)
+ 	overrideDirt = AddToggleOption("Override Dirty Condition", go.dirtOverride)
+ 	overrideAroused = AddToggleOption("Override Aroused Condition", go.arousalOverride)
 EndFunction
 
 Function ArousedModifiers()
@@ -483,6 +492,9 @@ EndEvent
 Event OnOptionSliderAccept(Int mcm_option, Float Value)
 	If (mcm_option == _update_interval_slider)
 		Condiexp_UpdateInterval.SetValue(Value)
+		If (Value > 0)
+			Go.OnUpdate()
+		EndIf
 		SetSliderOptionValue(mcm_option, Value, "{0}")
 	elseif (mcm_option == _update_interval_followers_slider)
 		Condiexp_FollowersUpdateInterval.SetValue(Value)
@@ -597,10 +609,10 @@ event OnOptionMenuAccept(int option, int index)
 		endif
 	endif
 
-If (option == ColdMethod_M)
+	If (option == ColdMethod_M)
 		ColdMethodindex = index
 		SetMenuOptionValue(coldmethod_M, coldmethodList[coldmethodindex])
-	if index == 0
+		if index == 0
 		;ColdMethodList[0] = "Vanilla - Snowing"
 		Condiexp_ColdMethod.SetValueInt(4)
 		elseif index == 1
@@ -615,17 +627,17 @@ If (option == ColdMethod_M)
 		else
 		;ColdMethodList[4] = "Automatic"
 			Condiexp_ColdMethod.SetValueInt(5)
-	endif
+		endif
 	_restart()
 	Notification("Restarted to apply Cold Detection option!")
-endif
+	endif
 
 EndEvent
 
 
 event OnOptionSelect(int option)
 
-if (option == Combat_B) && _isTG(Condiexp_GlobalCombat) == True
+	if (option == Combat_B) && _isTG(Condiexp_GlobalCombat) == True
 		SetToggleOptionValue(Combat_B, False)
 		Condiexp_GlobalCombat.SetValueInt(0)
 	elseif (option == Combat_B) && _isTG(Condiexp_GlobalCombat) == False
@@ -787,81 +799,108 @@ if (option == Combat_B) && _isTG(Condiexp_GlobalCombat) == True
 			ShowMessage("$CEE_G7")
 		endIf
 
+	elseif (option == overrideTrauma) && go.traumaOverride == True
+		SetToggleOptionValue(overrideTrauma, False)
+		go.traumaOverride = false
+	elseif (option == overrideTrauma) && go.traumaOverride == False
+		SetToggleOptionValue(overrideTrauma, True)
+		go.traumaOverride = True
+	
+	elseif (option == overrideAroused) && go.arousalOverride == True
+		SetToggleOptionValue(overrideAroused, False)
+		go.arousalOverride = false
+	elseif (option == overrideAroused) && go.arousalOverride == False
+		SetToggleOptionValue(overrideAroused, True)
+		go.arousalOverride = True
+
+	elseif (option == overrideDirt) && go.dirtOverride == True
+		SetToggleOptionValue(overrideDirt, False)
+		go.dirtOverride = false
+	elseif (option == overrideDirt) && go.dirtOverride == False
+		SetToggleOptionValue(overrideDirt, True)
+		go.dirtOverride = True
+
+	elseif (option == overrideCold) && go.coldOverride == True
+		SetToggleOptionValue(overrideCold, False)
+		go.coldOverride = false
+	elseif (option == overrideCold) && go.coldOverride == False
+		SetToggleOptionValue(overrideCold, True)
+		go.coldOverride = True
 endif
 
 endevent
 
 
 event OnOptionHighlight(int option) 
-if (option == EatingFastSlow_M) 
-	SetInfoText("$CEE_G8") 
-elseif (option == Combat_B)
-	SetInfoText("$CEE_G9") 
-elseif (option == Random_B)
-	SetInfoText("$CEE_G10")
-elseif (option == Cold_B)
-	SetInfoText("$CEE_G11") 
-elseif (option == Stamina_B)
-	SetInfoText("$CEE_G12") 
-elseif (option == Pain_B)
-	SetInfoText("$CEE_G13") 
-elseif (option == Drunk_B)
-	SetInfoText("$CEE_G14") 
-elseif (option == Skooma_B)
-	SetInfoText("$CEE_G15") 
-elseif (option == Clothes_B)
-	SetInfoText("$CEE_G16") 
-elseif (option == Sneaking_B)
-	SetInfoText("$CEE_G17") 
-elseif (option == Water_B)
-	SetInfoText("$CEE_G18") 
-elseif (option == restore)
-	SetInfoText("$CEE_G19") 
-elseif (option == uninstall)
-	SetInfoText("$CEE_G20")
-elseif (option == coldmethod_M)
-	SetInfoText("$CEE_G21")
-elseif (option == Update)
-	SetInfoText("$CEE_G22")
-elseif (option == Headache_B)
-	SetInfoText("$CEE_G23")
-elseif (option == Sounds_B)
-	SetInfoText("$CEE_G24")
-elseif (option == Trauma_B)
-	SetInfoText("$CEE_G25")
-elseif (option == Dirty_B)
-	SetInfoText("$CEE_G26")
-elseif (option == Aroused_B)
-	SetInfoText("$CEE_G27")
-elseif (option == Verbose_B)
-	SetInfoText("$CEE_G28")
-elseif (option == Followers_B)
-	SetInfoText("$CEE_G29")
-elseif (option == registerFollowers)
-	SetInfoText("$CEE_G30")
-elseif (option == _update_interval_followers_slider)
-	SetInfoText("$CEE_G31")
-elseif (option == _update_interval_slider)
-	SetInfoText("$CEE_G32")
-elseif (option == _expression_strength_slider)
-	SetInfoText("$CEE_G33")
-elseif (option == _modifier_strength_slider)
-	SetInfoText("$CEE_G34")
-elseif (option == _phoneme_strength_slider)
-	SetInfoText("$CEE_G35")	
-elseif (option == arousalChillyThreshold_slider || option == arousalFreezingThreshold_slider || option == arousalColdThreshold_slider || option == arousalRainThreshold_slider )
-	SetInfoText("Arousal thresholds for weather. Caps or decrease won't be applied if arousal is lower than threshold")
-elseif (option == arousalTraumaMinorThreshold_slider || option == arousalTraumaMajorThreshold_slider || option == arousalPainThreshold_slider )
-	SetInfoText("Arousal thresholds for pain or trauma. Caps or decrease won't be applied if arousal is lower than threshold")
-elseif (option == arousalHeadacheThreshold_slider || option == arousalSwimThreshold_slider)
-	SetInfoText("Arousal thresholds for misc conditions. Caps or decrease won't be applied if arousal is lower than threshold")
-elseif (option == arousalChilly_slider || option == arousalCold_slider || option == arousalFreezing_slider || option == arousalRain_slider)
-	SetInfoText("Arousal caps or decrease for weather. Arousal will be substracted or capped depending on SLA version")
-elseif (option == arousalPain_slider || option == arousalTraumaMinor_slider || option == arousalTraumaMajor_slider )
-	SetInfoText("Arousal caps or decrease for pain or trauma. Arousal will be substracted or capped depending on SLA version")
-elseif (option == arousalSwim_slider || option == arousalHeadache_slider)
-	SetInfoText("Arousal caps or decrease for misc conditions. Arousal will be substracted or capped depending on SLA version")
-endif
+  if (option == EatingFastSlow_M) 
+  	SetInfoText("$CEE_G8") 
+  elseif (option == Combat_B)
+  	SetInfoText("$CEE_G9") 
+  elseif (option == Random_B)
+  	SetInfoText("$CEE_G10")
+  elseif (option == Cold_B)
+  	SetInfoText("$CEE_G11") 
+  elseif (option == Stamina_B)
+  	SetInfoText("$CEE_G12") 
+  elseif (option == Pain_B)
+  	SetInfoText("$CEE_G13") 
+  elseif (option == Drunk_B)
+  	SetInfoText("$CEE_G14") 
+  elseif (option == Skooma_B)
+  	SetInfoText("$CEE_G15") 
+  elseif (option == Clothes_B)
+  	SetInfoText("$CEE_G16") 
+  elseif (option == Sneaking_B)
+  	SetInfoText("$CEE_G17") 
+  elseif (option == Water_B)
+  	SetInfoText("$CEE_G18") 
+  elseif (option == restore)
+  	SetInfoText("$CEE_G19") 
+  elseif (option == uninstall)
+  	SetInfoText("$CEE_G20")
+  elseif (option == coldmethod_M)
+  	SetInfoText("$CEE_G21")
+  elseif (option == Update)
+  	SetInfoText("$CEE_G22")
+  elseif (option == Headache_B)
+  	SetInfoText("$CEE_G23")
+  elseif (option == Sounds_B)
+  	SetInfoText("$CEE_G24")
+  elseif (option == Trauma_B)
+  	SetInfoText("$CEE_G25")
+  elseif (option == Dirty_B)
+  	SetInfoText("$CEE_G26")
+  elseif (option == Aroused_B)
+  	SetInfoText("$CEE_G27")
+  elseif (option == Verbose_B)
+  	SetInfoText("$CEE_G28")
+  elseif (option == Followers_B)
+  	SetInfoText("$CEE_G29")
+  elseif (option == registerFollowers)
+  	SetInfoText("$CEE_G30")
+  elseif (option == _update_interval_followers_slider)
+  	SetInfoText("$CEE_G31")
+  elseif (option == _update_interval_slider)
+  	SetInfoText("$CEE_G32")
+  elseif (option == _expression_strength_slider)
+  	SetInfoText("$CEE_G33")
+  elseif (option == _modifier_strength_slider)
+  	SetInfoText("$CEE_G34")
+  elseif (option == _phoneme_strength_slider)
+  	SetInfoText("$CEE_G35")	
+  elseif (option == arousalChillyThreshold_slider || option == arousalFreezingThreshold_slider || option == arousalColdThreshold_slider || option == arousalRainThreshold_slider )
+  	SetInfoText("Arousal thresholds for weather. Caps or decrease won't be applied if arousal is lower than threshold")
+  elseif (option == arousalTraumaMinorThreshold_slider || option == arousalTraumaMajorThreshold_slider || option == arousalPainThreshold_slider )
+  	SetInfoText("Arousal thresholds for pain or trauma. Caps or decrease won't be applied if arousal is lower than threshold")
+  elseif (option == arousalHeadacheThreshold_slider || option == arousalSwimThreshold_slider)
+  	SetInfoText("Arousal thresholds for misc conditions. Caps or decrease won't be applied if arousal is lower than threshold")
+  elseif (option == arousalChilly_slider || option == arousalCold_slider || option == arousalFreezing_slider || option == arousalRain_slider)
+  	SetInfoText("Arousal caps or decrease for weather. Arousal will be substracted or capped depending on SLA version")
+  elseif (option == arousalPain_slider || option == arousalTraumaMinor_slider || option == arousalTraumaMajor_slider )
+  	SetInfoText("Arousal caps or decrease for pain or trauma. Arousal will be substracted or capped depending on SLA version")
+  elseif (option == arousalSwim_slider || option == arousalHeadache_slider)
+  	SetInfoText("Arousal caps or decrease for misc conditions. Arousal will be substracted or capped depending on SLA version")
+  endif
 endevent
 
 event OnOptionKeyMapChange(int option, int keyCode, string conflictControl, string conflictName)
@@ -895,33 +934,33 @@ endEvent
 
 Function DetectRace()
 
-ActorBase PlayerBase = PlayerRef.GetActorBase()
+	ActorBase PlayerBase = PlayerRef.GetActorBase()
 
-if Condiexp_Sounds.GetValue() == 0
-		return
-endif
-
-If PlayerBase.GetSex() == 0
-
-	if PlayerRef.GetRace() == KhajiitRace || PlayerRef.GetRace() == KhajiitRaceVampire
-		Condiexp_Sounds.SetValueInt(1)
-
-	elseif PlayerRef.GetRace() == OrcRace || PlayerRef.GetRace() == OrcRaceVampire
-		Condiexp_Sounds.SetValueInt(2)
-	else
-		Condiexp_Sounds.SetValueInt(3)
+	if Condiexp_Sounds.GetValue() == 0
+			return
 	endif
-else
 
-	if PlayerRef.GetRace() == KhajiitRace || PlayerRef.GetRace() == KhajiitRaceVampire
-		Condiexp_Sounds.SetValueInt(4)
+	If PlayerBase.GetSex() == 0
 
-	elseif PlayerRef.GetRace() == OrcRace || PlayerRef.GetRace() == OrcRaceVampire
-		Condiexp_Sounds.SetValueInt(5)
+		if PlayerRef.GetRace() == KhajiitRace || PlayerRef.GetRace() == KhajiitRaceVampire
+			Condiexp_Sounds.SetValueInt(1)
+
+		elseif PlayerRef.GetRace() == OrcRace || PlayerRef.GetRace() == OrcRaceVampire
+			Condiexp_Sounds.SetValueInt(2)
+		else
+			Condiexp_Sounds.SetValueInt(3)
+		endif
 	else
-		Condiexp_Sounds.SetValueInt(6)
+
+		if PlayerRef.GetRace() == KhajiitRace || PlayerRef.GetRace() == KhajiitRaceVampire
+			Condiexp_Sounds.SetValueInt(4)
+
+		elseif PlayerRef.GetRace() == OrcRace || PlayerRef.GetRace() == OrcRaceVampire
+			Condiexp_Sounds.SetValueInt(5)
+		else
+			Condiexp_Sounds.SetValueInt(6)
+		endif
 	endif
-endif
 endfunction
 
 int Function _getFlag(Bool cond = true)

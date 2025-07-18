@@ -56,7 +56,8 @@ Event OnUpdate()
 		act = None
 		Return
 	EndIf
-;restart flow for player reference only
+	Actor playerSpeechTargetAct = MfgConsoleFuncExt.GetPlayerSpeechTarget()
+	;restart flow for player reference only
     If act == PlayerRef
             if firstRun
                     lastPosX = PlayerRef.GetPositionX()
@@ -71,7 +72,7 @@ Event OnUpdate()
                     float dy = PlayerRef.GetPositionY() - lastPosY
                     float dz = PlayerRef.GetPositionZ() - lastPosZ
                     float distMoved = Math.Sqrt(dx*dx + dy*dy + dz*dz)
-					bool needRestart = distMoved > restartDistance  && !isInDialogueMFG(act) && !sm.checkIfModShouldBeSuspended(act) 
+					bool needRestart = distMoved > restartDistance  && !isInDialogueMFG(act) && !sm.checkIfModShouldBeSuspendedForNPCs(act, playerSpeechTargetAct) 
                     if needRestart
                             verbose(act, "NPCsQuest: refresh" , verboseInt)
                             firstRun = true
@@ -105,13 +106,22 @@ Event OnUpdate()
 		distanceCounter = 6
 	EndIf
 
-	If (sm.checkIfModShouldBeSuspended(act))
+	bool inDialogue = isInDialogue(act, false, playerSpeechTargetAct)
+	If (sm.checkIfModShouldBeSuspendedForNPCs(act, playerSpeechTargetAct))
 		trace(act, "Suspending on condition" , verboseInt)
+		sm.mfgCleanupWithContext(act, inDialogue)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
 		return
 	endif
 	
-	resetMFGSmooth(act)
+	if (isInDialogue(act, act == PlayerRef, playerSpeechTargetAct))
+	 	log("CondiExp_StartMod: actor is in dialogue. Will play dialog expressions for actor:" + act.GetLeveledActorBase().GetName())
+		RelationshipRankExpression(act,playerSpeechTargetAct)
+	 	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
+		return
+	endif
+
+	sm.mfgCleanupWithContext(act, inDialogue)
 	bool isMale = (act.GetLeveledActorBase().GetSex() == 0)
 
 	If (act.IsDead())

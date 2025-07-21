@@ -47,12 +47,10 @@ bool function isArousedEnabled()
 endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	; keep script running
-	Utility.Wait(1)
 	;either 0 or aroused level > Condiexp_MinAroused
 	aroused()
 	;verbose(akTarget, "Aroused: OnEffectFinish", Condiexp_Verbose.GetValueInt())
-	Utility.Wait(2)
+	Utility.Wait(1)
 	config.currentExpression = ""
 	playing = false
 	Condiexp_CurrentlyBusy.SetValueInt(0)

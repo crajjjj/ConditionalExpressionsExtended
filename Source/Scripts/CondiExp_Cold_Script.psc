@@ -14,19 +14,20 @@ GlobalVariable Property Condiexp_Verbose Auto
 int coldExpression = 0 
  
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-	Condiexp_CurrentlyBusy.SetValueInt(1)
-	;verbose(akTarget, "Cold: OnEffectstart", Condiexp_Verbose.GetValueInt())
+    Condiexp_CurrentlyBusy.SetValueInt(1)
+    trace_line("CondiExp_Cold: OnEffectStart", Condiexp_Verbose.GetValueInt())
 	config.currentExpression="Cold"
-	Int Seconds =  RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1, 3)
-	Utility.Wait(Seconds)
-	ShowExpression()
 EndEvent
 
 Function ShowExpression()
 	verbose(PlayerRef, "Cold", Condiexp_Verbose.GetValueInt())
-	CondiExp_util.SmoothSetExpression(PlayerRef,1,50)
-	while isCold()
+	CondiExp_util.SmoothSetExpression(PlayerRef,1, 90)
+    float  elapsed   = 0.0               ; how long the loop has been running
+    float  maxTime   = 15.0              ; hard cap (seconds) — tweak as you like
+
+	while isCold() && (elapsed < maxTime)
 		Utility.Wait(0.2)
+		elapsed += 0.2                   ; keep track of time spent
 		 ; cold intro
 		if (coldExpression <= 65)
 			if (coldExpression < 0)
@@ -56,20 +57,9 @@ Function ShowExpression()
 			CondiExp_util.SetPhonemeFast(PlayerRef, 0,15)
 			Utility.Wait(0.05)
 			CondiExp_util.SetPhonemeFast(PlayerRef, 0,3)
+			elapsed += 0.5                   ; keep track of time spent
 		endif
 	endwhile
-	
-	;cold outro
-	while (coldExpression >= 0)
-		if (coldExpression > 65)
-			coldExpression = 65
-		endif
-		CondiExp_util.SetModifierFast(PlayerRef, 12, coldExpression)
-		CondiExp_util.SetModifierFast(PlayerRef, 13, coldExpression)
-		CondiExp_util.SetModifierFast(PlayerRef, 4, coldExpression)
-		coldExpression  -= 5
-	endwhile
-	; if the outro is done we clean up and stop
 endFunction
 
 bool Function isCold()
@@ -89,30 +79,44 @@ bool Function isCold()
 	else
 		return true
 	endif
+endfunction
 
-	
+bool Function isHardStop()
+	bool isImmediateEffect = Condiexp_CurrentlyBusyImmediate.GetValueInt() != 0 
+    bool isSuspended = Condiexp_ModSuspended.GetValueInt() != 0
+    
+	If isImmediateEffect || isInDialogueMFG(PlayerRef) || isSuspended
+		log("CondiExp_Cold: hard stop")
+		return true
+	endif
+
+    return false
 endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	;OnEffectFinish is called, this script instance will only remain existing so long this function hasn't ended
-	;a function might be still going so we first wait for it
+    trace_line("CondiExp_Cold: OnEffectFinish - starting", Condiexp_Verbose.GetValueInt())
+    Int Seconds = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1, 3)
+	Utility.Wait(Seconds)
+    ShowExpression()
+	; now we start/continue the outro sequence if not hard stop
+    if isHardStop()
+        resetMFGSmooth(PlayerRef)
+    else
+        trace_line("Cold: cold outro", Condiexp_Verbose.GetValueInt())
+	    while (coldExpression >= 0)
+	    	if (coldExpression > 65)
+	    		coldExpression = 65
+	    	endif
+	    	CondiExp_util.SetModifierFast(PlayerRef, 12, coldExpression)
+	    	CondiExp_util.SetModifierFast(PlayerRef, 13, coldExpression)
+	    	CondiExp_util.SetModifierFast(PlayerRef, 4, coldExpression)
+	    	coldExpression  -= 5
+	    	Utility.Wait(0.5) ; !!!
+	    endwhile
+	    resetMFGSmooth(PlayerRef)
+    endif
 
-	; now we start/continue the outro sequence
-	while (coldExpression >= 0)
-		if (coldExpression > 65)
-			coldExpression = 65
-		endif
-		CondiExp_util.SetModifierFast(PlayerRef, 12, coldExpression)
-		CondiExp_util.SetModifierFast(PlayerRef, 13, coldExpression)
-		CondiExp_util.SetModifierFast(PlayerRef, 4, coldExpression)
-		coldExpression  -= 5
-		Utility.Wait(0.5) ; !!!
-	endwhile
-	Utility.Wait(1)
-	trace(PlayerRef, "Cold: OnEffectFinish", Condiexp_Verbose.GetValueInt())
-	If Condiexp_ModSuspended.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
-		resetMFGSmooth(PlayerRef)
-	endif
+	trace_line("Cold: OnEffectFinish done", Condiexp_Verbose.GetValueInt())
 	config.currentExpression=""
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent

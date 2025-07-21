@@ -258,6 +258,9 @@ Function RandomEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression e
 	Endif
 EndFunction
 
+;=============================================================
+; Relationship‑driven facial expression selector
+;=============================================================
 Function RelationshipRankEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression expr, int relationshipRank) Global
 	;
 	;int verboseInt = config.Condiexp_Verbose.GetValueInt()
@@ -265,15 +268,20 @@ Function RelationshipRankEmotion(Actor act, condiexp_MCM config, CondiExp_BaseEx
 
 	int exprType = 0 ; 0 = Neutral, 1 = Friendly, 2 = Hostile
 	int roll = Utility.RandomInt(1, 100)
+	
+	int FRIENDLY_THRESHOLD   = 2        ; >= this → friendly
+    int HOSTILE_THRESHOLD    = -2       ; <= this → hostile
+    int FRIENDLY_CHANCE_PCT  = 70
+    int HOSTILE_CHANCE_PCT   = 70
 
-	if relationshipRank >= 2
-		if roll <= 70
+	if relationshipRank >= FRIENDLY_THRESHOLD
+		if roll <= FRIENDLY_CHANCE_PCT
 			exprType = 1 ; friendly
 		else
 			exprType = 0 ; neutral
 		endif
-	elseif relationshipRank <= -2
-		if roll <= 70
+	elseif relationshipRank <= HOSTILE_THRESHOLD
+		if roll <= HOSTILE_CHANCE_PCT
 			exprType = 2 ; hostile
 		else
 			exprType = 0 ; neutral

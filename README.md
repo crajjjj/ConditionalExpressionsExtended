@@ -1,23 +1,25 @@
 # ConditionalExpressionsExtended
 
-This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.27) with new features and focus on compatibility
+This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.28) with new features and focus on compatibility
  
 ## What was changed?
 
-- Added followers support (Up to 10 followers)
-- Added SunhelmSurvival support for cold expressions
-- Added trauma (pain) expressions for diseases. There's a chance also for a sobbing sound. (can be disabled in mcm). Customisable
-- Added sad expressions based on dirtiness level (Dirt&Blood || Keep it clean || Bathing in Skyrim are supported). Customisable
-- Added aroused expressions based on arousal level (OSL Aroused). Customisable
-- Smoother exression changes
-- Code refactored - random script is no longer used for condition checking. Cold scripts simplified.
-- SL compatibility is built-in via sl factions (osmelmc patch).
-- Ostim compatibility via events
-- Compatibility with DD and Toys wearables.
-- Dhlp suspend/resume events are respected. Mod is paused till respective scenarios are finished. No more face twitching. E.g. compatible with "The Trappings of Fate" mod.
-- Compatibility with apropos2 w&t or ZAP slave faction condition for trauma expressions
-- Added arousal cap feature with different conditions.Examples - if it's raining arousal capped by 50
-- Json based customisations for expressions
+What's New in CEE?  
+  
+NPC Support: Up to 16 nearby NPCs with relationship-based emotional logic  
+Sunhelm Survival Integration: Cold shivers, food/alcohol detection  
+Trauma Expressions: Pain animations for disease effects; optional sobbing sounds  
+Dirt-based Sadness: Works with Dirt & Blood, Keep It Clean, Bathing in Skyrim  
+Aroused Expressions: Based on arousal level; compatible with OSL Aroused  
+Smooth Expression Transitions: Using native SKSE calls — no twitching  
+Expression Cap (OSL-Aroused-aware): Limits visual exposure above arousal thresholds; MCM configurable  
+Follower Hotkeys: Pause mod or register followers on the fly  
+Localized MCM Menu  
+Fully JSON-Driven Expressions: Define your own emotion presets  
+Respect for Scene Events: Dhlp suspend/resume prevents facial glitches  
+Animation Framework Compatibility  
+Wearable-Friendly: Designed to work with helmets, masks, gags and more  
+Code Overhaul: Faster, leaner – no random scripts or legacy checks  
  
 ## Hard dependencies
 
@@ -67,3 +69,10 @@ SL animations (compatible) - sl faction check (osmel patch + additional checks)
 Expressive Facegen Morphs   (compatible)
 Expressive Facial Animation (Male/Female)  (compatible)
 Mods that use dhlp events (compatible) 
+
+Dev notes:
+Working with ability or constant effect is a pain in the ass
+1) The effect restarts often if not blocked via external variable. If blocked - it exits immediately with oneffectfinish 
+2) Doing internal immediate script checks results in freezing
+3) If not blocked - occasionaly can restart in a separate instance
+The only way to reliably work is via OnEffectFinish - basically treating effect as a one time trigger.

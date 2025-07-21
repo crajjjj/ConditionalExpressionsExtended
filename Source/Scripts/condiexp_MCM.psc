@@ -492,9 +492,6 @@ EndEvent
 Event OnOptionSliderAccept(Int mcm_option, Float Value)
 	If (mcm_option == _update_interval_slider)
 		Condiexp_UpdateInterval.SetValue(Value)
-		If (Value > 0)
-			Go.OnUpdate()
-		EndIf
 		SetSliderOptionValue(mcm_option, Value, "{0}")
 	elseif (mcm_option == _update_interval_followers_slider)
 		Condiexp_FollowersUpdateInterval.SetValue(Value)

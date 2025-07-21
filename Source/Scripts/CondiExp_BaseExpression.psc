@@ -102,12 +102,13 @@ function _ApplyPresetFloats(Actor ActorRef, float[] Preset, int exprPower)
 	float phStrModifier = Condiexp_PhonemeStr.GetValue()
 	float randomSpeed = Utility.RandomFloat(0.65, 1.0)
 	bool openMouth = false
-	if CondiExp_util.isInDialogueMFG(ActorRef)
-		trace(ActorRef,  Name + " .Skipping phonemes", Condiexp_Verbose.GetValueInt())
-		openMouth = true
+	if !CondiExp_util.isInDialogueMFG(ActorRef)
+		CondiExp_util.ApplyExpressionPreset(ActorRef, Preset, openMouth, exprPower,  exprStrModifier,  modStrModifier,  phStrModifier, randomSpeed)
+	else
+		trace(ActorRef,  Name + " .Skipping cause dialogue", Condiexp_Verbose.GetValueInt())
 		return
 	endif
-	CondiExp_util.ApplyExpressionPreset(ActorRef, Preset, openMouth, exprPower,  exprStrModifier,  modStrModifier,  phStrModifier, randomSpeed)
+	
 endFunction
 
 

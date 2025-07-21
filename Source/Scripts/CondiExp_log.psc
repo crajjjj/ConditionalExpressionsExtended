@@ -42,9 +42,9 @@ Function trace(Actor act, String msg, Int enabled = 0) Global
 	;log(msg,aiPriority)
 	If (enabled == 1)
 		if act
-			msg = "[CondiExp] (Actor:"+ act.GetLeveledActorBase().GetName() +") " + msg
+			msg = "(Actor:"+ act.GetLeveledActorBase().GetName() +") " + msg
 		else
-			msg = "[CondiExp] (Actor: None) " + msg
+			msg = "(Actor: None) " + msg
 		endif
 		log(msg)
 	EndIf
@@ -53,7 +53,6 @@ EndFunction
 Function trace_line(String msg, Int enabled = 0) Global 
 	;log(msg,aiPriority)
 	If (enabled == 1)
-		msg = "[CondiExp]" + msg
 		log(msg)
 	EndIf
 EndFunction

@@ -26,9 +26,11 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 	RegisterForSingleUpdate(1)
 	playing = true
 	config.currentExpression = "Random"
+	trace(PlayerRef, "Random-OnEffectStart", Condiexp_Verbose.GetValueInt())
 EndEvent
 
 Event OnUpdate()
+	trace(PlayerRef, "Random-OnUpdate", Condiexp_Verbose.GetValueInt())
 	config.currentExpression = "Random"
 	If isRandomEnabled()
    		PlayRandomExpression(PlayerRef, config, randomExpr)
@@ -54,7 +56,7 @@ bool function isRandomEnabled()
 	enabled = enabled && Condiexp_ModSuspended.GetValueInt() == 0 && Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
 	enabled = enabled && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning() && !isInDialogueMFG(PlayerRef)
 	enabled = enabled && playing
-	return enabled 
+	return enabled
 endfunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)

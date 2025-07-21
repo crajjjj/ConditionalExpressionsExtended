@@ -10,15 +10,10 @@ GlobalVariable Property Condiexp_CurrentlyBusyImmediate Auto
 condiexp_MCM Property config auto
 ;Condiexp_CurrentlyBusyImmediate is a CK guard for pain/fatigue/mana... expr
 Event OnEffectStart(Actor akTarget, Actor akCaster)
-    int lock = Condiexp_CurrentlyBusyImmediate.GetValueInt() as int
-    lock = lock + 1
-    Condiexp_CurrentlyBusyImmediate.SetValueInt(lock)
     Condiexp_CurrentlyBusy.SetValueInt(1)
+    Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     config.currentExpression = "Drunk"
-    if lock == 1
-        Drunk()
-    endif
-    trace(PlayerRef, "Drunk: OnEffectStart.Lock:" + lock, config.Condiexp_Verbose.GetValueInt())
+    trace(PlayerRef, "Drunk: OnEffectStart.", config.Condiexp_Verbose.GetValueInt())
 EndEvent
 
 Function Drunk()
@@ -27,18 +22,13 @@ Function Drunk()
     PlayDrunkExpression(PlayerRef)
     PlayDrunkExpression(PlayerRef)
     trace(PlayerRef, "Drunk: Ending", config.Condiexp_Verbose.GetValueInt())
-    CondiExp_PlayerIsDrunk.SetValueInt(0)
-    ; RegisterForSingleUpdate(60.0)
 EndFunction
 
-Event OnUpdate()
-    trace(PlayerRef, "Drunk: OnUpdate", config.Condiexp_Verbose.GetValueInt())
-    CondiExp_PlayerIsDrunk.SetValueInt(0)
-EndEvent
-
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    trace(PlayerRef, "Drunk: OnEffectFinish ", config.Condiexp_Verbose.GetValueInt())
+    trace(PlayerRef, "Drunk: OnEffectFinish - starting", config.Condiexp_Verbose.GetValueInt())
+    Drunk()
     config.currentExpression = ""
+    CondiExp_PlayerIsDrunk.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 EndEvent

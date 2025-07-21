@@ -371,34 +371,52 @@ Bool function checkIfModShouldBeSuspendedForNPCs(Actor act, Actor playerSpeechTa
 endfunction
 
 function mfgCleanupWithContext(Actor act, bool inDialogue)
-	If (!act || act.IsDead())
-		return
-	EndIf
-	
-	bool cleanPhonemes = true
-	bool cleanModifiers = true
-	bool cleanExpressions = true
-	If (pctracking.checkIfModShouldBeSuspendedByWearables(act))
-		cleanPhonemes = false
-	EndIf
-	If inDialogue
-		cleanExpressions = false
-	EndIf
+    ; ▸ Bail if actor is invalid
+    if (!act || act.IsDead())
+        return
+    endif
 
-	If (cleanPhonemes && cleanModifiers && cleanExpressions)
-		resetMFGSmooth(act)
-	Else
-		If (cleanPhonemes)
-			resetPhonemesSmooth(act)
-		EndIf
-		If (cleanModifiers)
-			resetModifiersSmooth(act)
-		EndIf
-		if (cleanExpressions)
-			resetExpressionsSmooth(act)
-			act.ClearExpressionOverride()
-		endif
-	EndIf
+    ; ------------------------------------------------------------------
+    ; Decide what to wipe
+    bool cleanPhonemes     = true
+    bool cleanModifiers    = true
+    bool cleanExpressions  = true
+
+    bool gagged = pctracking.checkIfModShouldBeSuspendedByWearables(act)
+    if (gagged)
+        ; Keep the mouth closed – don’t touch phonemes *or* expression override
+        cleanPhonemes    = false
+        cleanExpressions = false
+    endif
+
+    ; Dialogue: we *do* want a blank slate unless gag suppresses it
+    if (inDialogue && !gagged)
+        cleanExpressions = true
+    endif
+    ; ------------------------------------------------------------------
+
+    ; ▸ Nothing to do?  Exit early
+    if (!cleanPhonemes && !cleanModifiers && !cleanExpressions)
+        return
+    endif
+
+    ; ▸ All-in-one wipe is cheapest
+    if (cleanPhonemes && cleanModifiers && cleanExpressions)
+        resetMFGSmooth(act)
+        return
+    endif
+
+    ; ▸ Selective cleanup
+    if (cleanPhonemes)
+        resetPhonemesSmooth(act)
+    endif
+    if (cleanModifiers)
+        resetModifiersSmooth(act)
+    endif
+    if (cleanExpressions)
+        resetExpressionsSmooth(act)
+        act.ClearExpressionOverride() ; only if we really wiped expressions
+    endif
 endfunction
 
 int function getColdStatus(Actor act )

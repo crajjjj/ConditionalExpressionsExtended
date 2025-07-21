@@ -24,7 +24,6 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function Angry()
-   
     RegisterForSingleUpdate(1)
 EndFunction
 

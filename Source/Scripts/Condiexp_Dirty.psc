@@ -44,7 +44,7 @@ Function dirty()
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-	Utility.Wait(1)
+	trace_line("CondiExp_Dirty: OnEffectFinish - starting", Condiexp_Verbose.GetValueInt())
 	dirty()
 	;verbose(PlayerRef, "Dirty: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	config.currentExpression = ""

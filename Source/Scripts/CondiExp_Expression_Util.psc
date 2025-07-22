@@ -261,7 +261,7 @@ EndFunction
 ;=============================================================
 ; Relationship‑driven facial expression selector
 ;=============================================================
-Function RelationshipRankEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression expr, int relationshipRank) Global
+Function RelationshipRankEmotion(Actor act, condiexp_MCM config, CondiExp_BaseExpression expr, int relationshipRank, bool mouthOpen) Global
 	;
 	;int verboseInt = config.Condiexp_Verbose.GetValueInt()
 	;verbose(act, "Relationship rank: " + rel, verboseInt)
@@ -294,23 +294,45 @@ Function RelationshipRankEmotion(Actor act, condiexp_MCM config, CondiExp_BaseEx
 		; FRIENDLY expressions
 		int mood = Utility.RandomInt(1, 6)
 		if mood == 1
-			Smile(Utility.RandomInt(25, 60), act)
+			If (!mouthOpen)
+				Smile(Utility.RandomInt(25, 60), act)
+				Else
+				Happy(Utility.RandomInt(25, 60), act)
+			EndIf
 		elseif mood == 2
 			Happy(Utility.RandomInt(25, 60), act)
 		elseif mood == 3
-			BrowsUpSmile(Utility.RandomInt(30, 50), act)
+			If (!mouthOpen)
+				BrowsUpSmile(Utility.RandomInt(30, 50), act)
+			Else
+				BrowsUp(act)
+			EndIf
 		elseif mood == 4
-			Smile(35, act)
-			LookLeft(50, act)
+			If (!mouthOpen)
+				Smile(35, act)
+				LookLeft(50, act)
+			Else
+				Happy(Utility.RandomInt(25, 60), act)
+				LookLeft(50, act)
+			EndIf
 		elseif mood == 5
-			BrowsUpSmile(45, act)
-			Squint(act)
+			If (!mouthOpen)
+				BrowsUpSmile(45, act)
+				Squint(act)
+			Else
+				BrowsUp(act)
+				Squint(act)
+			EndIf
 		elseif mood == 6
-			LookLeft(40, act)
-			LookRight(40, act)
-			Smile(25, act)
+			If (!mouthOpen)
+				LookLeft(40, act)
+				LookRight(40, act)
+				Smile(25, act)
+			Else
+				LookLeft(40, act)
+				LookRight(40, act)
+			EndIf
 		endif
-
 	elseif exprType == 2
 		; HOSTILE expressions
 		int mood = Utility.RandomInt(1, 6)
@@ -337,7 +359,12 @@ Function RelationshipRankEmotion(Actor act, condiexp_MCM config, CondiExp_BaseEx
 		if mood == 1
 			Puzzled(Utility.RandomInt(25, 50), act, 4.0)
 		elseif mood == 2
-			Thinking(Utility.RandomInt(15, 50), act)
+			If (!mouthOpen)
+				Thinking(Utility.RandomInt(15, 50), act)
+			Else
+				LookLeft(40, act)
+				LookRight(40, act)
+			EndIf
 		elseif mood == 3
 			LookLeft(Utility.RandomInt(40, 70), act)
 		elseif mood == 4
@@ -346,8 +373,12 @@ Function RelationshipRankEmotion(Actor act, condiexp_MCM config, CondiExp_BaseEx
 			Squint(act)
 			LookLeft(25, act)
 		elseif mood == 6
-			Thinking(30, act)
-			BrowsUp(act)
+			If (!mouthOpen)
+				Thinking(30, act)
+				BrowsUp(act)
+			Else
+				Puzzled(Utility.RandomInt(25, 50), act, 4.0)
+			EndIf
 		elseif mood == 7
 			if Utility.RandomInt(0, 1) == 0
   			 LookLeft(35, act)

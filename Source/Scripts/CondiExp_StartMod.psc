@@ -111,6 +111,9 @@ Quest ActorsQuest
 Quest sexlab
 ;Zaz slave faction
 Faction zbfFactionSlave
+Keyword zbfWornGag
+Keyword zbfEffectOpenMouth
+
 ;Devious Devices
 MagicEffect vZadGagEffect
 Keyword zad_DeviousGag
@@ -167,6 +170,21 @@ function init()
 	if zbfFactionSlave
 		log("CondiExp_StartMod: Found ZaZAnimationPack: " + zbfFactionSlave.GetName() )
 	endif
+
+	if !zbfWornGag && isZaZReady() 
+		zbfWornGag = Game.GetFormFromFile(0x008A4D, "ZaZAnimationPack.esm") as Keyword 
+	endif
+	if zbfWornGag
+		log("CondiExp_StartMod: Found ZaZAnimationPack: " + zbfWornGag.GetName() )
+	endif
+
+	if !zbfEffectOpenMouth && isZaZReady() 
+		zbfEffectOpenMouth = Game.GetFormFromFile(0x008A35, "ZaZAnimationPack.esm") as Keyword 
+	endif
+	if zbfEffectOpenMouth
+		log("CondiExp_Tracking: Found ZaZAnimationPack: " + zbfEffectOpenMouth.GetName() )
+	endif
+
 	if !zad_DeviousGag && isDDassetsReady()
 		zad_DeviousGag = Game.GetFormFromFile(0x007EB8, "Devious Devices - Assets.esm") as Keyword 
 	endif
@@ -281,7 +299,8 @@ function OnUpdateExecute(Actor act)
 			log("CondiExp_StartMod: suspended according to conditions check")
 			Condiexp_ModSuspended.SetValueInt(1)
 			bool inDialogue = isInDialogue(act, act == PlayerRef, playerSpeechTargetAct)
-			mfgCleanupWithContext(act, inDialogue)
+			bool gagged = pctracking.checkIfModShouldBeSuspendedByWearables(act)
+			mfgCleanup(act, inDialogue, gagged)
 			Condiexp_CurrentlyBusy.SetValueInt(0)
 			Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
 		endif
@@ -368,55 +387,6 @@ Bool function checkIfModShouldBeSuspendedForNPCs(Actor act, Actor playerSpeechTa
 	 	return true
 	 endif
 	return false
-endfunction
-
-function mfgCleanupWithContext(Actor act, bool inDialogue)
-    ; ▸ Bail if actor is invalid
-    if (!act || act.IsDead())
-        return
-    endif
-
-    ; ------------------------------------------------------------------
-    ; Decide what to wipe
-    bool cleanPhonemes     = true
-    bool cleanModifiers    = true
-    bool cleanExpressions  = true
-
-    bool gagged = pctracking.checkIfModShouldBeSuspendedByWearables(act)
-    if (gagged)
-        ; Keep the mouth closed – don’t touch phonemes *or* expression override
-        cleanPhonemes    = false
-        cleanExpressions = false
-    endif
-
-    ; Dialogue: we *do* want a blank slate unless gag suppresses it
-    if (inDialogue && !gagged)
-        cleanExpressions = true
-    endif
-    ; ------------------------------------------------------------------
-
-    ; ▸ Nothing to do?  Exit early
-    if (!cleanPhonemes && !cleanModifiers && !cleanExpressions)
-        return
-    endif
-
-    ; ▸ All-in-one wipe is cheapest
-    if (cleanPhonemes && cleanModifiers && cleanExpressions)
-        resetMFGSmooth(act)
-        return
-    endif
-
-    ; ▸ Selective cleanup
-    if (cleanPhonemes)
-        resetPhonemesSmooth(act)
-    endif
-    if (cleanModifiers)
-        resetModifiersSmooth(act)
-    endif
-    if (cleanExpressions)
-        resetExpressionsSmooth(act)
-        act.ClearExpressionOverride() ; only if we really wiped expressions
-    endif
 endfunction
 
 int function getColdStatus(Actor act )
@@ -706,11 +676,14 @@ EndEvent
 
 Function NewRace()
 	ActorBase PlayerBase = PlayerRef.GetActorBase()
+	
+	if Condiexp_Sounds.GetValue() == 0
+			return
+	endif
 
 	If PlayerBase.GetSex() == 0
 		if PlayerRef.GetRace() == KhajiitRace || PlayerRef.GetRace() == KhajiitRaceVampire
 			Condiexp_Sounds.SetValueInt(1)
-
 		elseif PlayerRef.GetRace() == OrcRace || PlayerRef.GetRace() == OrcRaceVampire
 			Condiexp_Sounds.SetValueInt(2)
 		else
@@ -719,7 +692,6 @@ Function NewRace()
 	else
 		if PlayerRef.GetRace() == KhajiitRace || PlayerRef.GetRace() == KhajiitRaceVampire
 			Condiexp_Sounds.SetValueInt(4)
-
 		elseif PlayerRef.GetRace() == OrcRace || PlayerRef.GetRace() == OrcRaceVampire
 			Condiexp_Sounds.SetValueInt(5)
 		else

@@ -107,22 +107,30 @@ Event OnUpdate()
 	EndIf
 
 	bool inDialogue = isInDialogue(act, false, playerSpeechTargetAct)
+	bool mouthOpen = sm.pctracking.checkMouthWearable(act)
+	
 	If (sm.checkIfModShouldBeSuspendedForNPCs(act, playerSpeechTargetAct))
 		trace(act, "Suspending on condition" , verboseInt)
-		sm.mfgCleanupWithContext(act, inDialogue)
+		mfgCleanup(act, inDialogue, mouthOpen)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagBig)
 		return
 	endif
-
-	sm.mfgCleanupWithContext(act, inDialogue)
+	If (mouthOpen)
+		trace(act, " is gagged" , verboseInt)
+	EndIf
+		
+	;trace(act, "Followup" , verboseInt)
+	mfgCleanup(act, inDialogue, mouthOpen)
 	bool isMale = (act.GetLeveledActorBase().GetSex() == 0)
 
 	If (act.IsDead())
 		If (RandomInt(0, 1))
 			SmoothSetModifier(act, 6, 7, RandomInt(80, 100))
 			SmoothSetModifier(act, 11, -1, 100)
-			SmoothSetPhoneme(act, 2, 50)
-			SmoothSetPhoneme(act, 11, 100)
+			If (!mouthOpen)
+				SmoothSetPhoneme(act, 2, 50)
+				SmoothSetPhoneme(act, 11, 100)
+			EndIf
 			SmoothSetModifier(act, 0, 1, RandomInt(20, 50))
 		Else
 			SmoothSetModifier(act,4, 5, RandomInt(0, 100))
@@ -157,12 +165,12 @@ Event OnUpdate()
 		trace(act, "Anger", verboseInt)
 		SmoothSetExpression(act, 15, RandomInt(35, 80))
 		Utility.Wait(5)
-		resetMFGSmooth(act)
+		mfgCleanup(act, inDialogue, mouthOpen)
 		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 		Return
 	EndIf
 	
-	If (act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalStamina.GetValueInt() == 1)
+	If (act.GetActorValuePercentage("Stamina") < 0.6 && act.GetActorValuePercentage("Health") >= 0.40 && config.Condiexp_GlobalStamina.GetValueInt() == 1 && !mouthOpen)
 		;random skip 20%
 		Int randomSkip = Utility.RandomInt(1, 10)
 		if randomSkip > 2
@@ -183,7 +191,7 @@ Event OnUpdate()
 		If (trauma > 0)
 			traumaPlayed = PlayTraumaExpression( act, trauma, config.traumaExpr)
 			if traumaPlayed
-				resetMFGSmooth(act)
+				mfgCleanup(act, inDialogue, mouthOpen)
 				RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 				Return
 			endif
@@ -196,7 +204,7 @@ Event OnUpdate()
 		dirtyPlayed = PlayDirtyExpression( act, dirty, config.dirtyExpr)
 		if dirtyPlayed
 			Utility.Wait(5)
-			resetMFGSmooth(act)
+			mfgCleanup(act, inDialogue, mouthOpen)
 			RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 			Return
 		endif
@@ -211,7 +219,7 @@ Event OnUpdate()
 				Utility.Wait(2)
 				resetPhonemesSmooth(act)
 				Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 6))
-				resetMFGSmooth(act)
+				mfgCleanup(act, inDialogue, mouthOpen)
 				RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())
 				Return
 			endif
@@ -220,10 +228,10 @@ Event OnUpdate()
 	
 	If (config.Condiexp_GlobalRandom.GetValueInt() == 1)
 		int rel = act.GetRelationshipRank(PlayerRef)
-		RelationshipRankEmotion(act, config, config.randomExpr,rel)
+		RelationshipRankEmotion(act, config, config.randomExpr, rel, mouthOpen)
 		Int Seconds = RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 1, 5)
 		Utility.Wait(Seconds)
-		resetMFGSmooth(act)
+		mfgCleanup(act, inDialogue, mouthOpen)
 	EndIf
 	
 	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt())

@@ -11,7 +11,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 201004
+    Return 201005
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -21,7 +21,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "2.1.4"
+    Return "2.1.5"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -267,6 +267,55 @@ bool Function isInDialogueMFG(Actor act) global
 		return false
 	endif
 	return MfgConsoleFuncExt.isInDialogue(act)
+endfunction
+
+function mfgCleanup(Actor targetAct, bool inDialogue, bool mouthOpen) Global
+    ; ▸ Bail if actor is invalid
+    if (!targetAct || targetAct.IsDead())
+        return
+    endif
+
+    ; ------------------------------------------------------------------
+    ; Decide what to wipe
+    bool cleanPhonemes     = true
+    bool cleanModifiers    = true
+    bool cleanExpressions  = true
+
+    bool gagged = mouthOpen
+    if (gagged)
+        ; Keep the mouth closed – don’t touch phonemes *or* expression override
+        cleanPhonemes    = false
+        cleanExpressions = false
+    endif
+
+    ; Dialogue: we *do* want a blank slate unless gag suppresses it
+    if (inDialogue && !gagged)
+        cleanExpressions = true
+    endif
+    ; ------------------------------------------------------------------
+
+    ; ▸ Nothing to do?  Exit early
+    if (!cleanPhonemes && !cleanModifiers && !cleanExpressions)
+        return
+    endif
+
+    ; ▸ All-in-one wipe is cheapest
+    if (cleanPhonemes && cleanModifiers && cleanExpressions)
+        resetMFGSmooth(targetAct)
+        return
+    endif
+
+    ; ▸ Selective cleanup
+    if (cleanPhonemes)
+        resetPhonemesSmooth(targetAct)
+    endif
+    if (cleanModifiers)
+        resetModifiersSmooth(targetAct)
+    endif
+    if (cleanExpressions)
+        resetExpressionsSmooth(targetAct)
+        targetAct.ClearExpressionOverride() ; only if we really wiped expressions
+    endif
 endfunction
 
 Function resetMFG(Actor act) global

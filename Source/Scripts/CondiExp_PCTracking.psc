@@ -30,6 +30,9 @@ MagicEffect vZadGagEffect
 Keyword zad_DeviousGag
 ;Toys
 Keyword ToysEffectMouthOpen 
+;Zaz
+Keyword zbfWornGag
+Keyword zbfEffectOpenMouth
 ;Sunhelm keywords
 Keyword _SH_LightFoodKeyword
 Keyword _SH_MediumFoodKeyword
@@ -65,6 +68,18 @@ function init()
 	if zad_DeviousGag
 		log("CondiExp_Tracking: Found Devious Devices - Assets: " + zad_DeviousGag.GetName() )
 	endif
+	if !zbfWornGag && isZaZReady() 
+		zbfWornGag = Game.GetFormFromFile(0x008A4D, "ZaZAnimationPack.esm") as Keyword 
+	endif
+	if zbfWornGag
+		log("CondiExp_Tracking: Found ZaZAnimationPack: " + zbfWornGag.GetName() )
+	endif
+	if !zbfEffectOpenMouth && isZaZReady() 
+		zbfEffectOpenMouth = Game.GetFormFromFile(0x008A35, "ZaZAnimationPack.esm") as Keyword 
+	endif
+	if zbfEffectOpenMouth
+		log("CondiExp_Tracking: Found ZaZAnimationPack: " + zbfEffectOpenMouth.GetName() )
+	endif
 	if !ToysEffectMouthOpen && isToysReady()
 		ToysEffectMouthOpen = Game.GetFormFromFile(0x0008C2, "Toys.esm") as Keyword
 	endif
@@ -96,6 +111,12 @@ bool function checkFaceWearables(Form akBaseObject)
 	if zad_DeviousGag && akBaseObject.HasKeyWord(zad_DeviousGag)
 		result = true
 	endif
+	if zbfWornGag && akBaseObject.HasKeyWord(zbfWornGag)
+		result = true
+	endif
+	if zbfEffectOpenMouth && akBaseObject.HasKeyWord(zbfEffectOpenMouth)
+		result = true
+	endif
 	if ToysEffectMouthOpen && akBaseObject.HasKeyWord(ToysEffectMouthOpen)
 		result = true
 	endif
@@ -116,6 +137,39 @@ bool function checkIfModShouldBeSuspendedByWearables(Actor act)
 	endif
 	if (_SLS_TongueKeyword && act.WornHasKeyword(_SLS_TongueKeyword))
 		log("CondiExp_StartMod: _SLS_TongueKeyword keyword was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
+		return true
+	endif
+	if zbfWornGag && act.WornHasKeyword(zbfWornGag)
+		log("CondiExp_StartMod: zbfWornGag keyword was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
+		return true
+	endif
+	if zbfEffectOpenMouth && act.WornHasKeyword(zbfEffectOpenMouth)
+		log("CondiExp_StartMod: zbfEffectOpenMouth keyword was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
+		return true
+	endif
+	return false
+endfunction
+
+bool function checkMouthWearable(Actor act)
+	int verboseInt = Condiexp_Verbose.GetValueInt()
+	if (zad_DeviousGag && act.WornHasKeyword(zad_DeviousGag))
+		trace(act, "CondiExp_StartMod: dd gag was detected", verboseInt)
+		return true
+	endif
+	if (ToysEffectMouthOpen && act.WornHasKeyword(ToysEffectMouthOpen))
+		trace(act, "CondiExp_StartMod: ToysEffectMouthOpen keyword was detected", verboseInt)
+		return true
+	endif
+	if (_SLS_TongueKeyword && act.WornHasKeyword(_SLS_TongueKeyword))
+		trace(act, "CondiExp_StartMod: _SLS_TongueKeyword keyword was detected", verboseInt)
+		return true
+	endif
+	if zbfWornGag && act.WornHasKeyword(zbfWornGag)
+		trace(act, "CondiExp_StartMod: zbfWornGag keyword was detected" , verboseInt)
+		return true
+	endif
+	if zbfEffectOpenMouth && act.WornHasKeyword(zbfEffectOpenMouth)
+		trace(act, "CondiExp_StartMod: zbfEffectOpenMouth keyword was detected", verboseInt)
 		return true
 	endif
 	return false

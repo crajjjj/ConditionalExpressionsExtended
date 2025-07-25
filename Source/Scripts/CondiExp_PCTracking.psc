@@ -54,8 +54,20 @@ Event onPlayerLoadGame()
 	If CondiExp_Sounds.GetValueInt() > 0
 		sm.NewRace()
 	Endif
+	RegisterForMenu("Loading Menu")
 	sm.RegisterForSingleUpdate(5)
 endEvent
+
+Event OnMenuClose(String menuName)
+    If menuName == "Loading Menu"
+		trace_line("CondiExp_Tracking: OnMenuClose reload event catched", Condiexp_Verbose.GetValueInt())
+		If (Condiexp_ModSuspended.GetValueInt() == 0 && (CondiExp_CurrentlyBusy.GetValueInt() > 0 || Condiexp_CurrentlyBusyImmediate.GetValueInt() > 0))
+			trace_line("CondiExp_Tracking: OnMenuClose reload triggered", Condiexp_Verbose.GetValueInt())
+        	sm.StopMod()
+			sm.StartMod()
+		EndIf
+    Endif 
+EndEvent
 
 bool function isSHInitialised()
 	return  _SH_LightFoodKeyword && _SH_MediumFoodKeyword && _SH_HeavyFoodKeyword && _SH_SoupKeyword && _SH_AlcoholDrinkKeyword
@@ -200,7 +212,6 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 
 	If CondiExp_Drugs.HasForm(akBaseObject)
 		CondiExp_PlayerIsHigh.SetValueInt(1)
-	
 	elseif  CondiExp_Drinks.HasForm(akBaseObject) 
 			log("CondiExp_Tracking: OnObjectEquipped AlcoholDrink: " + akBaseObject.GetName())
 			CondiExp_PlayerIsDrunk.SetValueInt(1)
@@ -210,15 +221,10 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 	elseif akBaseObject.HasKeyWord(VendorItemFood) || akBaseObject.HasKeyWord(VendorItemFoodRaw)
 			CondiExp_PlayerJustAte.SetValueInt(1)
 			log("CondiExp_Tracking: OnObjectEquipped VendorItemFood(Raw): " + akBaseObject.GetName())
-			utility.wait(5)
-	
 	elseif akBaseObject.HasKeyword(VendorItemIngredient)
-	
 		If  Condiexp_GlobalEating.GetValueInt() == 2
 				CondiExp_PlayerJustAte.SetValueInt(1)
 				log("CondiExp_Tracking: OnObjectEquipped VendorItemIngredient: " + akBaseObject.GetName())
-				utility.wait(5)
-	
 		elseif Condiexp_GlobalEating.GetValueInt() == 1
 				Condiexp_GlobalEating.SetValueInt(2)
 				CondiExp_PlayerJustAte.SetValueInt(1)
@@ -229,7 +235,6 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
 	elseif checkSHFoodKeywords(akBaseObject) 
 		CondiExp_PlayerJustAte.SetValueInt(1)
 		log("CondiExp_Tracking: OnObjectEquipped _SH_Food: " + akBaseObject.GetName())
-		utility.wait(5)
 	Endif
 EndEvent
 

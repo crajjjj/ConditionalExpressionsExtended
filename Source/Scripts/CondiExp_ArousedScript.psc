@@ -29,10 +29,6 @@ Function aroused()
 		Int arousal = Condiexp_CurrentlyAroused.GetValueInt()
 		verbose(PlayerRef, "Aroused", config.Condiexp_Verbose.GetValueInt())
 		PlayArousedExpression(PlayerRef, arousal, arousalExpr)
-		Utility.Wait(2)
-		resetPhonemesSmooth(PlayerRef)
-		Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 6))
-		resetMFGSmooth(PlayerRef)
     else
 		log("CondiExp_Aroused: cancelled effect")
 	endif
@@ -46,11 +42,29 @@ bool function isArousedEnabled()
 	return enabled 
 endfunction
 
+bool Function isHardStop()
+	bool isImmediateEffect = Condiexp_CurrentlyBusyImmediate.GetValueInt() != 0
+    bool isSuspended = Condiexp_ModSuspended.GetValueInt() != 0
+    
+	If isImmediateEffect || isInDialogueMFG(PlayerRef) || isSuspended
+		log("CondiExp_Aroused: hard stop")
+		return true
+	endif
+    return false
+endfunction
+
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	;either 0 or aroused level > Condiexp_MinAroused
 	aroused()
+	If (!isHardStop())
+			Utility.Wait(2)
+			resetPhonemesSmooth(PlayerRef)
+			Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 2, 6))
+			resetMFGSmooth(PlayerRef)
+		else
+			resetMFGSmooth(PlayerRef)
+	EndIf
 	;verbose(akTarget, "Aroused: OnEffectFinish", Condiexp_Verbose.GetValueInt())
-	Utility.Wait(1)
 	config.currentExpression = ""
 	playing = false
 	Condiexp_CurrentlyBusy.SetValueInt(0)

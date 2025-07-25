@@ -30,13 +30,28 @@ bool function isDirtyEnabled()
 	return enabled 
 endfunction
 
+bool Function isHardStop()
+	bool isImmediateEffect = Condiexp_CurrentlyBusyImmediate.GetValueInt() != 0
+    bool isSuspended = Condiexp_ModSuspended.GetValueInt() != 0
+    
+	If isImmediateEffect || isInDialogueMFG(PlayerRef) || isSuspended
+		log("Condiexp_Dirty: hard stop")
+		return true
+	endif
+    return false
+endfunction
+
 Function dirty()
 	If isDirtyEnabled()
-		Int dirty = Condiexp_CurrentlyDirty.GetValueInt() as Int
+		Int dirty = Condiexp_CurrentlyDirty.GetValueInt()
 		verbose(PlayerRef, "Dirty", Condiexp_Verbose.GetValueInt())
 		PlayDirtyExpression(PlayerRef, dirty, dirtyExpr)
-		Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
-		resetMFGSmooth(PlayerRef)
+		If (!isHardStop())
+			Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
+			resetMFGSmooth(PlayerRef)
+		else
+			resetMFGSmooth(PlayerRef)
+		EndIf
     else
 		log("CondiExp_Dirty: cancelled effect")
 	endif

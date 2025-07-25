@@ -31,7 +31,6 @@ Function Blush()
 EndFunction
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-   
     Blush()
   ;  verbose(PlayerRef, "No Clothes: OnEffectFinish.  " , Condiexp_Verbose.GetValueInt() )
     resetMFGSmooth(PlayerRef)

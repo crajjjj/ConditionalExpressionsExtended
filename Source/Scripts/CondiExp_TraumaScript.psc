@@ -44,12 +44,29 @@ EndEvent
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
 	Utility.Wait(1)
 	trauma()
+	If (!isHardStop())
+			Utility.Wait(RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
+			resetMFGSmooth(PlayerRef)
+		else
+			resetMFGSmooth(PlayerRef)
+	EndIf
 	;verbose(akTarget, "Trauma: OnEffectFinish", Condiexp_Verbose.GetValueInt())
 	Utility.Wait(2)
 	config.currentExpression = ""
 	playing = false
 	Condiexp_CurrentlyBusy.SetValueInt(0)
 EndEvent
+
+bool Function isHardStop()
+	bool isImmediateEffect = Condiexp_CurrentlyBusyImmediate.GetValueInt() != 0
+    bool isSuspended = Condiexp_ModSuspended.GetValueInt() != 0
+    
+	If isImmediateEffect || isInDialogueMFG(PlayerRef) || isSuspended
+		log("Condiexp_Trauma: hard stop")
+		return true
+	endif
+    return false
+endfunction
 
 bool function isTraumaEnabled()
 	bool enabled = !PlayerRef.IsDead() && Condiexp_GlobalTrauma.GetValueInt() == 1
@@ -71,8 +88,6 @@ Function trauma()
 		verbose(PlayerRef, "Trauma" , Condiexp_Verbose.GetValueInt())
 		PlayTraumaExpression(PlayerRef, trauma, traumaExpr)
 		BreatheAndSob(trauma)
-		Utility.Wait( RandomNumber(config.Condiexp_PO3ExtenderInstalled.getValue() == 1, 4, 6))
-		resetMFGSmooth(PlayerRef)
     else
 		log("CondiExp_Trauma: cancelled effect")
 	endif

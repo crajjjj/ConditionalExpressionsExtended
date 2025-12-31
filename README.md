@@ -33,9 +33,9 @@ Code Overhaul: Faster, leaner – no random scripts or legacy checks
 
 ### Advanced config (not recommended):
 
-In console:  set [global variable name] [amount]
+In console:  set [global variable name] to [amount]
 
-Sample: set Condiexp_MinAroused 30
+Sample: set Condiexp_MinAroused to 30
 
 - Condiexp_MinTrauma range 1-10 default 1
 - Condiexp_MinAroused range 0-100 default 30

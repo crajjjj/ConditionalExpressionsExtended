@@ -25,7 +25,7 @@ float restartDistance = 300.0
 
 ;only for player actor
 Event OnPlayerLoadGame()
-        log("CondiExp_NPCs OnPlayerLoadGame.Actor: " + act.GetLeveledActorBase().GetName())
+        ;log("CondiExp_NPCs OnPlayerLoadGame.Actor: " + act.GetLeveledActorBase().GetName())
         lastPosX = PlayerRef.GetPositionX()
         lastPosY = PlayerRef.GetPositionY()
         lastPosZ = PlayerRef.GetPositionZ()
@@ -213,7 +213,7 @@ Event OnUpdate()
 	if !isMale
 		int aroused = sm.getArousalStatus(act)
 		bool arousedPlayed = false
-		If (aroused > 0 && !isMale)
+		If (aroused > 0)
 			arousedPlayed = PlayArousedExpression( act, aroused, config.arousalExpr)
 			if arousedPlayed
 				Utility.Wait(2)

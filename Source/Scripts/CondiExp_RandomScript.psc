@@ -23,6 +23,9 @@ condiexp_MCM Property config auto
 
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	;verbose(akTarget, "Random: OnEffectStart", Condiexp_Verbose.GetValueInt())
+	if akTarget == None
+        return
+    endif
 	RegisterForSingleUpdate(1)
 	playing = true
 	config.currentExpression = "Random"
@@ -52,7 +55,7 @@ Event OnUpdate()
 EndEvent
 
 bool function isRandomEnabled()
-	bool enabled = !PlayerRef.IsDead() && Condiexp_GlobalRandom.GetValueInt() == 1
+	bool enabled = PlayerRef && !PlayerRef.IsDead() && Condiexp_GlobalRandom.GetValueInt() == 1
 	enabled = enabled && Condiexp_ModSuspended.GetValueInt() == 0 && Condiexp_CurrentlyBusy.GetValueInt() == 0 && Condiexp_CurrentlyBusyImmediate.GetValueInt() == 0
 	enabled = enabled && !PlayerRef.GetAnimationVariableInt("i1stPerson") && !PlayerRef.IsRunning() && !isInDialogueMFG(PlayerRef)
 	enabled = enabled && playing

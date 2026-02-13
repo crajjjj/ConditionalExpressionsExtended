@@ -48,6 +48,10 @@ Event OnUpdate()
 		act = None
 		Return
 	EndIf
+	if shouldDeferPollingBasic(act) || shouldDeferPollingBasic(PlayerRef)
+		RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagSmall)
+		return
+	endif
 	;trace(act, "CondiExp_Followers OnUpdate" , verboseInt)
 	; log("CondiExp_Followers OnUpdate. Actor: " + act.GetLeveledActorBase().GetName())
 	If (config.CondiExpFollowerQuest.IsStopped())
@@ -106,6 +110,37 @@ Event OnUpdate()
 		distanceCounter = 6
 	EndIf
 
+	If (act.IsDead())
+		if !act.Is3DLoaded()
+			trace(act, "Dead (3D unloaded)", verboseInt)
+			TryToClear()
+			act = None
+			Return
+		endif
+		bool deadMouthOpen = sm.pctracking.checkMouthWearable(act)
+		If (RandomInt(0, 1))
+			SmoothSetModifier(act, 6, 7, RandomInt(80, 100))
+			SmoothSetModifier(act, 11, -1, 100)
+			If (!deadMouthOpen)
+				SmoothSetPhoneme(act, 2, 50)
+				SmoothSetPhoneme(act, 11, 100)
+			EndIf
+			SmoothSetModifier(act, 0, 1, RandomInt(20, 50))
+		Else
+			SmoothSetModifier(act,4, 5, RandomInt(0, 100))
+			SmoothSetModifier(act, 0, 1, 90)
+		EndIf
+		trace(act, "Dead", verboseInt)
+		TryToClear()
+		act = None
+		Return
+	EndIf
+	
+	if !act.Is3DLoaded()
+    	RegisterForSingleUpdate(Condiexp_FollowersUpdateInterval.GetValueInt() + additionalLagSmall)
+    	return
+	endif
+
 	bool inDialogue = isInDialogue(act, false, playerSpeechTargetAct)
 	bool mouthOpen = sm.pctracking.checkMouthWearable(act)
 	
@@ -122,25 +157,6 @@ Event OnUpdate()
 	;trace(act, "Followup" , verboseInt)
 	mfgCleanup(act, inDialogue, mouthOpen)
 	bool isMale = (act.GetLeveledActorBase().GetSex() == 0)
-
-	If (act.IsDead())
-		If (RandomInt(0, 1))
-			SmoothSetModifier(act, 6, 7, RandomInt(80, 100))
-			SmoothSetModifier(act, 11, -1, 100)
-			If (!mouthOpen)
-				SmoothSetPhoneme(act, 2, 50)
-				SmoothSetPhoneme(act, 11, 100)
-			EndIf
-			SmoothSetModifier(act, 0, 1, RandomInt(20, 50))
-		Else
-			SmoothSetModifier(act,4, 5, RandomInt(0, 100))
-			SmoothSetModifier(act, 0, 1, 90)
-		EndIf
-		trace(act, "Dead", verboseInt)
-		TryToClear()
-		act = None
-		Return
-	EndIf
 
 	If (act.GetSleepState() == 3)
 		If (GetModifier(act, 0) != 90)

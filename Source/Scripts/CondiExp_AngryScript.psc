@@ -28,6 +28,10 @@ Function Angry()
 EndFunction
 
 Event OnUpdate()
+    if shouldDeferPollingPlayer3D(PlayerRef)
+      RegisterForSingleUpdate(2)
+      return
+    endif
     if OpenMouth == False && PlayerRef.IsinCombat() && Condiexp_ModSuspended.getValue() == 0
       verbose(PlayerRef, "Angry", Condiexp_Verbose.GetValue() as Int)
       PlayerRef.SetExpressionOverride(15, RandomNumber(Condiexp_PO3ExtenderInstalled.GetValueInt() == 1, 35, 80))

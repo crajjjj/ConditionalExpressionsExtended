@@ -35,6 +35,13 @@ EndEvent
 Event OnUpdate()
 	trace(PlayerRef, "Random-OnUpdate", Condiexp_Verbose.GetValueInt())
 	config.currentExpression = "Random"
+	if shouldDeferPollingPlayer3D(PlayerRef)
+		if playing && self != None
+			RegisterForSingleUpdate(3)
+		endif
+		config.currentExpression = ""
+		return
+	endif
 	If isRandomEnabled()
    		PlayRandomExpression(PlayerRef, config, randomExpr)
 		resetCounter += 1

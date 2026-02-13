@@ -11,7 +11,7 @@ EndFunction
 
 ;SemVer support
 Int Function GetVersion() Global
-    Return 201006
+    Return 201007
 	;	0.00.000
     ; 1.0.0   -> 100000
     ; 1.1.0   -> 101000
@@ -21,7 +21,7 @@ Int Function GetVersion() Global
 EndFunction
 
 String Function GetVersionString() Global
-    Return "2.1.6"
+    Return "2.1.7"
 EndFunction
 
 Function ResetQuest(Quest this_quest) Global
@@ -137,6 +137,28 @@ bool function isInDialogue(Actor act, bool isPC, Actor playerSpeechTargetAct) gl
 		if MfgConsoleFuncExt.IsInDialogue(act) || act.IsInDialogueWithPlayer() || act == playerSpeechTargetAct
 			return true
 		endif
+	endif
+	return false
+endfunction
+
+bool function shouldDeferPollingBasic(Actor act) global
+	; Defer polling while menus/load transitions are active or actor is invalid.
+	if Utility.IsInMenuMode()
+		return true
+	endif
+	if !act
+		return true
+	endif
+	return false
+endfunction
+
+bool function shouldDeferPollingPlayer3D(Actor act) global
+	; Player-facing loops should also wait until 3D is loaded.
+	if shouldDeferPollingBasic(act)
+		return true
+	endif
+	if !act.Is3DLoaded()
+		return true
 	endif
 	return false
 endfunction

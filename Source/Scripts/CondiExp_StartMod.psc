@@ -275,6 +275,14 @@ Event OnUpdate()
 		RegisterForSingleUpdate(5)
 		return
 	endif
+	bool shouldKeepPolling = _checkPlugins > 0 || (PlayerRef.HasSpell(CondiExp_Fatigue1) && Condiexp_UpdateInterval.GetValueInt() > 0)
+	if shouldDeferPollingBasic(PlayerRef)
+		trace_line("CondiExp_StartMod: deferred update (menu/load transition)", Condiexp_Verbose.GetValueInt())
+		if shouldKeepPolling
+			RegisterForSingleUpdate(3)
+		endif
+		return
+	endif
 	OnUpdateExecute(PlayerRef)
 	if PlayerRef.HasSpell(CondiExp_Fatigue1) && Condiexp_UpdateInterval.GetValueInt() > 0
 		RegisterForSingleUpdate(Condiexp_UpdateInterval.GetValueInt())
@@ -450,11 +458,20 @@ int function getDirtyStatus(Actor act)
 
 	int dirty = 0
 	If (LoadedBathMod != "None Found")
-		if act.HasMagicEffect(DirtinessStage2Effect) || (BloodinessStage2Effect && act.HasMagicEffect(BloodinessStage2Effect))
+		bool hasDirt2 = DirtinessStage2Effect && act.HasMagicEffect(DirtinessStage2Effect)
+		bool hasBlood2 = BloodinessStage2Effect && act.HasMagicEffect(BloodinessStage2Effect)
+		bool hasDirt3 = DirtinessStage3Effect && act.HasMagicEffect(DirtinessStage3Effect)
+		bool hasBlood3 = BloodinessStage3Effect && act.HasMagicEffect(BloodinessStage3Effect)
+		bool hasDirt4 = DirtinessStage4Effect && act.HasMagicEffect(DirtinessStage4Effect)
+		bool hasBlood4 = BloodinessStage4Effect && act.HasMagicEffect(BloodinessStage4Effect)
+		bool hasDirt5 = DirtinessStage5Effect && act.HasMagicEffect(DirtinessStage5Effect)
+		bool hasBlood5 = BloodinessStage5Effect && act.HasMagicEffect(BloodinessStage5Effect)
+
+		if hasDirt2 || hasBlood2
 			dirty = 1  ;not enough dirt to be sad
-		elseif (act.HasMagicEffect(DirtinessStage3Effect) || (BloodinessStage3Effect && act.HasMagicEffect(BloodinessStage3Effect)))
+		elseif hasDirt3 || hasBlood3
 			dirty = 2
-		elseif (act.HasMagicEffect(DirtinessStage4Effect) || (BloodinessStage4Effect && act.HasMagicEffect(BloodinessStage4Effect)) || (DirtinessStage5Effect && act.HasMagicEffect(DirtinessStage5Effect)) || (BloodinessStage5Effect && act.HasMagicEffect(BloodinessStage5Effect)))
+		elseif hasDirt4 || hasBlood4 || hasDirt5 || hasBlood5
 			dirty = 3
 		else
 			dirty = 0

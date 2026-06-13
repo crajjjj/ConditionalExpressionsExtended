@@ -18,6 +18,9 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function Squint()
+    If PlayerRef.IsDead()
+        return
+    endif
     int i = 0
     while i < 75
         CondiExp_util.SetModifier(PlayerRef,12,i)

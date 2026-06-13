@@ -14,6 +14,9 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function KhajiitLikestoSneak(Actor akTarget)
+    If PlayerRef.IsDead()
+        return
+    endif
     CondiExp_util.SetModifier(PlayerRef,12,45)
     CondiExp_util.SetModifier(PlayerRef,13,45)
     CondiExp_util.SetModifier(PlayerRef,2,20)

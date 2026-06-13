@@ -20,8 +20,10 @@ EndEvent
 
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    verbose(PlayerRef, "Headache", Condiexp_Verbose.GetValueInt())
-    Headache(PlayerRef)
+    If !PlayerRef.IsDead()
+        verbose(PlayerRef, "Headache", Condiexp_Verbose.GetValueInt())
+        Headache(PlayerRef)
+    EndIf
     config.currentExpression = ""
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)

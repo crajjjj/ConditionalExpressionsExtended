@@ -18,10 +18,11 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
-    
-    PlayPainExpression(PlayerRef, painExpr)
-    Utility.Wait(3)
-    resetMFGSmooth(PlayerRef)
+    If !PlayerRef.IsDead()
+        PlayPainExpression(PlayerRef, painExpr)
+        Utility.Wait(3)
+        resetMFGSmooth(PlayerRef)
+    EndIf
     config.currentExpression = ""
     Condiexp_CurrentlyBusyImmediate.SetValueInt(0)
     Condiexp_CurrentlyBusy.SetValueInt(0)

@@ -21,8 +21,10 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     elseif Condiexp_GlobalEating.GetValueInt() == 2
         Utility.Wait(0.8)
     endif
-    PlayEatingExpression(PlayerRef)
-    Utility.Wait(1)
+    If !PlayerRef.IsDead()
+        PlayEatingExpression(PlayerRef)
+        Utility.Wait(1)
+    EndIf
     CondiExp_PlayerJustAte.SetValueInt(0)
 EndEvent
 

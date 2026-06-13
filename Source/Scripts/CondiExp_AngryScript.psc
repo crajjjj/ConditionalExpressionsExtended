@@ -32,7 +32,7 @@ Event OnUpdate()
       RegisterForSingleUpdate(2)
       return
     endif
-    if OpenMouth == False && PlayerRef.IsinCombat() && Condiexp_ModSuspended.getValue() == 0
+    if OpenMouth == False && PlayerRef.IsinCombat() && Condiexp_ModSuspended.getValue() == 0 && !PlayerRef.IsDead()
       verbose(PlayerRef, "Angry", Condiexp_Verbose.GetValue() as Int)
       PlayerRef.SetExpressionOverride(15, RandomNumber(Condiexp_PO3ExtenderInstalled.GetValueInt() == 1, 35, 80))
       CondiExp_util.SetPhoneMe(PlayerRef, 4, 20)
@@ -43,7 +43,7 @@ EndEvent
 auto State NotReacting
   Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
     GoToState("Reacting")
-    if abHitBlocked == False && akSource as weapon && OpenMouth == False && RandomNumber( Condiexp_PO3ExtenderInstalled.GetValueInt() == 1, 1, 100) < 40
+    if abHitBlocked == False && akSource as weapon && OpenMouth == False && !PlayerRef.IsDead() && RandomNumber( Condiexp_PO3ExtenderInstalled.GetValueInt() == 1, 1, 100) < 40
       OpenMouth = True
       PlayerRef.SetExpressionOverride(15,100)
 

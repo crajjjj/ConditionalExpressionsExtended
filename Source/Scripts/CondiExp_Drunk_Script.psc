@@ -17,6 +17,9 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function Drunk()
+    If PlayerRef.IsDead()
+        return
+    endif
     Condiexp_CurrentlyBusy.SetValueInt(1)
     verbose(PlayerRef, "Drunk", config.Condiexp_Verbose.GetValueInt())
     PlayDrunkExpression(PlayerRef)

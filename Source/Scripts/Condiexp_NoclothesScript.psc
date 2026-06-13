@@ -17,6 +17,9 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function Blush()
+    If PlayerRef.IsDead()
+        return
+    endif
     Int irandomLook = Utility.RandomInt(1, 10)
     verbose(PlayerRef, "No Clothes" + irandomLook, Condiexp_Verbose.GetValueInt())
 

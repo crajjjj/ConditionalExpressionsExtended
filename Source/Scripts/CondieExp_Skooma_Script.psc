@@ -16,6 +16,9 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
 EndEvent
 
 Function High()
+    If PlayerRef.IsDead()
+        return
+    endif
     trace(PlayerRef, "Skooma: OnEffectStart", config.Condiexp_Verbose.GetValueInt())
     verbose(PlayerRef, "Scooma", config.Condiexp_Verbose.GetValueInt())
     PlayScoomaExpression(PlayerRef)

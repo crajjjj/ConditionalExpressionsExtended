@@ -25,6 +25,7 @@ bool Function PlayArousedExpression(Actor act, int aroused, CondiExp_BaseExpress
 		endif 
 		Int randomEffect = Utility.RandomInt(1, topMargin)
 		expr.Apply(act, randomEffect, power)
+		Utility.Wait(3)
 		RandomLook(act)
 		return true
 	Else
@@ -149,6 +150,7 @@ bool Function PlayDirtyExpression(Actor act, int dirty, CondiExp_BaseExpression 
 		endif 
 		Int randomEffect = Utility.RandomInt(1, topMargin)
 		expr.Apply(act, randomEffect, power)
+		Utility.Wait(2)
 		RandomLook(act)
 		Utility.Wait(1)
 		return true
@@ -391,6 +393,8 @@ Function RelationshipRankEmotion(Actor act, condiexp_MCM config, CondiExp_BaseEx
 			Int exprNumber = Utility.RandomInt(1, 7)
 			trace(act,"Expression_Random (Rel). Number: " + exprNumber, config.Condiexp_Verbose.GetValueInt())
 			expr.Apply(act, exprNumber, 60)
+			Utility.Wait(Utility.RandomInt(2, 4))
+			resetMFGSmooth(act)
 		endif
 	endif
 EndFunction

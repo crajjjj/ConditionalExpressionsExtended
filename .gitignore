@@ -20,3 +20,6 @@ cmake-build*
 
 # Skyrim archive files
 *.bsa
+
+# MkDocs build output
+site/

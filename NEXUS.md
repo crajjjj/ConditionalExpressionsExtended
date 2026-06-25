@@ -53,6 +53,7 @@ It responds to cold, trauma, arousal, dirtiness, and more – with MCM options a
 
 - [BEES](https://www.nexusmods.com/skyrimspecialedition/mods/106441) – required for versions 1.5.97 to 1.6.659
 - [MFG Fix NG](https://www.nexusmods.com/skyrimspecialedition/mods/133568) – native expression support for AE/SE
+- [PapyrusUtil SE](https://www.nexusmods.com/skyrimspecialedition/mods/13048) – loads the JSON expression definitions
 
 ---
 

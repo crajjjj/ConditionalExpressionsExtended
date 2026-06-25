@@ -16,9 +16,10 @@ Event OnEffectStart(Actor akTarget, Actor akCaster)
     Condiexp_CurrentlyBusyImmediate.SetValueInt(1)
     config.currentExpression = "Eating"
     verbose(PlayerRef, "Eating", config.Condiexp_Verbose.GetValueInt())
-    If Condiexp_GlobalEating.GetValueInt() == 1
+    int eatingSpeed = Condiexp_GlobalEating.GetValueInt()
+    If eatingSpeed == 1
         Utility.Wait(3.8)
-    elseif Condiexp_GlobalEating.GetValueInt() == 2
+    elseif eatingSpeed == 2
         Utility.Wait(0.8)
     endif
     If !PlayerRef.IsDead()

@@ -27,7 +27,7 @@ EndEvent
 Function aroused()
 	If isArousedEnabled()
 		Int arousal = Condiexp_CurrentlyAroused.GetValueInt()
-		verbose(PlayerRef, "Aroused", config.Condiexp_Verbose.GetValueInt())
+		verbose(PlayerRef, "Aroused", Condiexp_Verbose.GetValueInt())
 		PlayArousedExpression(PlayerRef, arousal, arousalExpr)
     else
 		log("CondiExp_Aroused: cancelled effect")

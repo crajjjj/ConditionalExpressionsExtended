@@ -347,6 +347,16 @@ function OnUpdateExecute(Actor act)
 endfunction
 
 Bool function checkIfModShouldBeSuspended(Actor act, Actor playerSpeechTargetAct)
+	return checkSuspendInternal(act, playerSpeechTargetAct, true)
+endfunction
+
+Bool function checkIfModShouldBeSuspendedForNPCs(Actor act, Actor playerSpeechTargetAct)
+	return checkSuspendInternal(act, playerSpeechTargetAct, false)
+endfunction
+
+; Shared suspension logic. checkWearables is true only for the player path;
+; for NPCs the wearable/gag check is skipped (handled separately by mouth detection).
+Bool function checkSuspendInternal(Actor act, Actor playerSpeechTargetAct, bool checkWearables)
 	if isSuspendedByDhlpEvent()
 		log("CondiExp_StartMod: dhlp event. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
 		return true
@@ -357,7 +367,7 @@ Bool function checkIfModShouldBeSuspended(Actor act, Actor playerSpeechTargetAct
 		return true
 	endif
 
-	if (pctracking.checkIfModShouldBeSuspendedByWearables(act))
+	if (checkWearables && pctracking.checkIfModShouldBeSuspendedByWearables(act))
 		log("CondiExp_StartMod: wearable was detected. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
 		return true
 	endif
@@ -371,29 +381,6 @@ Bool function checkIfModShouldBeSuspended(Actor act, Actor playerSpeechTargetAct
 		log("CondiExp_StartMod: actor is in dialogue. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
 		return true
 	endif
-	return false
-endfunction
-
-Bool function checkIfModShouldBeSuspendedForNPCs(Actor act, Actor playerSpeechTargetAct)
-	if isSuspendedByDhlpEvent()
-		log("CondiExp_StartMod: dhlp event. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
-		return true
-	endif
-
-	if isSuspendedByKey()
-		log("CondiExp_StartMod: key down event. Will suspend for actor:" + act.GetLeveledActorBase().GetName() )
-		return true
-	endif
-
-	if (sexlab && IsActorActive(sexlab, act))
-		log("CondiExp_StartMod: actor is in sl faction. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
-		return true
-	endif
-
-	 if (isInDialogue(act, act == PlayerRef, playerSpeechTargetAct))
-	 	log("CondiExp_StartMod: actor is in dialogue. Will suspend for actor:" + act.GetLeveledActorBase().GetName())
-	 	return true
-	 endif
 	return false
 endfunction
 

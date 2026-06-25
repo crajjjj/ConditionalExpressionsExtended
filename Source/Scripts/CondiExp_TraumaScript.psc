@@ -133,24 +133,25 @@ endfunction
 Function Breathe(Actor akTarget, GlobalVariable sounds)
     Inhale(33,60, akTarget)
     ;;;;;;;;;;; SOUNDS ;;;;;;;;;;;;
-    If sounds.GetValue() == 1
-        int Breathe = CondiExp_BreathingMaleKhajiit.play(akTarget)     
+    int soundType = sounds.GetValueInt()
+    If soundType == 1
+        int Breathe = CondiExp_BreathingMaleKhajiit.play(akTarget)
 
-    elseif sounds.GetValue() == 2
-        int Breathe = CondiExp_BreathingMaleOrc.play(akTarget)   
+    elseif soundType == 2
+        int Breathe = CondiExp_BreathingMaleOrc.play(akTarget)
 
-    elseif sounds.GetValue() == 3
-        int Breathe = CondiExp_BreathingMale.play(akTarget)     
+    elseif soundType == 3
+        int Breathe = CondiExp_BreathingMale.play(akTarget)
 
-    elseif sounds.GetValue() == 4
-        int Breathe = CondiExp_BreathingfemaleKhajiit.play(akTarget)     
+    elseif soundType == 4
+        int Breathe = CondiExp_BreathingfemaleKhajiit.play(akTarget)
 
-    elseif sounds.GetValue() == 5
-        int Breathe = CondiExp_BreathingfemaleORC.play(akTarget)     
+    elseif soundType == 5
+        int Breathe = CondiExp_BreathingfemaleORC.play(akTarget)
 
-    elseif sounds.GetValue() == 6
-        int Breathe = CondiExp_BreathingfeMale.play(akTarget)     
-    endif 
+    elseif soundType == 6
+        int Breathe = CondiExp_BreathingfeMale.play(akTarget)
+    endif
     ;;;;;;;;;
     Exhale(60,20, akTarget)
 EndFunction

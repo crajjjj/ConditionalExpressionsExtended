@@ -406,7 +406,8 @@ int function getColdStatus(Actor act )
 	if Condiexp_GlobalCold.GetValueInt() == 0
 		return 0
 	endif
-	If Condiexp_ColdMethod.GetValueInt() == 1
+	int coldMethod = Condiexp_ColdMethod.GetValueInt()
+	If coldMethod == 1
 		If Temp.GetValueInt() > 2
 			trace(act,"CondiExp_StartMod: getColdStatus frostfall:  is cold", Condiexp_Verbose.GetValueInt())
 			OnCondiExpSLAEvent(arousalColdThreshold, arousalCold, "is not feeling aroused because of cold", "CondiExpCold", act)
@@ -414,7 +415,7 @@ int function getColdStatus(Actor act )
 			else
 			return 0
 		endif
-	elseIf Condiexp_ColdMethod.GetValueInt() == 2 || Condiexp_ColdMethod.GetValueInt() == 3
+	elseIf coldMethod == 2 || coldMethod == 3
 		If act.HasSpell(Cold1)
 				trace(act,"CondiExp_StartMod: getColdStatus frosbite/sunhelm: is chilly", Condiexp_Verbose.GetValueInt())
 				OnCondiExpSLAEvent(arousalChillyThreshold, arousalChilly, "is not feeling very aroused because it's chilly", "CondiExpChilly", act)
@@ -430,7 +431,7 @@ int function getColdStatus(Actor act )
 			else
 				return 0
 		endif
-	elseIf Condiexp_ColdMethod.GetValueInt() == 4
+	elseIf coldMethod == 4
 		If !act.HasKeyword(Vampire) && !act.IsinInterior() && Weather.GetCurrentWeather().GetClassification() == 3
 			trace(act,"CondiExp_StartMod: getColdStatus vanilla: is cold", Condiexp_Verbose.GetValueInt())
 			OnCondiExpSLAEvent(arousalColdThreshold, arousalCold, "is not feeling aroused because of cold", "CondiExpCold", act)
@@ -438,7 +439,7 @@ int function getColdStatus(Actor act )
 		else
 			return 0
 		endif
-	elseIf Condiexp_ColdMethod.GetValueInt() == 5
+	elseIf coldMethod == 5
 		log("Condiexp_ColdMethod is set to auto and wasn't updated", 1)
 	endif
 

@@ -43,24 +43,25 @@ Function Breathe()
 
     Inhale(33,73, PlayerRef)
     ;;;;;;;;;;; SOUNDS ;;;;;;;;;;;;
-    If Condiexp_Sounds.GetValue() == 1
-         int Breathe = CondiExp_BreathingMaleKhajiit.play(PlayerRef)     
+    int soundType = Condiexp_Sounds.GetValueInt()
+    If soundType == 1
+         int Breathe = CondiExp_BreathingMaleKhajiit.play(PlayerRef)
 
-    elseif Condiexp_Sounds.GetValue() == 2
-        int Breathe = CondiExp_BreathingMaleOrc.play(PlayerRef)   
+    elseif soundType == 2
+        int Breathe = CondiExp_BreathingMaleOrc.play(PlayerRef)
 
-    elseif Condiexp_Sounds.GetValue() == 3
-        int Breathe = CondiExp_BreathingMale.play(PlayerRef)     
+    elseif soundType == 3
+        int Breathe = CondiExp_BreathingMale.play(PlayerRef)
 
-    elseif Condiexp_Sounds.GetValue() == 4
-        int Breathe = CondiExp_BreathingfemaleKhajiit.play(PlayerRef)     
+    elseif soundType == 4
+        int Breathe = CondiExp_BreathingfemaleKhajiit.play(PlayerRef)
 
-    elseif Condiexp_Sounds.GetValue() == 5
-        int Breathe = CondiExp_BreathingfemaleORC.play(PlayerRef)     
+    elseif soundType == 5
+        int Breathe = CondiExp_BreathingfemaleORC.play(PlayerRef)
 
-    elseif Condiexp_Sounds.GetValue() == 6
-        int Breathe = CondiExp_BreathingfeMale.play(PlayerRef)     
-    endif 
+    elseif soundType == 6
+        int Breathe = CondiExp_BreathingfeMale.play(PlayerRef)
+    endif
     ;;;;;;;;;
     Exhale(73,33, PlayerRef)
 

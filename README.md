@@ -1,6 +1,8 @@
 # ConditionalExpressionsExtended
 
 This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.28) with new features and focus on compatibility
+
+📖 **Full documentation: [crajjjj.github.io/ConditionalExpressionsExtended](https://crajjjj.github.io/ConditionalExpressionsExtended/)** — installation, compatibility, MCM reference, console commands, the custom expression JSON format, and the mod events API.
  
 ## What was changed?
 
@@ -33,6 +35,8 @@ Code Overhaul: Faster, leaner – no random scripts or legacy checks
 
 ### Advanced config (not recommended):
 
+See the [Console Commands](https://crajjjj.github.io/ConditionalExpressionsExtended/players/console-commands/) reference for details.
+
 In console:  set [global variable name] to [amount]
 
 Sample: set Condiexp_MinAroused to 30
@@ -47,6 +51,8 @@ Sample: set Condiexp_MinAroused to 30
 
 
 # Frequently Asked Questions
+
+More answers in the [Troubleshooting & FAQ](https://crajjjj.github.io/ConditionalExpressionsExtended/players/troubleshooting/) and [Requirements & Compatibility](https://crajjjj.github.io/ConditionalExpressionsExtended/players/compatibility/) docs.
 
 ### MCM is not showing up; how do I enable it?
 

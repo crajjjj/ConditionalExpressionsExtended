@@ -1,84 +1,74 @@
-<div align="center">
+[center][size=6][b]😐 Conditional Expressions Extended (CEE)[/b][/size]
+[i]Dynamic and immersive facial expressions for the player and NPCs[/i][/center]
 
-# 😐 Conditional Expressions Extended (CEE)
-
-*Dynamic and immersive facial expressions for the player and NPCs*
-
-</div>
-
----
-
-## What Is This?
-
-CEE expands upon *Conditional Expressions - Subtle Face Animations* by adding **NPC support**, deeper **condition-based expressions**, and smoother **SKSE-driven transitions**.
+[center]────────────────────────────[/center]
+[size=4][b]What Is This?[/b][/size]
+CEE expands upon [i]Conditional Expressions - Subtle Face Animations[/i] by adding [b]NPC support[/b], deeper [b]condition-based expressions[/b], and smoother [b]SKSE-driven transitions[/b].
 It responds to cold, trauma, arousal, dirtiness, and more – with MCM options and JSON-based customization.
 
-📖 **Full documentation:** <https://crajjjj.github.io/ConditionalExpressionsExtended/>
+[b]📖 Full documentation:[/b] [url=https://crajjjj.github.io/ConditionalExpressionsExtended/]crajjjj.github.io/ConditionalExpressionsExtended[/url]
 
----
+[center]────────────────────────────[/center]
+[size=4][b]✨ What's New in CEE?[/b][/size]
+[list]
+[*][b]NPC Support:[/b] Up to 16 nearby NPCs with relationship-based emotional logic. (auto refresh)[/*]
+[*][b]Sunhelm Survival Integration:[/b] Cold shivers, food/alcohol detection[/*]
+[*][b]DBVO is supported[/b] (new SKSE-based dialogue checks with or without dialogue menus)[/*]
+[*][b]Regular expressions are enhanced and extended[/b][/*]
+[*][b]Trauma Expressions:[/b] Pain animations for disease effects; optional sobbing sounds[/*]
+[*][b]Dirt-based Sadness:[/b] Works with Dirt & Blood, Keep It Clean, Bathing in Skyrim[/*]
+[*][b]Aroused Expressions:[/b] Based on arousal level; [i]compatible with SLO/OSL Aroused[/i][/*]
+[*][b]Smooth Expression Transitions:[/b] Using native SKSE calls — no twitching[/*]
+[*][b]Expression Cap (SLO/OSL-Aroused-aware):[/b] Limits visual exposure above arousal thresholds; MCM configurable[/*]
+[*][b]Hotkeys:[/b] Pause mod on the fly[/*]
+[*][b]Localized MCM Menu[/b][/*]
+[*][b]Fully JSON-Driven Expressions:[/b] Define your own emotion presets[/*]
+[*][b]Respect for Scene Events:[/b] Dhlp suspend/resume prevents facial glitches[/*]
+[*][b]Animation Framework Compatibility (SL and Ostim)[/b][/*]
+[*][b]Wearable-Friendly:[/b] Designed to work with helmets, masks, gags and more[/*]
+[*][b]Code Overhaul:[/b] Faster, leaner, different bugfixes – sounds fixed. No breathing underwater, etc.[/*]
+[*]See [url=https://github.com/crajjjj/ConditionalExpressionsExtended/releases]Changelog[/url] for full details[/*]
+[/list]
 
-## ✨ What's New in CEE?
+[center]────────────────────────────[/center]
+[size=4][b]📦 Installation[/b][/size]
+[list]
+[*][b]For new saves:[/b] Install CEE alongside or instead of the original Conditional Expressions[/*]
+[*][b]For existing saves:[/b][/*]
+[list]
+[*]Disable any active expression states (cold, pain, etc.) before updating[/*]
+[*]Override the original mod with this one[/*]
+[*]Reboot the game and use [b]MCM > Restart Mod[/b][/*]
+[/list]
+[/list]
 
-- **NPC Support:** Up to 16 nearby NPCs with relationship-based emotional logic. (auto refresh)
-- **Sunhelm Survival Integration:** Cold shivers, food/alcohol detection
-- **DBVO is supported** (new SKSE-based dialogue checks with or without dialogue menus)
-- **Regular expressions are enhanced and extended**
-- **Trauma Expressions:** Pain animations for disease effects; optional sobbing sounds
-- **Dirt-based Sadness:** Works with Dirt & Blood, Keep It Clean, Bathing in Skyrim
-- **Aroused Expressions:** Based on arousal level; *compatible with SLO/OSL Aroused*
-- **Smooth Expression Transitions:** Using native SKSE calls — no twitching
-- **Expression Cap (SLO/OSL-Aroused-aware):** Limits visual exposure above arousal thresholds; MCM configurable
-- **Hotkeys:** Pause mod on the fly
-- **Localized MCM Menu**
-- **Fully JSON-Driven Expressions:** Define your own emotion presets
-- **Respect for Scene Events:** Dhlp suspend/resume prevents facial glitches
-- **Animation Framework Compatibility (SL and Ostim)**
-- **Wearable-Friendly:** Designed to work with helmets, masks, gags and more
-- **Code Overhaul:** Faster, leaner, different bugfixes – sounds fixed. No breathing underwater, etc.
-- See [Changelog](https://github.com/crajjjj/ConditionalExpressionsExtended/releases) for full details
+[center]────────────────────────────[/center]
+[size=4][b]⚙ Requirements[/b][/size]
+[list]
+[*][url=https://www.nexusmods.com/skyrimspecialedition/mods/106441]BEES[/url] – required for versions 1.5.97 to 1.6.659[/*]
+[*][url=https://www.nexusmods.com/skyrimspecialedition/mods/133568]MFG Fix NG[/url] – native expression support for AE/SE[/*]
+[*][url=https://www.nexusmods.com/skyrimspecialedition/mods/13048]PapyrusUtil SE[/url] – loads the JSON expression definitions[/*]
+[/list]
 
----
+[center]────────────────────────────[/center]
+[size=4][b]🐛 Known Issues & Caveats[/b][/size]
+[list]
+[*][s][b]Hair mods with intense physics[/b] can freeze facial animations — use [i]showracemenu[/i] to reset[/s] Fixed in [url=https://www.nexusmods.com/skyrimspecialedition/mods/57339?tab=files]FSMP - Faster HDT-SMP v3[/url][/*]
+[*][b]Face-covering helmets[/b] may disable expressions[/*]
+[*][b]Disable sounds/notifications:[/b] Available in MCM[/*]
+[*]Logs available at: [i]Documents\My Games\Skyrim Special Edition\Logs\Script\User\ConditionalExpressionsExtended.0.log[/i] (enable Papyrus logging)[/*]
+[/list]
 
-## 📦 Installation
+[center]────────────────────────────[/center]
+[b][url=https://subscribestar.adult/crajjjj]SubscribeStar[/url][/b]
 
-- **For new saves:** Install CEE alongside or instead of the original Conditional Expressions
-- **For existing saves:**
-    - Disable any active expression states (cold, pain, etc.) before updating
-    - Override the original mod with this one
-    - Reboot the game and use **MCM > Restart Mod**
+[size=4][b]🙌 Credits[/b][/size]
+[list]
+[*][b]JaySerpa[/b] – Original Conditional Expressions mod[/*]
+[*][b]ponzipyramid[/b] – SKSE/NG integration, performance overhaul[/*]
+[*][b]Andrelo[/b] – MFG Fix[/*]
+[*][b]krzp[/b] – Media file support[/*]
+[/list]
 
----
-
-## ⚙ Requirements
-
-- [BEES](https://www.nexusmods.com/skyrimspecialedition/mods/106441) – required for versions 1.5.97 to 1.6.659
-- [MFG Fix NG](https://www.nexusmods.com/skyrimspecialedition/mods/133568) – native expression support for AE/SE
-- [PapyrusUtil SE](https://www.nexusmods.com/skyrimspecialedition/mods/13048) – loads the JSON expression definitions
-
----
-
-## 🐛 Known Issues & Caveats
-
-- ~~**Hair mods with intense physics** can freeze facial animations — use *showracemenu* to reset~~ Fixed in [FSMP - Faster HDT-SMP v3](https://www.nexusmods.com/skyrimspecialedition/mods/57339?tab=files)
-- **Face-covering helmets** may disable expressions
-- **Disable sounds/notifications:** Available in MCM
-- Logs available at: *Documents\My Games\Skyrim Special Edition\Logs\Script\User\ConditionalExpressionsExtended.0.log* (enable Papyrus logging)
-
----
-
-**[SubscribeStar](https://subscribestar.adult/crajjjj)**
-
-## 🙌 Credits
-
-- **JaySerpa** – Original Conditional Expressions mod
-- **ponzipyramid** – SKSE/NG integration, performance overhaul
-- **Andrelo** – MFG Fix
-- **krzp** – Media file support
-
----
-
-<div align="center">
-
-*Bringing immersive emotion and expression to every Skyrim playthrough – for you and NPCs alike.*
-
-</div>
+[center]────────────────────────────[/center]
+[center][i]Bringing immersive emotion and expression to every Skyrim playthrough – for you and NPCs alike.[/i][/center]

@@ -459,23 +459,15 @@ int function getDirtyStatus(Actor act)
 
 	int dirty = 0
 	If (LoadedBathMod != "None Found")
-		bool hasDirt2 = DirtinessStage2Effect && act.HasMagicEffect(DirtinessStage2Effect)
-		bool hasBlood2 = BloodinessStage2Effect && act.HasMagicEffect(BloodinessStage2Effect)
-		bool hasDirt3 = DirtinessStage3Effect && act.HasMagicEffect(DirtinessStage3Effect)
-		bool hasBlood3 = BloodinessStage3Effect && act.HasMagicEffect(BloodinessStage3Effect)
-		bool hasDirt4 = DirtinessStage4Effect && act.HasMagicEffect(DirtinessStage4Effect)
-		bool hasBlood4 = BloodinessStage4Effect && act.HasMagicEffect(BloodinessStage4Effect)
-		bool hasDirt5 = DirtinessStage5Effect && act.HasMagicEffect(DirtinessStage5Effect)
-		bool hasBlood5 = BloodinessStage5Effect && act.HasMagicEffect(BloodinessStage5Effect)
-
-		if hasDirt2 || hasBlood2
+		; Stage checks short-circuit: once a lower stage matches, the higher-stage
+		; HasMagicEffect calls are skipped. Stages are mutually exclusive, so this is
+		; equivalent to checking all of them. dirty still flows into the cum checks below.
+		if (DirtinessStage2Effect && act.HasMagicEffect(DirtinessStage2Effect)) || (BloodinessStage2Effect && act.HasMagicEffect(BloodinessStage2Effect))
 			dirty = 1  ;not enough dirt to be sad
-		elseif hasDirt3 || hasBlood3
+		elseif (DirtinessStage3Effect && act.HasMagicEffect(DirtinessStage3Effect)) || (BloodinessStage3Effect && act.HasMagicEffect(BloodinessStage3Effect))
 			dirty = 2
-		elseif hasDirt4 || hasBlood4 || hasDirt5 || hasBlood5
+		elseif (DirtinessStage4Effect && act.HasMagicEffect(DirtinessStage4Effect)) || (BloodinessStage4Effect && act.HasMagicEffect(BloodinessStage4Effect)) || (DirtinessStage5Effect && act.HasMagicEffect(DirtinessStage5Effect)) || (BloodinessStage5Effect && act.HasMagicEffect(BloodinessStage5Effect))
 			dirty = 3
-		else
-			dirty = 0
 		endIf
 	EndIf
 	

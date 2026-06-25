@@ -4,7 +4,7 @@
 
 | Type | Mod |
 |------|-----|
-| Required | [MFG Fix NG](https://www.nexusmods.com/skyrimspecialedition/mods/56767) |
+| Required | [MFG Fix NG](https://www.nexusmods.com/skyrimspecialedition/mods/133568) |
 | Required | [PapyrusUtil SE](https://www.nexusmods.com/skyrimspecialedition/mods/13048) |
 
 Both are hard dependencies — CEE will not function without them. Everything else is optional and detected automatically at runtime (see [Requirements & Compatibility](compatibility.md)).

@@ -34,4 +34,4 @@ CEE applies a constant-effect ability to the player that polls game state every 
 | Mod authors | [Overview](authors/overview.md) → [Custom Expression JSON](authors/expression-json.md) → [Mod Events API](authors/modevents.md) |
 
 !!! note "Hard requirements"
-    [MFG Fix NG](https://www.nexusmods.com/skyrimspecialedition/mods/56767) and [PapyrusUtil SE](https://www.nexusmods.com/skyrimspecialedition/mods/13048) are required. See [Requirements & Compatibility](players/compatibility.md).
+    [MFG Fix NG](https://www.nexusmods.com/skyrimspecialedition/mods/133568) and [PapyrusUtil SE](https://www.nexusmods.com/skyrimspecialedition/mods/13048) are required. See [Requirements & Compatibility](players/compatibility.md).

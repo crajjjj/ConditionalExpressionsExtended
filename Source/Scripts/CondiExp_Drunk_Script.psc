@@ -22,6 +22,7 @@ Function Drunk()
     endif
     Condiexp_CurrentlyBusy.SetValueInt(1)
     verbose(PlayerRef, "Drunk", config.Condiexp_Verbose.GetValueInt())
+    ; intentional: play the full 3-phase drunk sequence twice to extend the drunk duration (~30s). Not a dupe - do not collapse.
     PlayDrunkExpression(PlayerRef)
     PlayDrunkExpression(PlayerRef)
     trace(PlayerRef, "Drunk: Ending", config.Condiexp_Verbose.GetValueInt())

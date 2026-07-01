@@ -1,5 +1,21 @@
 # ConditionalExpressionsExtended
 
+<p align="center">
+  <a href="https://www.nexusmods.com/skyrimspecialedition/mods/91438"><img src="https://img.shields.io/badge/⬇%20Download-Nexus%20Mods-d9782d?style=for-the-badge" alt="Download on Nexus"></a>
+</p>
+
+<p align="center">
+  <a href="https://crajjjj.github.io/ConditionalExpressionsExtended/"><img src="https://img.shields.io/badge/docs-GitHub%20Pages-brightgreen?logo=readthedocs&logoColor=white" alt="Documentation"></a>
+  <a href="https://github.com/crajjjj/ConditionalExpressionsExtended/actions/workflows/docs.yml"><img src="https://github.com/crajjjj/ConditionalExpressionsExtended/actions/workflows/docs.yml/badge.svg" alt="Deploy docs"></a>
+  <a href="https://github.com/crajjjj/ConditionalExpressionsExtended/releases/latest"><img src="https://img.shields.io/github/v/release/crajjjj/ConditionalExpressionsExtended?label=release" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/Skyrim-SE%2FAE-orange" alt="Skyrim SE/AE">
+  <img src="https://img.shields.io/badge/scripting-Papyrus-8A2BE2" alt="Papyrus"><br>
+  <a href="https://github.com/crajjjj/ConditionalExpressionsExtended/releases"><img src="https://img.shields.io/github/downloads/crajjjj/ConditionalExpressionsExtended/total" alt="Total downloads"></a>
+  <img src="https://img.shields.io/github/last-commit/crajjjj/ConditionalExpressionsExtended" alt="Last commit">
+  <img src="https://img.shields.io/github/license/crajjjj/ConditionalExpressionsExtended" alt="License">
+  <img src="https://img.shields.io/github/repo-size/crajjjj/ConditionalExpressionsExtended" alt="Repo size">
+</p>
+
 This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.28) with new features and focus on compatibility
 
 📖 **Full documentation: [crajjjj.github.io/ConditionalExpressionsExtended](https://crajjjj.github.io/ConditionalExpressionsExtended/)** — installation, compatibility, MCM reference, console commands, the custom expression JSON format, and the mod events API.

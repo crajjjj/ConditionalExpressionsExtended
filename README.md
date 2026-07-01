@@ -9,11 +9,8 @@
   <a href="https://github.com/crajjjj/ConditionalExpressionsExtended/actions/workflows/docs.yml"><img src="https://github.com/crajjjj/ConditionalExpressionsExtended/actions/workflows/docs.yml/badge.svg" alt="Deploy docs"></a>
   <a href="https://github.com/crajjjj/ConditionalExpressionsExtended/releases/latest"><img src="https://img.shields.io/github/v/release/crajjjj/ConditionalExpressionsExtended?label=release" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/Skyrim-SE%2FAE-orange" alt="Skyrim SE/AE">
-  <img src="https://img.shields.io/badge/scripting-Papyrus-8A2BE2" alt="Papyrus"><br>
-  <a href="https://github.com/crajjjj/ConditionalExpressionsExtended/releases"><img src="https://img.shields.io/github/downloads/crajjjj/ConditionalExpressionsExtended/total" alt="Total downloads"></a>
-  <img src="https://img.shields.io/github/last-commit/crajjjj/ConditionalExpressionsExtended" alt="Last commit">
+  <img src="https://img.shields.io/badge/scripting-Papyrus-8A2BE2" alt="Papyrus">
   <img src="https://img.shields.io/badge/license-GPL--3.0-blue" alt="License: GPL-3.0">
-  <img src="https://img.shields.io/github/repo-size/crajjjj/ConditionalExpressionsExtended" alt="Repo size">
 </p>
 
 This is a remastered extension of the Conditional Expressions - Subtle Face Animations mod (v 1.28) with new features and focus on compatibility

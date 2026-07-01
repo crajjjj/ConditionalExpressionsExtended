@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/scripting-Papyrus-8A2BE2" alt="Papyrus"><br>
   <a href="https://github.com/crajjjj/ConditionalExpressionsExtended/releases"><img src="https://img.shields.io/github/downloads/crajjjj/ConditionalExpressionsExtended/total" alt="Total downloads"></a>
   <img src="https://img.shields.io/github/last-commit/crajjjj/ConditionalExpressionsExtended" alt="Last commit">
-  <img src="https://img.shields.io/github/license/crajjjj/ConditionalExpressionsExtended" alt="License">
+  <img src="https://img.shields.io/badge/license-GPL--3.0-blue" alt="License: GPL-3.0">
   <img src="https://img.shields.io/github/repo-size/crajjjj/ConditionalExpressionsExtended" alt="Repo size">
 </p>
 
